@@ -11,7 +11,10 @@ namespace ConfiOS.BuildingBlocks.Domain.ValueObjects;
 /// <remarks>
 /// Arithmetic across currencies is rejected rather than silently coerced. Converting
 /// between currencies is an explicit operation that needs a rate, so it does not belong
-/// on this type.
+/// on this type. Ordering, by contrast, is total: amounts sort by currency code and then
+/// by value, so a mixed-currency collection sorts predictably without throwing. Comparing
+/// amounts of different currencies for magnitude is only meaningful within one currency,
+/// which is the caller's responsibility.
 /// </remarks>
 public sealed class Money : ValueObject, IComparable<Money>
 {
@@ -72,8 +75,11 @@ public sealed class Money : ValueObject, IComparable<Money>
             return 1;
         }
 
-        EnsureSameCurrency(other);
-        return Amount.CompareTo(other.Amount);
+        // A total order so Money is well-behaved in sorts and comparer-based collections:
+        // order by currency first, then by amount. Unlike Add/Subtract this never throws,
+        // because ordering two valid instances must always yield an answer.
+        var byCurrency = string.CompareOrdinal(Currency.Code, other.Currency.Code);
+        return byCurrency != 0 ? byCurrency : Amount.CompareTo(other.Amount);
     }
 
     /// <summary>

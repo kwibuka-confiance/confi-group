@@ -38,11 +38,39 @@ public sealed class MoneyTests
     [Fact]
     public void Equality_covers_amount_and_currency()
     {
-        // Assert value equality directly: Money is IComparable, and CompareTo intentionally
-        // throws across currencies, so equality helpers that route through CompareTo would
-        // not exercise the Equals semantics this test is about.
+        // Assert value equality directly rather than through Shouldly's IComparable path, so
+        // this test exercises Equals (amount and currency) rather than the ordering CompareTo.
         Money.Of(100m, "RWF").Equals(Money.Of(100m, "RWF")).ShouldBeTrue();
         Money.Of(100m, "RWF").Equals(Money.Of(100m, "USD")).ShouldBeFalse();
+    }
+
+    [Fact]
+    public void Orders_within_a_currency_by_amount()
+    {
+        Money.Of(50m, "RWF").CompareTo(Money.Of(100m, "RWF")).ShouldBeLessThan(0);
+        (Money.Of(100m, "RWF") > Money.Of(50m, "RWF")).ShouldBeTrue();
+    }
+
+    [Fact]
+    public void Orders_across_currencies_without_throwing()
+    {
+        // A total order keeps Money usable in sorts and comparer-based collections; mixed
+        // currencies are ordered by currency code, never rejected.
+        var sorted = new[]
+        {
+            Money.Of(10m, "USD"),
+            Money.Of(5m, "RWF"),
+            Money.Of(1m, "USD"),
+        }
+        .OrderBy(money => money)
+        .ToArray();
+
+        sorted.ShouldBe(new[]
+        {
+            Money.Of(5m, "RWF"),
+            Money.Of(1m, "USD"),
+            Money.Of(10m, "USD"),
+        });
     }
 
     [Fact]

@@ -9,7 +9,10 @@ namespace ConfiOS.BuildingBlocks.Domain.ValueObjects;
 /// </summary>
 /// <remarks>
 /// Quantities in different units are never combined arithmetically: converting crates to
-/// bottles needs the catalog's unit definitions and is not a concern of this type.
+/// bottles needs the catalog's unit definitions and is not a concern of this type. Ordering
+/// is total: quantities sort by unit code and then by value, so a mixed-unit collection
+/// sorts predictably without throwing. Comparing magnitudes across units is only meaningful
+/// within one unit, which is the caller's responsibility.
 /// </remarks>
 public sealed class Quantity : ValueObject, IComparable<Quantity>
 {
@@ -62,8 +65,11 @@ public sealed class Quantity : ValueObject, IComparable<Quantity>
             return 1;
         }
 
-        EnsureSameUnit(other);
-        return Value.CompareTo(other.Value);
+        // A total order so Quantity is well-behaved in sorts and comparer-based collections:
+        // order by unit first, then by value. Unlike Add/Subtract this never throws, because
+        // ordering two valid instances must always yield an answer.
+        var byUnit = string.CompareOrdinal(UnitCode, other.UnitCode);
+        return byUnit != 0 ? byUnit : Value.CompareTo(other.Value);
     }
 
     public static Quantity operator +(Quantity left, Quantity right)
