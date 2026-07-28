@@ -1,5 +1,6 @@
 using System.Globalization;
 using ConfiOS.BuildingBlocks.Domain.Errors;
+using ConfiOS.BuildingBlocks.Domain.Primitives;
 
 namespace ConfiOS.BuildingBlocks.Domain.ValueObjects;
 

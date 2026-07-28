@@ -1,3 +1,5 @@
+using ConfiOS.BuildingBlocks.Domain.Primitives;
+
 namespace ConfiOS.BuildingBlocks.Domain.ValueObjects;
 
 /// <summary>

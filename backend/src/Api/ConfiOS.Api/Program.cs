@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Reflection;
 using ConfiOS.Api.Extensions;
 using ConfiOS.BuildingBlocks.Api;
@@ -14,7 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog((context, configuration) => configuration
     .ReadFrom.Configuration(context.Configuration)
     .Enrich.FromLogContext()
-    .WriteTo.Console());
+    .WriteTo.Console(formatProvider: CultureInfo.InvariantCulture));
 
 builder.Services.AddBuildingBlocksApplication();
 builder.Services.AddBuildingBlocksApi();

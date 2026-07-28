@@ -38,8 +38,11 @@ public sealed class MoneyTests
     [Fact]
     public void Equality_covers_amount_and_currency()
     {
-        Money.Of(100m, "RWF").ShouldBe(Money.Of(100m, "RWF"));
-        Money.Of(100m, "RWF").ShouldNotBe(Money.Of(100m, "USD"));
+        // Assert value equality directly: Money is IComparable, and CompareTo intentionally
+        // throws across currencies, so equality helpers that route through CompareTo would
+        // not exercise the Equals semantics this test is about.
+        Money.Of(100m, "RWF").Equals(Money.Of(100m, "RWF")).ShouldBeTrue();
+        Money.Of(100m, "RWF").Equals(Money.Of(100m, "USD")).ShouldBeFalse();
     }
 
     [Fact]
