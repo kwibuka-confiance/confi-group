@@ -59,6 +59,7 @@ Start with:
 - [Domain-Driven Design](docs/02-product/03-domain-driven-design.md)
 - [Multi-Tenant Architecture](docs/02-product/04-multi-tenant-architecture.md)
 - [Identity and Access Management](docs/02-product/05-identity-and-access-management.md)
+- [Backend README](backend/README.md)
 
 ## Technology Direction
 

@@ -47,3 +47,4 @@
 - [ADR-003 Shared Multi-Tenant Platform](adr/ADR-003-multi-tenancy.md)
 - [ADR-004 Security by Design](adr/ADR-004-security-by-design.md)
 - [ADR-005 Modular Monolith First](adr/ADR-005-modular-monolith-first.md)
+- [ADR-006 Backend Project Structure](adr/ADR-006-backend-project-structure.md)

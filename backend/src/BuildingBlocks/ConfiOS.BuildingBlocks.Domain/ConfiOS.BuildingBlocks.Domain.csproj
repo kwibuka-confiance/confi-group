@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Shared kernel: domain primitives only.
+    This project must never reference infrastructure, ASP.NET Core, or EF Core.
+    Architecture tests enforce this.
+  -->
+
+</Project>

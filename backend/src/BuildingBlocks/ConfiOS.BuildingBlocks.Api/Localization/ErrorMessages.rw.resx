@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="UNKNOWN_ERROR" xml:space="preserve"><value>Habaye ikibazo. Ongera ugerageze.</value></data>
+  <data name="VALIDATION_FAILED" xml:space="preserve"><value>Amwe mu makuru watanze ntabwo ari yo.</value></data>
+  <data name="RESOURCE_NOT_FOUND" xml:space="preserve"><value>Icyandikwa wasabye ntikibonetse.</value></data>
+  <data name="UNAUTHORIZED" xml:space="preserve"><value>Banza winjire kugira ngo ukomeze.</value></data>
+  <data name="FORBIDDEN" xml:space="preserve"><value>Nta burenganzira ufite bwo gukora iki gikorwa.</value></data>
+  <data name="TENANT_CONTEXT_MISSING" xml:space="preserve"><value>Nta bucuruzi bwatoranyijwe kuri iki cyifuzo.</value></data>
+  <data name="TENANT_MEMBERSHIP_REQUIRED" xml:space="preserve"><value>Ntabwo uri umunyamuryango w'ubu bucuruzi.</value></data>
+  <data name="BRANCH_OUTSIDE_TENANT" xml:space="preserve"><value>Iryo shami ntiribarizwa muri ubu bucuruzi.</value></data>
+  <data name="FEATURE_NOT_LICENSED" xml:space="preserve"><value>Iki gikorwa ntikiri muri gahunda yawe y'ubu.</value></data>
+  <data name="CONFIRMATION_REQUIRED" xml:space="preserve"><value>Iki gikorwa kigomba kwemezwa mbere yo gukomeza.</value></data>
+  <data name="IDEMPOTENCY_KEY_REQUIRED" xml:space="preserve"><value>Uru rugendo rusaba urufunguzo rwa idempotency.</value></data>
+  <data name="IDEMPOTENCY_KEY_CONFLICT" xml:space="preserve"><value>Iki cyifuzo cyari cyoherejwe mbere gifite ibirimo bitandukanye.</value></data>
+  <data name="CONCURRENCY_CONFLICT" xml:space="preserve"><value>Undi muntu yahinduye iki cyandikwa. Ongera ufungure ubundi ugerageze.</value></data>
+  <data name="CURRENCY_MISMATCH" xml:space="preserve"><value>Amafaranga y'ifaranga ritandukanye ntashobora guteranywa.</value></data>
+  <data name="UNSUPPORTED_CURRENCY" xml:space="preserve"><value>Iryo faranga ntirikoreshwa.</value></data>
+  <data name="NEGATIVE_AMOUNT" xml:space="preserve"><value>Umubare ntugomba kuba munsi ya zeru.</value></data>
+  <data name="UNIT_MISMATCH" xml:space="preserve"><value>Ingano z'ibipimo bitandukanye ntizishobora guteranywa.</value></data>
+  <data name="INVALID_PHONE_NUMBER" xml:space="preserve"><value>Andika nimero ya telefone yemewe, ushyiremo kode y'igihugu.</value></data>
+  <data name="INVALID_EMAIL_ADDRESS" xml:space="preserve"><value>Andika aderesi imeyili yemewe.</value></data>
+  <data name="TENANT_SLUG_TAKEN" xml:space="preserve"><value>Iyo nyuguti y'ubucuruzi isanzwe ikoreshwa.</value></data>
+  <data name="TENANT_SUSPENDED" xml:space="preserve"><value>Ubu bucuruzi bwahagaritswe. Vugana na serivisi z'ubufasha kugira ngo busubukurwe.</value></data>
+  <data name="TENANT_NOT_FOUND" xml:space="preserve"><value>Ubwo bucuruzi ntibubonetse.</value></data>
+  <data name="BRANCH_NOT_FOUND" xml:space="preserve"><value>Iryo shami ntiryabonetse.</value></data>
+  <data name="BRANCH_CODE_TAKEN" xml:space="preserve"><value>Iyo kode y'ishami isanzwe ikoreshwa.</value></data>
+  <data name="USER_EMAIL_TAKEN" xml:space="preserve"><value>Hari umukoresha ufite iyo imeyili muri ubu bucuruzi.</value></data>
+  <data name="USER_NOT_FOUND" xml:space="preserve"><value>Uwo mukoresha ntiyabonetse.</value></data>
+  <data name="INVALID_CREDENTIALS" xml:space="preserve"><value>Imeyili cyangwa ijambobanga si byo.</value></data>
+  <data name="USER_DEACTIVATED" xml:space="preserve"><value>Iyi konti yarahagaritswe.</value></data>
+  <data name="ROLE_NOT_FOUND" xml:space="preserve"><value>Uruhare rwo ntirwabonetse.</value></data>
+  <data name="ROLE_NAME_TAKEN" xml:space="preserve"><value>Izina ry'uruhare risanzwe rikoreshwa.</value></data>
+  <data name="SYSTEM_ROLE_IMMUTABLE" xml:space="preserve"><value>Inshingano zishyizweho na sisitemu ntizihinduka.</value></data>
+  <data name="UNSUPPORTED_LANGUAGE" xml:space="preserve"><value>Urwo rurimi ntiruremewe kugeza ubu.</value></data>
+  <data name="LAST_OWNER_CANNOT_BE_REMOVED" xml:space="preserve"><value>Ubucuruzi bugomba gusigarana nibura nyirabwo umwe.</value></data>
+</root>

@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <UserSecretsId>confios-api</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup Label="Building blocks">
+    <ProjectReference Include="..\..\BuildingBlocks\ConfiOS.BuildingBlocks.Api\ConfiOS.BuildingBlocks.Api.csproj" />
+  </ItemGroup>
+
+  <!--
+    The host references each module's Api project and nothing deeper. Module internals are
+    reached only through IModule, which is what keeps a module extractable later.
+  -->
+  <ItemGroup Label="Modules">
+    <ProjectReference Include="..\..\Modules\Identity\ConfiOS.Modules.Identity.Api\ConfiOS.Modules.Identity.Api.csproj" />
+    <ProjectReference Include="..\..\Modules\Catalog\ConfiOS.Modules.Catalog.Api\ConfiOS.Modules.Catalog.Api.csproj" />
+    <ProjectReference Include="..\..\Modules\Inventory\ConfiOS.Modules.Inventory.Api\ConfiOS.Modules.Inventory.Api.csproj" />
+    <ProjectReference Include="..\..\Modules\Sales\ConfiOS.Modules.Sales.Api\ConfiOS.Modules.Sales.Api.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
+    <PackageReference Include="Serilog.AspNetCore" />
+    <PackageReference Include="Serilog.Sinks.Console" />
+    <PackageReference Include="OpenTelemetry.Extensions.Hosting" />
+    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Http" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" />
+  </ItemGroup>
+
+</Project>
