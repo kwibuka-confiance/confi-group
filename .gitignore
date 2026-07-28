@@ -1,4 +1,34 @@
-
-
 #Ignore vscode AI rules
 .github/instructions/codacy.instructions.md
+
+# macOS
+.DS_Store
+
+# .NET build output
+[Bb]in/
+[Oo]bj/
+*.user
+*.suo
+artifacts/
+
+# Rider / Visual Studio
+.idea/
+.vs/
+
+# Flutter / Dart
+.dart_tool/
+.packages
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# Local secrets and environment
+*.env
+.env.local
+appsettings.Local.json
+
+# Test and coverage output
+[Tt]est[Rr]esults/
+coverage/
+*.coverage
+*.trx

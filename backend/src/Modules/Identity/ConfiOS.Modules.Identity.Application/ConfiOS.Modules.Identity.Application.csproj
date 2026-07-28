@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\ConfiOS.BuildingBlocks.Application\ConfiOS.BuildingBlocks.Application.csproj" />
+    <ProjectReference Include="..\ConfiOS.Modules.Identity.Domain\ConfiOS.Modules.Identity.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

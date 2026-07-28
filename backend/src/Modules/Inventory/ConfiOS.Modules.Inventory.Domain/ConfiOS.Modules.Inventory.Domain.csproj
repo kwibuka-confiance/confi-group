@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\ConfiOS.BuildingBlocks.Domain\ConfiOS.BuildingBlocks.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

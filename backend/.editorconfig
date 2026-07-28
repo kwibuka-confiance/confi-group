@@ -1,0 +1,61 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+indent_style = space
+trim_trailing_whitespace = true
+
+[*.{cs,csx}]
+indent_size = 4
+dotnet_sort_system_directives_first = true
+csharp_using_directive_placement = outside_namespace:warning
+csharp_style_namespace_declarations = file_scoped:warning
+csharp_style_var_when_type_is_apparent = true:suggestion
+csharp_prefer_braces = true:warning
+dotnet_style_readonly_field = true:warning
+dotnet_style_require_accessibility_modifiers = for_non_interface_members:warning
+
+# Naming: interfaces start with I
+dotnet_naming_rule.interfaces_start_with_i.severity = warning
+dotnet_naming_rule.interfaces_start_with_i.symbols = interfaces
+dotnet_naming_rule.interfaces_start_with_i.style = prefix_i
+dotnet_naming_symbols.interfaces.applicable_kinds = interface
+dotnet_naming_style.prefix_i.required_prefix = I
+dotnet_naming_style.prefix_i.capitalization = pascal_case
+
+# Money must never be a floating point type.
+dotnet_diagnostic.CA1305.severity = warning
+dotnet_diagnostic.CA2007.severity = none
+
+# ConfiOS is C#-only; domain terms such as "Error" that collide with VB keywords are
+# intentional and stay. CA1716 only guards cross-language (e.g. VB) consumers.
+dotnet_diagnostic.CA1716.severity = none
+
+# Value objects centralise equality (==, !=, Equals, GetHashCode) in the ValueObject base
+# class by design; ordering operators live on the comparable types themselves. CA1036 does
+# not credit the inherited equality members, so it is suppressed rather than duplicated.
+dotnet_diagnostic.CA1036.severity = none
+
+# The domain's ubiquitous language uses terms whose suffixes CA1711 reserves for other
+# constructs (e.g. IDomainEventHandler, RolePermission). These names are intentional and
+# clearer than the alternatives, and none of them are delegates or CAS permissions.
+dotnet_diagnostic.CA1711.severity = none
+
+# High-performance logging via LoggerMessage source generators is a later optimisation.
+# Until then the middleware uses the standard ILogger extension methods.
+dotnet_diagnostic.CA1848.severity = none
+
+# Test method names use the Given_When_Then style with underscores for readability.
+[tests/**/*.cs]
+dotnet_diagnostic.CA1707.severity = none
+
+[*.{csproj,props,targets,xml,resx}]
+indent_size = 2
+
+[*.{json,yml,yaml}]
+indent_size = 2
+
+[*.md]
+trim_trailing_whitespace = false

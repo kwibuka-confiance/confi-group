@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\ConfiOS.BuildingBlocks.Api\ConfiOS.BuildingBlocks.Api.csproj" />
+    <ProjectReference Include="..\ConfiOS.Modules.Identity.Infrastructure\ConfiOS.Modules.Identity.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

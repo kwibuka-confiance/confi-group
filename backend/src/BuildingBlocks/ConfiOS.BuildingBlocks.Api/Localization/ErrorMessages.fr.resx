@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="UNKNOWN_ERROR" xml:space="preserve"><value>Une erreur est survenue. Veuillez réessayer.</value></data>
+  <data name="VALIDATION_FAILED" xml:space="preserve"><value>Certaines informations fournies ne sont pas valides.</value></data>
+  <data name="RESOURCE_NOT_FOUND" xml:space="preserve"><value>L'enregistrement demandé est introuvable.</value></data>
+  <data name="UNAUTHORIZED" xml:space="preserve"><value>Veuillez vous connecter pour continuer.</value></data>
+  <data name="FORBIDDEN" xml:space="preserve"><value>Vous n'avez pas l'autorisation d'effectuer cette action.</value></data>
+  <data name="TENANT_CONTEXT_MISSING" xml:space="preserve"><value>Aucune entreprise n'a été sélectionnée pour cette requête.</value></data>
+  <data name="TENANT_MEMBERSHIP_REQUIRED" xml:space="preserve"><value>Vous n'êtes pas membre de cette entreprise.</value></data>
+  <data name="BRANCH_OUTSIDE_TENANT" xml:space="preserve"><value>Cette succursale n'appartient pas à cette entreprise.</value></data>
+  <data name="FEATURE_NOT_LICENSED" xml:space="preserve"><value>Cette fonctionnalité n'est pas incluse dans votre abonnement actuel.</value></data>
+  <data name="CONFIRMATION_REQUIRED" xml:space="preserve"><value>Cette action doit être confirmée avant de continuer.</value></data>
+  <data name="IDEMPOTENCY_KEY_REQUIRED" xml:space="preserve"><value>Une clé d'idempotence est requise pour cette opération.</value></data>
+  <data name="IDEMPOTENCY_KEY_CONFLICT" xml:space="preserve"><value>Cette requête a déjà été soumise avec un contenu différent.</value></data>
+  <data name="CONCURRENCY_CONFLICT" xml:space="preserve"><value>Une autre personne a modifié cet enregistrement. Veuillez recharger et réessayer.</value></data>
+  <data name="CURRENCY_MISMATCH" xml:space="preserve"><value>Des montants dans des devises différentes ne peuvent pas être combinés.</value></data>
+  <data name="UNSUPPORTED_CURRENCY" xml:space="preserve"><value>Cette devise n'est pas prise en charge.</value></data>
+  <data name="NEGATIVE_AMOUNT" xml:space="preserve"><value>Le montant ne doit pas être négatif.</value></data>
+  <data name="UNIT_MISMATCH" xml:space="preserve"><value>Des quantités dans des unités différentes ne peuvent pas être combinées.</value></data>
+  <data name="INVALID_PHONE_NUMBER" xml:space="preserve"><value>Saisissez un numéro de téléphone valide, avec l'indicatif du pays.</value></data>
+  <data name="INVALID_EMAIL_ADDRESS" xml:space="preserve"><value>Saisissez une adresse e-mail valide.</value></data>
+  <data name="TENANT_SLUG_TAKEN" xml:space="preserve"><value>Cet identifiant d'entreprise est déjà utilisé.</value></data>
+  <data name="TENANT_SUSPENDED" xml:space="preserve"><value>Cette entreprise est suspendue. Contactez le support pour la réactiver.</value></data>
+  <data name="TENANT_NOT_FOUND" xml:space="preserve"><value>Cette entreprise est introuvable.</value></data>
+  <data name="BRANCH_NOT_FOUND" xml:space="preserve"><value>Cette succursale est introuvable.</value></data>
+  <data name="BRANCH_CODE_TAKEN" xml:space="preserve"><value>Ce code de succursale est déjà utilisé.</value></data>
+  <data name="USER_EMAIL_TAKEN" xml:space="preserve"><value>Un utilisateur avec cette adresse e-mail existe déjà dans cette entreprise.</value></data>
+  <data name="USER_NOT_FOUND" xml:space="preserve"><value>Cet utilisateur est introuvable.</value></data>
+  <data name="INVALID_CREDENTIALS" xml:space="preserve"><value>L'adresse e-mail ou le mot de passe est incorrect.</value></data>
+  <data name="USER_DEACTIVATED" xml:space="preserve"><value>Ce compte a été désactivé.</value></data>
+  <data name="ROLE_NOT_FOUND" xml:space="preserve"><value>Ce rôle est introuvable.</value></data>
+  <data name="ROLE_NAME_TAKEN" xml:space="preserve"><value>Ce nom de rôle est déjà utilisé.</value></data>
+  <data name="SYSTEM_ROLE_IMMUTABLE" xml:space="preserve"><value>Les rôles intégrés ne peuvent pas être modifiés.</value></data>
+  <data name="UNSUPPORTED_LANGUAGE" xml:space="preserve"><value>Cette langue n'est pas encore prise en charge.</value></data>
+  <data name="LAST_OWNER_CANNOT_BE_REMOVED" xml:space="preserve"><value>Une entreprise doit conserver au moins un propriétaire.</value></data>
+</root>
