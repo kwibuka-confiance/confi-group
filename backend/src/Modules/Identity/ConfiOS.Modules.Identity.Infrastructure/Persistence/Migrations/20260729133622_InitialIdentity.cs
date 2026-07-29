@@ -12,14 +12,11 @@ namespace ConfiOS.Modules.Identity.Infrastructure.Persistence.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.EnsureSchema(
-                name: "audit");
-
-            migrationBuilder.EnsureSchema(
                 name: "identity");
 
             migrationBuilder.CreateTable(
                 name: "audit_records",
-                schema: "audit",
+                schema: "identity",
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -230,13 +227,13 @@ namespace ConfiOS.Modules.Identity.Infrastructure.Persistence.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "ix_audit_records_tenant_id_entity_type_entity_id",
-                schema: "audit",
+                schema: "identity",
                 table: "audit_records",
                 columns: new[] { "tenant_id", "entity_type", "entity_id" });
 
             migrationBuilder.CreateIndex(
                 name: "ix_audit_records_tenant_id_recorded_at",
-                schema: "audit",
+                schema: "identity",
                 table: "audit_records",
                 columns: new[] { "tenant_id", "recorded_at" });
 
@@ -304,7 +301,7 @@ namespace ConfiOS.Modules.Identity.Infrastructure.Persistence.Migrations
         {
             migrationBuilder.DropTable(
                 name: "audit_records",
-                schema: "audit");
+                schema: "identity");
 
             migrationBuilder.DropTable(
                 name: "branches",

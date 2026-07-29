@@ -1,4 +1,3 @@
-using ConfiOS.BuildingBlocks.Application.Abstractions;
 using ConfiOS.BuildingBlocks.Application.Auditing;
 using ConfiOS.BuildingBlocks.Application.Context;
 using ConfiOS.BuildingBlocks.Application.Messaging;
@@ -31,7 +30,7 @@ public sealed class InviteUserHandler(
     ITenantContext tenantContext,
     IPasswordHasher passwordHasher,
     IAuditLogger auditLogger,
-    IUnitOfWork unitOfWork) : ICommandHandler<InviteUserCommand, Guid>
+    IIdentityUnitOfWork unitOfWork) : ICommandHandler<InviteUserCommand, Guid>
 {
     public async Task<Result<Guid>> HandleAsync(InviteUserCommand command, CancellationToken cancellationToken)
     {

@@ -3,17 +3,22 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ConfiOS.BuildingBlocks.Infrastructure.Auditing;
 
-/// <summary>Maps the audit log into the shared <c>audit</c> schema.</summary>
-public sealed class AuditRecordConfiguration : IEntityTypeConfiguration<AuditRecord>
+/// <summary>
+/// Maps the append-only audit log into the module's own schema.
+/// </summary>
+/// <remarks>
+/// Each module keeps its own <c>audit_records</c> table in its own schema, mirroring the
+/// outbox: a module owns its schema exclusively, and this keeps per-module migrations
+/// independent instead of racing to create one shared table.
+/// </remarks>
+/// <param name="schema">The owning module's schema, for example <c>identity</c>.</param>
+public sealed class AuditRecordConfiguration(string schema) : IEntityTypeConfiguration<AuditRecord>
 {
-    /// <summary>Schema holding audit data for every module.</summary>
-    public const string AuditSchema = "audit";
-
     public void Configure(EntityTypeBuilder<AuditRecord> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        builder.ToTable("audit_records", AuditSchema);
+        builder.ToTable("audit_records", schema);
         builder.HasKey(record => record.Id);
 
         builder.Property(record => record.Action).HasMaxLength(200).IsRequired();

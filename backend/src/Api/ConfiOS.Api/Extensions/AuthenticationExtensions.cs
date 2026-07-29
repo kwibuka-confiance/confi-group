@@ -1,6 +1,7 @@
 using System.Text;
-using ConfiOS.Modules.Identity.Domain.Authorization;
+using ConfiOS.BuildingBlocks.Api.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -53,14 +54,10 @@ public static class AuthenticationExtensions
                 options.MapInboundClaims = false;
             });
 
-        var authorization = services.AddAuthorizationBuilder();
-
-        foreach (var permission in Permissions.All)
-        {
-            authorization.AddPolicy(permission, policy => policy
-                .RequireAuthenticatedUser()
-                .RequireClaim("permission", permission));
-        }
+        // Permission policies are resolved on demand from the policy name, so no module has
+        // to register a policy per permission and the host stays unaware of each module's keys.
+        services.AddAuthorizationBuilder();
+        services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
 
         return services;
     }

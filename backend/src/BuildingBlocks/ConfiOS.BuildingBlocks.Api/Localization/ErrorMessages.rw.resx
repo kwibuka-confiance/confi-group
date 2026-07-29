@@ -66,4 +66,6 @@
   <data name="SYSTEM_ROLE_IMMUTABLE" xml:space="preserve"><value>Inshingano zishyizweho na sisitemu ntizihinduka.</value></data>
   <data name="UNSUPPORTED_LANGUAGE" xml:space="preserve"><value>Urwo rurimi ntiruremewe kugeza ubu.</value></data>
   <data name="LAST_OWNER_CANNOT_BE_REMOVED" xml:space="preserve"><value>Ubucuruzi bugomba gusigarana nibura nyirabwo umwe.</value></data>
+  <data name="PRODUCT_SKU_TAKEN" xml:space="preserve"><value>Igicuruzwa gifite iyo SKU gisanzwe kiri muri ubu bucuruzi.</value></data>
+  <data name="PRODUCT_NOT_FOUND" xml:space="preserve"><value>Icyo gicuruzwa nticyabonetse.</value></data>
 </root>

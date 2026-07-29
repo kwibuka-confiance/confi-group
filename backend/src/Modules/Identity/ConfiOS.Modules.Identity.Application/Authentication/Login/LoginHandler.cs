@@ -30,7 +30,7 @@ public sealed class LoginHandler(
     IPermissionService permissions,
     IAccessTokenGenerator tokenGenerator,
     IClock clock,
-    IUnitOfWork unitOfWork) : ICommandHandler<LoginCommand, LoginResult>
+    IIdentityUnitOfWork unitOfWork) : ICommandHandler<LoginCommand, LoginResult>
 {
     public async Task<Result<LoginResult>> HandleAsync(
         LoginCommand command,

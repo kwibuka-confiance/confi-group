@@ -66,4 +66,6 @@
   <data name="SYSTEM_ROLE_IMMUTABLE" xml:space="preserve"><value>Les rôles intégrés ne peuvent pas être modifiés.</value></data>
   <data name="UNSUPPORTED_LANGUAGE" xml:space="preserve"><value>Cette langue n'est pas encore prise en charge.</value></data>
   <data name="LAST_OWNER_CANNOT_BE_REMOVED" xml:space="preserve"><value>Une entreprise doit conserver au moins un propriétaire.</value></data>
+  <data name="PRODUCT_SKU_TAKEN" xml:space="preserve"><value>Un produit avec ce SKU existe déjà dans cette entreprise.</value></data>
+  <data name="PRODUCT_NOT_FOUND" xml:space="preserve"><value>Ce produit est introuvable.</value></data>
 </root>

@@ -1,6 +1,7 @@
 using ConfiOS.BuildingBlocks.Api.Modules;
 using ConfiOS.BuildingBlocks.Application.Abstractions;
 using ConfiOS.BuildingBlocks.Application.Auditing;
+using ConfiOS.BuildingBlocks.Application.Authorization;
 using ConfiOS.BuildingBlocks.Application.Messaging;
 using ConfiOS.BuildingBlocks.Infrastructure.Auditing;
 using ConfiOS.BuildingBlocks.Infrastructure.Interceptors;
@@ -10,6 +11,7 @@ using ConfiOS.Modules.Identity.Application.Abstractions;
 using ConfiOS.Modules.Identity.Application.Authentication.Login;
 using ConfiOS.Modules.Identity.Application.Tenants.ProvisionTenant;
 using ConfiOS.Modules.Identity.Application.Users.InviteUser;
+using ConfiOS.Modules.Identity.Domain.Authorization;
 using ConfiOS.Modules.Identity.Infrastructure.Persistence;
 using ConfiOS.Modules.Identity.Infrastructure.Repositories;
 using ConfiOS.Modules.Identity.Infrastructure.Security;
@@ -49,7 +51,7 @@ public sealed class IdentityModule : IModule
             options.AddInterceptors(provider.GetRequiredService<AuditingInterceptor>());
         });
 
-        services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<IdentityDbContext>());
+        services.AddScoped<IIdentityUnitOfWork>(provider => provider.GetRequiredService<IdentityDbContext>());
         services.AddScoped<IAuditLogger, AuditLogger<IdentityDbContext>>();
 
         services.AddScoped<ITenantRepository, TenantRepository>();
@@ -58,6 +60,7 @@ public sealed class IdentityModule : IModule
 
         services.AddSingleton<IPasswordHasher, PasswordHasher>();
         services.AddSingleton<IAccessTokenGenerator, AccessTokenGenerator>();
+        services.AddSingleton(new ModulePermissions(Permissions.All));
         services.AddScoped<IPermissionService, PermissionService>();
 
         services.AddScoped<ICommandHandler<ProvisionTenantCommand, ProvisionTenantResult>, ProvisionTenantHandler>();

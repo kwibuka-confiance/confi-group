@@ -1,4 +1,4 @@
-using ConfiOS.BuildingBlocks.Application.Abstractions;
+using ConfiOS.BuildingBlocks.Application.Authorization;
 using ConfiOS.BuildingBlocks.Application.Messaging;
 using ConfiOS.BuildingBlocks.Domain.Errors;
 using ConfiOS.BuildingBlocks.Domain.Primitives;
@@ -23,13 +23,15 @@ namespace ConfiOS.Modules.Identity.Application.Tenants.ProvisionTenant;
 /// <param name="users">User repository.</param>
 /// <param name="roles">Role repository.</param>
 /// <param name="passwordHasher">Hashes the owner's initial password.</param>
+/// <param name="permissionRegistry">Every permission the platform defines, granted to the owner.</param>
 /// <param name="unitOfWork">Commits the transaction.</param>
 public sealed class ProvisionTenantHandler(
     ITenantRepository tenants,
     IUserRepository users,
     IRoleRepository roles,
     IPasswordHasher passwordHasher,
-    IUnitOfWork unitOfWork) : ICommandHandler<ProvisionTenantCommand, ProvisionTenantResult>
+    IPermissionRegistry permissionRegistry,
+    IIdentityUnitOfWork unitOfWork) : ICommandHandler<ProvisionTenantCommand, ProvisionTenantResult>
 {
     public async Task<Result<ProvisionTenantResult>> HandleAsync(
         ProvisionTenantCommand command,
@@ -93,7 +95,8 @@ public sealed class ProvisionTenantHandler(
 
             if (string.Equals(name, SystemRoles.Owner, StringComparison.Ordinal))
             {
-                role.GrantAll(Permissions.All);
+                // Every permission the platform defines, across all loaded modules.
+                role.GrantAll(permissionRegistry.All);
                 ownerRole = role;
             }
 

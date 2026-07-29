@@ -3,6 +3,7 @@ using System.Reflection;
 using ConfiOS.BuildingBlocks.Application.Abstractions;
 using ConfiOS.BuildingBlocks.Application.Context;
 using ConfiOS.BuildingBlocks.Domain.Primitives;
+using ConfiOS.BuildingBlocks.Infrastructure.Auditing;
 using ConfiOS.BuildingBlocks.Infrastructure.Outbox;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -66,6 +67,7 @@ public abstract class TenantDbContext(
 
         modelBuilder.HasDefaultSchema(Schema);
         modelBuilder.ApplyConfiguration(new OutboxMessageConfiguration(Schema));
+        modelBuilder.ApplyConfiguration(new AuditRecordConfiguration(Schema));
 
         // Materialised first: configuring an entity type inside the loop can add others,
         // and the model's collection must not change while it is being enumerated.

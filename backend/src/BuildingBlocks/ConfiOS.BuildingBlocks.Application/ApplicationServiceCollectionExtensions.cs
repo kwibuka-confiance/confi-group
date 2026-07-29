@@ -1,3 +1,4 @@
+using ConfiOS.BuildingBlocks.Application.Authorization;
 using ConfiOS.BuildingBlocks.Application.Context;
 using ConfiOS.BuildingBlocks.Application.Messaging;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,6 +20,7 @@ public static class ApplicationServiceCollectionExtensions
         services.TryAddScoped<IDispatcher, Dispatcher>();
         services.TryAddScoped<AmbientContext>();
         services.TryAddScoped<ITenantContext>(provider => provider.GetRequiredService<AmbientContext>());
+        services.TryAddSingleton<IPermissionRegistry, PermissionRegistry>();
 
         return services;
     }

@@ -194,7 +194,7 @@ public sealed class LoginHandlerTests
         public DateTimeOffset UtcNow => now;
     }
 
-    private sealed class FakeUnitOfWork : IUnitOfWork
+    private sealed class FakeUnitOfWork : IIdentityUnitOfWork
     {
         public int SaveCount { get; private set; }
 

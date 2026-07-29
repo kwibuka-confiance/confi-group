@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ConfiOS.Modules.Identity.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(IdentityDbContext))]
-    [Migration("20260729064112_InitialIdentity")]
+    [Migration("20260729133622_InitialIdentity")]
     partial class InitialIdentity
     {
         /// <inheritdoc />
@@ -83,7 +83,7 @@ namespace ConfiOS.Modules.Identity.Infrastructure.Persistence.Migrations
                     b.HasIndex("TenantId", "EntityType", "EntityId")
                         .HasDatabaseName("ix_audit_records_tenant_id_entity_type_entity_id");
 
-                    b.ToTable("audit_records", "audit");
+                    b.ToTable("audit_records", "identity");
                 });
 
             modelBuilder.Entity("ConfiOS.BuildingBlocks.Infrastructure.Outbox.OutboxMessage", b =>

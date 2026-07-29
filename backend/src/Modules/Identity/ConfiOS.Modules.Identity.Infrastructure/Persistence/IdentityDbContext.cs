@@ -1,7 +1,7 @@
 using ConfiOS.BuildingBlocks.Application.Abstractions;
 using ConfiOS.BuildingBlocks.Application.Context;
-using ConfiOS.BuildingBlocks.Infrastructure.Auditing;
 using ConfiOS.BuildingBlocks.Infrastructure.Persistence;
+using ConfiOS.Modules.Identity.Application.Abstractions;
 using ConfiOS.Modules.Identity.Domain.Authorization;
 using ConfiOS.Modules.Identity.Domain.Tenants;
 using ConfiOS.Modules.Identity.Domain.Users;
@@ -20,7 +20,7 @@ namespace ConfiOS.Modules.Identity.Infrastructure.Persistence;
 public sealed class IdentityDbContext(
     DbContextOptions<IdentityDbContext> options,
     ITenantContext tenantContext,
-    IClock clock) : TenantDbContext(options, tenantContext, clock)
+    IClock clock) : TenantDbContext(options, tenantContext, clock), IIdentityUnitOfWork
 {
     /// <summary>Schema name, also the module name.</summary>
     public const string SchemaName = "identity";
@@ -33,8 +33,6 @@ public sealed class IdentityDbContext(
 
     public DbSet<Role> Roles => Set<Role>();
 
-    public DbSet<AuditRecord> AuditRecords => Set<AuditRecord>();
-
     protected override string Schema => SchemaName;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -42,7 +40,6 @@ public sealed class IdentityDbContext(
         ArgumentNullException.ThrowIfNull(modelBuilder);
 
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(IdentityDbContext).Assembly);
-        modelBuilder.ApplyConfiguration(new AuditRecordConfiguration());
 
         base.OnModelCreating(modelBuilder);
     }
