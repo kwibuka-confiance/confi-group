@@ -119,6 +119,18 @@
   "homeComingSoon": "Votre tableau de bord s'enrichira ici à mesure que le Catalogue, l'Inventaire et les Ventes seront développés.",
   "signOut": "Se déconnecter",
 
+  "productsTitle": "Produits",
+  "openCatalog": "Ouvrir le catalogue",
+  "addProduct": "Ajouter un produit",
+  "productNameLabel": "Nom du produit",
+  "productSkuLabel": "SKU",
+  "productPriceLabel": "Prix",
+  "createProductButton": "Créer le produit",
+  "noProductsTitle": "Aucun produit pour le moment",
+  "noProductsHint": "Ajoutez votre premier produit pour commencer.",
+  "productsLoadError": "Impossible de charger les produits.",
+  "retryButton": "Réessayer",
+
   "themeTooltip": "Thème",
   "themeSystem": "Système",
   "themeLight": "Clair",

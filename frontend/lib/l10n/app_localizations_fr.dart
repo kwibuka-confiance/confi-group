@@ -275,6 +275,39 @@ class AppLocalizationsFr extends AppLocalizations {
   String get signOut => 'Se déconnecter';
 
   @override
+  String get productsTitle => 'Produits';
+
+  @override
+  String get openCatalog => 'Ouvrir le catalogue';
+
+  @override
+  String get addProduct => 'Ajouter un produit';
+
+  @override
+  String get productNameLabel => 'Nom du produit';
+
+  @override
+  String get productSkuLabel => 'SKU';
+
+  @override
+  String get productPriceLabel => 'Prix';
+
+  @override
+  String get createProductButton => 'Créer le produit';
+
+  @override
+  String get noProductsTitle => 'Aucun produit pour le moment';
+
+  @override
+  String get noProductsHint => 'Ajoutez votre premier produit pour commencer.';
+
+  @override
+  String get productsLoadError => 'Impossible de charger les produits.';
+
+  @override
+  String get retryButton => 'Réessayer';
+
+  @override
   String get themeTooltip => 'Thème';
 
   @override

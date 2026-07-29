@@ -273,6 +273,39 @@ class AppLocalizationsEn extends AppLocalizations {
   String get signOut => 'Sign out';
 
   @override
+  String get productsTitle => 'Products';
+
+  @override
+  String get openCatalog => 'Open catalog';
+
+  @override
+  String get addProduct => 'Add product';
+
+  @override
+  String get productNameLabel => 'Product name';
+
+  @override
+  String get productSkuLabel => 'SKU';
+
+  @override
+  String get productPriceLabel => 'Price';
+
+  @override
+  String get createProductButton => 'Create product';
+
+  @override
+  String get noProductsTitle => 'No products yet';
+
+  @override
+  String get noProductsHint => 'Add your first product to get started.';
+
+  @override
+  String get productsLoadError => 'Could not load products.';
+
+  @override
+  String get retryButton => 'Retry';
+
+  @override
   String get themeTooltip => 'Theme';
 
   @override

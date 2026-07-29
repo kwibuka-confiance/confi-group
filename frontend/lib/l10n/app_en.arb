@@ -119,6 +119,18 @@
   "homeComingSoon": "Your dashboard will grow here as Catalog, Inventory and Sales are built.",
   "signOut": "Sign out",
 
+  "productsTitle": "Products",
+  "openCatalog": "Open catalog",
+  "addProduct": "Add product",
+  "productNameLabel": "Product name",
+  "productSkuLabel": "SKU",
+  "productPriceLabel": "Price",
+  "createProductButton": "Create product",
+  "noProductsTitle": "No products yet",
+  "noProductsHint": "Add your first product to get started.",
+  "productsLoadError": "Could not load products.",
+  "retryButton": "Retry",
+
   "themeTooltip": "Theme",
   "themeSystem": "System",
   "themeLight": "Light",

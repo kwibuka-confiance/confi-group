@@ -586,6 +586,72 @@ abstract class AppLocalizations {
   /// **'Sign out'**
   String get signOut;
 
+  /// No description provided for @productsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Products'**
+  String get productsTitle;
+
+  /// No description provided for @openCatalog.
+  ///
+  /// In en, this message translates to:
+  /// **'Open catalog'**
+  String get openCatalog;
+
+  /// No description provided for @addProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'Add product'**
+  String get addProduct;
+
+  /// No description provided for @productNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Product name'**
+  String get productNameLabel;
+
+  /// No description provided for @productSkuLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'SKU'**
+  String get productSkuLabel;
+
+  /// No description provided for @productPriceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Price'**
+  String get productPriceLabel;
+
+  /// No description provided for @createProductButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Create product'**
+  String get createProductButton;
+
+  /// No description provided for @noProductsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No products yet'**
+  String get noProductsTitle;
+
+  /// No description provided for @noProductsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your first product to get started.'**
+  String get noProductsHint;
+
+  /// No description provided for @productsLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load products.'**
+  String get productsLoadError;
+
+  /// No description provided for @retryButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retryButton;
+
   /// No description provided for @themeTooltip.
   ///
   /// In en, this message translates to:

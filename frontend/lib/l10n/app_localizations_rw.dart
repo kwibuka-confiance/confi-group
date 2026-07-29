@@ -274,6 +274,40 @@ class AppLocalizationsRw extends AppLocalizations {
   String get signOut => 'Sohoka';
 
   @override
+  String get productsTitle => 'Ibicuruzwa';
+
+  @override
+  String get openCatalog => 'Fungura ibicuruzwa';
+
+  @override
+  String get addProduct => 'Ongeraho igicuruzwa';
+
+  @override
+  String get productNameLabel => 'Izina ry\'igicuruzwa';
+
+  @override
+  String get productSkuLabel => 'SKU';
+
+  @override
+  String get productPriceLabel => 'Igiciro';
+
+  @override
+  String get createProductButton => 'Shyiraho igicuruzwa';
+
+  @override
+  String get noProductsTitle => 'Nta bicuruzwa birahaba';
+
+  @override
+  String get noProductsHint =>
+      'Ongeraho igicuruzwa cyawe cya mbere kugira ngo utangire.';
+
+  @override
+  String get productsLoadError => 'Ntibyashobotse gukura ibicuruzwa.';
+
+  @override
+  String get retryButton => 'Ongera ugerageze';
+
+  @override
   String get themeTooltip => 'Insanganyamatsiko';
 
   @override

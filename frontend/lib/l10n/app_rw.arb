@@ -119,6 +119,18 @@
   "homeComingSoon": "Imbonerahamwe yawe izakura hano uko Ibicuruzwa, Ububiko n'Ibyagurishijwe bizubakwa.",
   "signOut": "Sohoka",
 
+  "productsTitle": "Ibicuruzwa",
+  "openCatalog": "Fungura ibicuruzwa",
+  "addProduct": "Ongeraho igicuruzwa",
+  "productNameLabel": "Izina ry'igicuruzwa",
+  "productSkuLabel": "SKU",
+  "productPriceLabel": "Igiciro",
+  "createProductButton": "Shyiraho igicuruzwa",
+  "noProductsTitle": "Nta bicuruzwa birahaba",
+  "noProductsHint": "Ongeraho igicuruzwa cyawe cya mbere kugira ngo utangire.",
+  "productsLoadError": "Ntibyashobotse gukura ibicuruzwa.",
+  "retryButton": "Ongera ugerageze",
+
   "themeTooltip": "Insanganyamatsiko",
   "themeSystem": "Iya sisitemu",
   "themeLight": "Umucyo",

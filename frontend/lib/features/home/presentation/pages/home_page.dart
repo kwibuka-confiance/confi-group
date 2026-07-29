@@ -5,6 +5,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../auth/data/models/session.dart';
 import '../../../auth/presentation/cubit/session_cubit.dart';
 import '../../../auth/presentation/widgets/onboarding_widgets.dart';
+import '../../../catalog/presentation/pages/products_page.dart';
 
 /// The authenticated landing screen. A starting point: it confirms who is signed
 /// in and previews the modules to come.
@@ -97,6 +98,16 @@ class HomePage extends StatelessWidget {
                         ],
                       ),
                     ),
+                  ),
+                  const SizedBox(height: 24),
+                  FilledButton.icon(
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const ProductsPage(),
+                      ),
+                    ),
+                    icon: const Icon(Icons.inventory_2_outlined),
+                    label: Text(l10n.openCatalog),
                   ),
                   const SizedBox(height: 24),
                   Row(

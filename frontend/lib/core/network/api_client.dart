@@ -72,6 +72,44 @@ class ApiClient {
     }
   }
 
+  /// GETs [path] and returns the unwrapped `data` list.
+  Future<List<dynamic>> getList(String path, {String? locale}) async {
+    try {
+      final response = await _dio.get<dynamic>(
+        path,
+        options: Options(
+          headers: {
+            if (locale != null) 'Accept-Language': locale,
+            if (_authToken != null) 'Authorization': 'Bearer $_authToken',
+          },
+        ),
+      );
+
+      final data = response.data;
+      final map = data is Map<String, dynamic> ? data : const <String, dynamic>{};
+      final status = response.statusCode ?? 0;
+
+      if (status >= 400) {
+        throw _toApiException(map, status);
+      }
+
+      final payload = map['data'];
+      return payload is List ? payload : const [];
+    } on DioException catch (error) {
+      final response = error.response;
+      if (response?.data is Map<String, dynamic>) {
+        throw _toApiException(
+          response!.data as Map<String, dynamic>,
+          response.statusCode ?? 0,
+        );
+      }
+      throw ApiException(
+        code: ApiErrorCodes.network,
+        message: error.message ?? 'Network error',
+      );
+    }
+  }
+
   ApiException _toApiException(Map<String, dynamic> body, int statusCode) {
     final failures = <String, List<String>>{};
     final details = body['details'];
