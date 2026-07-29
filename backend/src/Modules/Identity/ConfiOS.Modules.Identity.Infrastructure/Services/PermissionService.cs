@@ -49,6 +49,35 @@ public sealed class PermissionService(IdentityDbContext context) : IPermissionSe
             .ConfigureAwait(false);
     }
 
+    public async Task<IReadOnlyList<string>> GetPermissionsAsync(
+        UserId userId,
+        TenantId tenantId,
+        CancellationToken cancellationToken = default)
+    {
+        var roleIds = await context.Users
+            .IgnoreQueryFilters()
+            .Where(user => user.Id == userId.Value
+                && user.TenantId == tenantId.Value
+                && !user.IsDeleted
+                && user.Status == Domain.Users.UserStatus.Active)
+            .SelectMany(user => user.Roles.Select(role => role.RoleId))
+            .ToListAsync(cancellationToken)
+            .ConfigureAwait(false);
+
+        if (roleIds.Count == 0)
+        {
+            return [];
+        }
+
+        return await context.Roles
+            .IgnoreQueryFilters()
+            .Where(role => roleIds.Contains(role.Id) && role.TenantId == tenantId.Value)
+            .SelectMany(role => role.Permissions.Select(item => item.Permission))
+            .Distinct()
+            .ToListAsync(cancellationToken)
+            .ConfigureAwait(false);
+    }
+
     public Task<bool> HasBranchAccessAsync(
         UserId userId,
         TenantId tenantId,

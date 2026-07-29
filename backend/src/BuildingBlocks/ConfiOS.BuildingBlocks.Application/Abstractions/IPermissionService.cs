@@ -24,4 +24,13 @@ public interface IPermissionService
         TenantId tenantId,
         BranchId branchId,
         CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Every permission key granted to the user in the tenant, used to populate the access
+    /// token issued at sign-in.
+    /// </summary>
+    Task<IReadOnlyList<string>> GetPermissionsAsync(
+        UserId userId,
+        TenantId tenantId,
+        CancellationToken cancellationToken = default);
 }

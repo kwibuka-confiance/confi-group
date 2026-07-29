@@ -1,0 +1,130 @@
+{
+  "@@locale": "rw",
+  "appTitle": "ConfiOS",
+
+  "brandTagline": "Yobora ubucuruzi bwawe bwose ahantu hamwe",
+  "brandBlurb": "Kugurisha, ububiko, abakiriya na raporo — byose hamwe, mu rurimi rwawe. Reka tubifashe gutangira mu ntambwe nkeya zoroshye.",
+  "brandPointCatalog": "Kurikirana ibicuruzwa n'ububiko",
+  "brandPointSales": "Andika ibyagurishijwe n'ubwishyu",
+  "brandPointInsights": "Reba uko ubucuruzi bwawe buhagaze",
+
+  "stepOf": "Intambwe ya {current} kuri {total}",
+  "@stepOf": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "stepBusinessLabel": "Ubucuruzi",
+  "stepRegionLabel": "Akarere",
+  "stepAccountLabel": "Konti",
+  "stepReviewLabel": "Isuzuma",
+
+  "businessStepTitle": "Ubucuruzi bwawe",
+  "businessStepSubtitle": "Tubwire izina ry'ubucuruzi urimo gushyiraho.",
+  "regionStepTitle": "Akarere n'ifaranga",
+  "regionStepSubtitle": "Ibi bigena uko amafaranga, amatariki n'ururimi bigaragara.",
+  "accountStepTitle": "Konti yawe ya nyir'ubucuruzi",
+  "accountStepSubtitle": "Uzayikoresha winjira ukanayobora byose.",
+  "reviewStepTitle": "Isuzuma no gushyiraho",
+  "reviewStepSubtitle": "Reba amakuru hepfo, hanyuma ushyireho ubucuruzi bwawe.",
+
+  "businessNameLabel": "Izina ry'ubucuruzi",
+  "businessNameHint": "urugero KwaConfi Depot",
+  "slugLabel": "Ikimenyetso cy'ubucuruzi",
+  "slugHelper": "Inyuguti nto, imibare n'udukoni. Bikoreshwa muri aderesi yawe kuri interineti.",
+  "firstBranchNameLabel": "Izina ry'ishami rya mbere",
+  "firstBranchNameHelper": "Aho ugurishiriza ahanini. Ushobora kongeraho andi nyuma.",
+  "countryCodeLabel": "Kode y'igihugu",
+  "countryCodeHelper": "Inyuguti ebyiri, urugero RW",
+  "currencyCodeLabel": "Kode y'ifaranga",
+  "currencyCodeHelper": "Inyuguti eshatu, urugero RWF",
+  "defaultLanguageLabel": "Ururimi rusanzwe",
+  "timeZoneLabel": "Isaha y'akarere",
+  "ownerFullNameLabel": "Amazina yawe yombi",
+  "ownerEmailLabel": "Imeyili yawe",
+  "ownerPasswordLabel": "Ijambobanga",
+  "passwordHelper": "Koresha byibuze inyuguti 12.",
+  "showPassword": "Erekana ijambobanga",
+  "hidePassword": "Hisha ijambobanga",
+
+  "backButton": "Subira inyuma",
+  "continueButton": "Komeza",
+  "createButton": "Shyiraho ubucuruzi",
+  "creatingButton": "Birimo gukorwa…",
+  "editAction": "Hindura",
+
+  "reviewBusinessHeading": "Ubucuruzi",
+  "reviewRegionHeading": "Akarere",
+  "reviewAccountHeading": "Konti ya nyir'ubucuruzi",
+
+  "successTitle": "Ubucuruzi bwawe bwiteguye",
+  "successBody": "{name} ubu bwashyizweho kuri ConfiOS.",
+  "@successBody": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "successTenantHint": "Bika iyi nomero y'ubucuruzi mu nyandiko zawe:",
+  "startOver": "Shyiraho ubundi bucuruzi",
+  "copyTooltip": "Koporora",
+  "copiedMessage": "Byakoporowe",
+
+  "fieldRequired": "Iki gice kirakenewe",
+  "fieldInvalidFormat": "Iyi ndangagaciro ntabwo iri mu buryo bukwiye",
+  "fieldTooShort": "Iyi ndangagaciro ni ngufi cyane",
+  "fieldTooLong": "Iyi ndangagaciro ni ndende cyane",
+  "emailInvalid": "Andika imeyili yemewe",
+  "slugInvalid": "Koresha inyuguti nto, imibare n'udukoni gusa",
+  "passwordTooShort": "Koresha byibuze inyuguti 12",
+
+  "errorSlugTaken": "Icyo kimenyetso cy'ubucuruzi cyarakoreshejwe. Gerageza ikindi.",
+  "errorNetwork": "Ntabwo byashobotse kugera kuri seriveri. Reba umurongo maze wongere ugerageze.",
+  "errorUnexpected": "Habaye ikibazo. Ongera ugerageze.",
+
+  "signInTitle": "Murakaza garuka",
+  "signInSubtitle": "Injira mu bucuruzi bwawe.",
+  "handleFieldLabel": "Ikimenyetso cy'ubucuruzi",
+  "signInHandleHelper": "Ikimenyetso wahisemo igihe washyiragaho ubucuruzi.",
+  "emailFieldLabel": "Imeyili",
+  "passwordFieldLabel": "Ijambobanga",
+  "signInButton": "Injira",
+  "signingInButton": "Kwinjira…",
+  "noBusinessPrompt": "Uri mushya kuri ConfiOS?",
+  "createBusinessLink": "Shyiraho ubucuruzi",
+  "haveBusinessPrompt": "Usanzwe ufite ubucuruzi?",
+  "signInLink": "Injira",
+  "goToSignIn": "Injira mu bucuruzi bwawe",
+
+  "homeWelcome": "Murakaza neza, {name}",
+  "@homeWelcome": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "homeSignedInTo": "Winjiye muri {business}.",
+  "@homeSignedInTo": {
+    "placeholders": {
+      "business": { "type": "String" }
+    }
+  },
+  "homeBusinessIdLabel": "Nomero y'ubucuruzi",
+  "homePermissionsLabel": "Uburenganzira",
+  "homePermissionsCount": "{count} yatanzwe",
+  "@homePermissionsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "homeComingSoon": "Imbonerahamwe yawe izakura hano uko Ibicuruzwa, Ububiko n'Ibyagurishijwe bizubakwa.",
+  "signOut": "Sohoka",
+
+  "themeTooltip": "Insanganyamatsiko",
+  "themeSystem": "Iya sisitemu",
+  "themeLight": "Umucyo",
+  "themeDark": "Umwijima",
+
+  "languageEnglish": "Icyongereza",
+  "languageKinyarwanda": "Ikinyarwanda",
+  "languageFrench": "Igifaransa"
+}

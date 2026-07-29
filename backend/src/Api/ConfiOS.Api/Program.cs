@@ -30,6 +30,13 @@ builder.Services.AddOpenApi();
 builder.Services.AddProblemDetails();
 builder.Services.AddHealthChecks();
 
+// Development-only CORS so the Flutter web client (served from another origin) can call the
+// API from a browser. Production origins are configured explicitly, never wide open.
+const string DevelopmentCorsPolicy = "development";
+builder.Services.AddCors(options => options.AddPolicy(
+    DevelopmentCorsPolicy,
+    policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
+
 // Each module registers its own services. The host names the assemblies but knows nothing
 // about what is inside them.
 builder.Services.AddModules(
@@ -46,6 +53,11 @@ var app = builder.Build();
 // authentication has established who the caller is.
 app.UseBuildingBlocksApi();
 app.UseSerilogRequestLogging();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseCors(DevelopmentCorsPolicy);
+}
 
 app.UseAuthentication();
 app.UseAuthorization();

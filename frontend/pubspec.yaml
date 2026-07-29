@@ -1,0 +1,50 @@
+name: confios
+description: "ConfiOS commerce operating system client"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.9.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  # State management (rule: no business logic in widgets).
+  flutter_bloc: ^9.1.0
+  bloc: ^9.0.0
+  equatable: ^2.0.7
+
+  # Networking.
+  dio: ^5.7.0
+
+  # Dependency injection / service location.
+  get_it: ^8.0.3
+
+  # Localization / formatting.
+  intl: ^0.20.2
+
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  bloc_test: ^10.0.0
+  mocktail: ^1.0.4
+
+flutter:
+  uses-material-design: true
+  generate: true
+
+  # Bundled (not fetched at runtime) so typography works offline on every platform.
+  # Both are variable fonts under the SIL Open Font License (see assets/fonts/*-OFL.txt).
+  fonts:
+    - family: Sora
+      fonts:
+        - asset: assets/fonts/Sora.ttf
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter.ttf

@@ -1,0 +1,130 @@
+{
+  "@@locale": "fr",
+  "appTitle": "ConfiOS",
+
+  "brandTagline": "Gérez toute votre entreprise au même endroit",
+  "brandBlurb": "Ventes, stock, clients et rapports — réunis, dans votre langue. Configurons votre entreprise en quelques étapes simples.",
+  "brandPointCatalog": "Suivez vos produits et votre stock",
+  "brandPointSales": "Enregistrez ventes et paiements",
+  "brandPointInsights": "Voyez comment se porte votre entreprise",
+
+  "stepOf": "Étape {current} sur {total}",
+  "@stepOf": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "stepBusinessLabel": "Entreprise",
+  "stepRegionLabel": "Région",
+  "stepAccountLabel": "Compte",
+  "stepReviewLabel": "Vérification",
+
+  "businessStepTitle": "Votre entreprise",
+  "businessStepSubtitle": "Indiquez le nom de l'entreprise que vous configurez.",
+  "regionStepTitle": "Région et devise",
+  "regionStepSubtitle": "Cela définit l'affichage de la monnaie, des dates et de la langue.",
+  "accountStepTitle": "Votre compte propriétaire",
+  "accountStepSubtitle": "Vous l'utiliserez pour vous connecter et tout gérer.",
+  "reviewStepTitle": "Vérifier et créer",
+  "reviewStepSubtitle": "Vérifiez les détails ci-dessous, puis créez votre entreprise.",
+
+  "businessNameLabel": "Nom de l'entreprise",
+  "businessNameHint": "par ex. KwaConfi Depot",
+  "slugLabel": "Identifiant de l'entreprise",
+  "slugHelper": "Lettres minuscules, chiffres et tirets. Utilisé dans votre adresse web.",
+  "firstBranchNameLabel": "Nom de la première succursale",
+  "firstBranchNameHelper": "Le lieu principal de vente. Vous pourrez en ajouter d'autres.",
+  "countryCodeLabel": "Code pays",
+  "countryCodeHelper": "Deux lettres, par ex. RW",
+  "currencyCodeLabel": "Code devise",
+  "currencyCodeHelper": "Trois lettres, par ex. RWF",
+  "defaultLanguageLabel": "Langue par défaut",
+  "timeZoneLabel": "Fuseau horaire",
+  "ownerFullNameLabel": "Votre nom complet",
+  "ownerEmailLabel": "Votre e-mail",
+  "ownerPasswordLabel": "Mot de passe",
+  "passwordHelper": "Utilisez au moins 12 caractères.",
+  "showPassword": "Afficher le mot de passe",
+  "hidePassword": "Masquer le mot de passe",
+
+  "backButton": "Retour",
+  "continueButton": "Continuer",
+  "createButton": "Créer l'entreprise",
+  "creatingButton": "Création…",
+  "editAction": "Modifier",
+
+  "reviewBusinessHeading": "Entreprise",
+  "reviewRegionHeading": "Région",
+  "reviewAccountHeading": "Compte propriétaire",
+
+  "successTitle": "Votre entreprise est prête",
+  "successBody": "{name} est maintenant configurée sur ConfiOS.",
+  "@successBody": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "successTenantHint": "Conservez cet identifiant d'entreprise :",
+  "startOver": "Créer une autre entreprise",
+  "copyTooltip": "Copier",
+  "copiedMessage": "Copié dans le presse-papiers",
+
+  "fieldRequired": "Ce champ est obligatoire",
+  "fieldInvalidFormat": "Cette valeur n'a pas le format attendu",
+  "fieldTooShort": "Cette valeur est trop courte",
+  "fieldTooLong": "Cette valeur est trop longue",
+  "emailInvalid": "Saisissez une adresse e-mail valide",
+  "slugInvalid": "Utilisez uniquement lettres minuscules, chiffres et tirets",
+  "passwordTooShort": "Utilisez au moins 12 caractères",
+
+  "errorSlugTaken": "Cet identifiant d'entreprise est déjà utilisé. Essayez-en un autre.",
+  "errorNetwork": "Impossible de joindre le serveur. Vérifiez votre connexion et réessayez.",
+  "errorUnexpected": "Une erreur s'est produite. Veuillez réessayer.",
+
+  "signInTitle": "Bon retour",
+  "signInSubtitle": "Connectez-vous à votre entreprise.",
+  "handleFieldLabel": "Identifiant de l'entreprise",
+  "signInHandleHelper": "L'identifiant que vous avez choisi en créant l'entreprise.",
+  "emailFieldLabel": "E-mail",
+  "passwordFieldLabel": "Mot de passe",
+  "signInButton": "Se connecter",
+  "signingInButton": "Connexion…",
+  "noBusinessPrompt": "Nouveau sur ConfiOS ?",
+  "createBusinessLink": "Créer une entreprise",
+  "haveBusinessPrompt": "Vous avez déjà une entreprise ?",
+  "signInLink": "Se connecter",
+  "goToSignIn": "Se connecter à votre entreprise",
+
+  "homeWelcome": "Bienvenue, {name}",
+  "@homeWelcome": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "homeSignedInTo": "Vous êtes connecté à {business}.",
+  "@homeSignedInTo": {
+    "placeholders": {
+      "business": { "type": "String" }
+    }
+  },
+  "homeBusinessIdLabel": "Identifiant d'entreprise",
+  "homePermissionsLabel": "Autorisations",
+  "homePermissionsCount": "{count} accordées",
+  "@homePermissionsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "homeComingSoon": "Votre tableau de bord s'enrichira ici à mesure que le Catalogue, l'Inventaire et les Ventes seront développés.",
+  "signOut": "Se déconnecter",
+
+  "themeTooltip": "Thème",
+  "themeSystem": "Système",
+  "themeLight": "Clair",
+  "themeDark": "Sombre",
+
+  "languageEnglish": "Anglais",
+  "languageKinyarwanda": "Kinyarwanda",
+  "languageFrench": "Français"
+}
