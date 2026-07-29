@@ -18,7 +18,7 @@ namespace ConfiOS.Modules.Identity.Infrastructure.Persistence.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("identity")
-                .HasAnnotation("ProductVersion", "10.0.0")
+                .HasAnnotation("ProductVersion", "10.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -27,45 +27,58 @@ namespace ConfiOS.Modules.Identity.Infrastructure.Persistence.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<string>("Action")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("action");
 
                     b.Property<Guid?>("BranchId")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<string>("CorrelationId")
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("correlation_id");
 
                     b.Property<Guid>("EntityId")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("entity_id");
 
                     b.Property<string>("EntityType")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("entity_type");
 
                     b.Property<DateTimeOffset>("RecordedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("recorded_at");
 
                     b.Property<string>("Summary")
-                        .HasColumnType("jsonb");
+                        .HasColumnType("jsonb")
+                        .HasColumnName("summary");
 
                     b.Property<Guid>("TenantId")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
 
                     b.Property<Guid?>("UserId")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_audit_records");
 
-                    b.HasIndex("TenantId", "RecordedAt");
+                    b.HasIndex("TenantId", "RecordedAt")
+                        .HasDatabaseName("ix_audit_records_tenant_id_recorded_at");
 
-                    b.HasIndex("TenantId", "EntityType", "EntityId");
+                    b.HasIndex("TenantId", "EntityType", "EntityId")
+                        .HasDatabaseName("ix_audit_records_tenant_id_entity_type_entity_id");
 
                     b.ToTable("audit_records", "audit");
                 });
@@ -74,41 +87,52 @@ namespace ConfiOS.Modules.Identity.Infrastructure.Persistence.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<int>("AttemptCount")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("attempt_count");
 
                     b.Property<string>("EventType")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("event_type");
 
                     b.Property<string>("LastError")
                         .HasMaxLength(2000)
-                        .HasColumnType("character varying(2000)");
+                        .HasColumnType("character varying(2000)")
+                        .HasColumnName("last_error");
 
                     b.Property<DateTimeOffset>("OccurredAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("occurred_at");
 
                     b.Property<string>("Payload")
                         .IsRequired()
-                        .HasColumnType("jsonb");
+                        .HasColumnType("jsonb")
+                        .HasColumnName("payload");
 
                     b.Property<string>("PayloadType")
                         .IsRequired()
                         .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("payload_type");
 
                     b.Property<DateTimeOffset?>("ProcessedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("processed_at");
 
                     b.Property<Guid?>("TenantId")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_outbox_messages");
 
-                    b.HasIndex("TenantId");
+                    b.HasIndex("TenantId")
+                        .HasDatabaseName("ix_outbox_messages_tenant_id");
 
                     b.HasIndex("ProcessedAt", "OccurredAt")
                         .HasDatabaseName("ix_outbox_messages_unprocessed");
@@ -120,43 +144,56 @@ namespace ConfiOS.Modules.Identity.Infrastructure.Persistence.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid?>("CreatedBy")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by");
 
                     b.Property<DateTimeOffset?>("DeletedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsSystemRole")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_system_role");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("name");
 
                     b.Property<Guid>("TenantId")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
 
                     b.Property<DateTimeOffset?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedBy")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_roles");
 
-                    b.HasIndex("TenantId");
+                    b.HasIndex("TenantId")
+                        .HasDatabaseName("ix_roles_tenant_id");
 
                     b.HasIndex("TenantId", "Name")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("ix_roles_tenant_id_name");
 
                     b.ToTable("roles", "identity");
                 });
@@ -165,32 +202,40 @@ namespace ConfiOS.Modules.Identity.Infrastructure.Persistence.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("code");
 
                     b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid?>("CreatedBy")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by");
 
                     b.Property<DateTimeOffset?>("DeletedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("name");
 
                     b.Property<string>("Phone")
                         .HasMaxLength(20)
@@ -198,20 +243,26 @@ namespace ConfiOS.Modules.Identity.Infrastructure.Persistence.Migrations
                         .HasColumnName("phone");
 
                     b.Property<Guid>("TenantId")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
 
                     b.Property<DateTimeOffset?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedBy")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_branches");
 
-                    b.HasIndex("TenantId");
+                    b.HasIndex("TenantId")
+                        .HasDatabaseName("ix_branches_tenant_id");
 
                     b.HasIndex("TenantId", "Code")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("ix_branches_tenant_id_code");
 
                     b.ToTable("branches", "identity");
                 });
@@ -220,45 +271,57 @@ namespace ConfiOS.Modules.Identity.Infrastructure.Persistence.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid?>("CreatedBy")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by");
 
                     b.Property<DateTimeOffset?>("DeletedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("name");
 
                     b.Property<string>("Slug")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("slug");
 
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("status");
 
                     b.Property<DateTimeOffset?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedBy")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_tenants");
 
                     b.HasIndex("Slug")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("ix_tenants_slug");
 
                     b.ToTable("tenants", "identity");
                 });
@@ -267,16 +330,20 @@ namespace ConfiOS.Modules.Identity.Infrastructure.Persistence.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid?>("CreatedBy")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by");
 
                     b.Property<DateTimeOffset?>("DeletedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -287,18 +354,22 @@ namespace ConfiOS.Modules.Identity.Infrastructure.Persistence.Migrations
                     b.Property<string>("FullName")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("full_name");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<DateTimeOffset?>("LastSignedInAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_signed_in_at");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("password_hash");
 
                     b.Property<string>("Phone")
                         .HasMaxLength(20)
@@ -307,28 +378,36 @@ namespace ConfiOS.Modules.Identity.Infrastructure.Persistence.Migrations
 
                     b.Property<string>("PreferredLanguage")
                         .HasMaxLength(10)
-                        .HasColumnType("character varying(10)");
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("preferred_language");
 
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("status");
 
                     b.Property<Guid>("TenantId")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
 
                     b.Property<DateTimeOffset?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedBy")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_users");
 
-                    b.HasIndex("TenantId");
+                    b.HasIndex("TenantId")
+                        .HasDatabaseName("ix_users_tenant_id");
 
                     b.HasIndex("TenantId", "Email")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("ix_users_tenant_id_email");
 
                     b.ToTable("users", "identity");
                 });
@@ -338,18 +417,22 @@ namespace ConfiOS.Modules.Identity.Infrastructure.Persistence.Migrations
                     b.OwnsMany("ConfiOS.Modules.Identity.Domain.Authorization.RolePermission", "Permissions", b1 =>
                         {
                             b1.Property<Guid>("RoleId")
-                                .HasColumnType("uuid");
+                                .HasColumnType("uuid")
+                                .HasColumnName("role_id");
 
                             b1.Property<string>("Permission")
                                 .HasMaxLength(150)
-                                .HasColumnType("character varying(150)");
+                                .HasColumnType("character varying(150)")
+                                .HasColumnName("permission");
 
-                            b1.HasKey("RoleId", "Permission");
+                            b1.HasKey("RoleId", "Permission")
+                                .HasName("pk_role_permissions");
 
                             b1.ToTable("role_permissions", "identity");
 
                             b1.WithOwner()
-                                .HasForeignKey("RoleId");
+                                .HasForeignKey("RoleId")
+                                .HasConstraintName("fk_role_permissions_roles_role_id");
                         });
 
                     b.Navigation("Permissions");
@@ -361,12 +444,14 @@ namespace ConfiOS.Modules.Identity.Infrastructure.Persistence.Migrations
                         .WithMany("Branches")
                         .HasForeignKey("TenantId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_branches_tenants_tenant_id");
 
                     b.OwnsOne("ConfiOS.BuildingBlocks.Domain.ValueObjects.Address", "Address", b1 =>
                         {
                             b1.Property<Guid>("BranchId")
-                                .HasColumnType("uuid");
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
 
                             b1.Property<string>("Cell")
                                 .HasMaxLength(100)
@@ -409,7 +494,8 @@ namespace ConfiOS.Modules.Identity.Infrastructure.Persistence.Migrations
                             b1.ToTable("branches", "identity");
 
                             b1.WithOwner()
-                                .HasForeignKey("BranchId");
+                                .HasForeignKey("BranchId")
+                                .HasConstraintName("fk_branches_branches_id");
                         });
 
                     b.Navigation("Address");
@@ -420,7 +506,8 @@ namespace ConfiOS.Modules.Identity.Infrastructure.Persistence.Migrations
                     b.OwnsOne("ConfiOS.Modules.Identity.Domain.Tenants.TenantSettings", "Settings", b1 =>
                         {
                             b1.Property<Guid>("TenantId")
-                                .HasColumnType("uuid");
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
 
                             b1.Property<string>("CountryCode")
                                 .IsRequired()
@@ -455,7 +542,8 @@ namespace ConfiOS.Modules.Identity.Infrastructure.Persistence.Migrations
                             b1.ToTable("tenants", "identity");
 
                             b1.WithOwner()
-                                .HasForeignKey("TenantId");
+                                .HasForeignKey("TenantId")
+                                .HasConstraintName("fk_tenants_tenants_id");
                         });
 
                     b.Navigation("Settings")
@@ -467,35 +555,43 @@ namespace ConfiOS.Modules.Identity.Infrastructure.Persistence.Migrations
                     b.OwnsMany("ConfiOS.Modules.Identity.Domain.Users.UserBranch", "Branches", b1 =>
                         {
                             b1.Property<Guid>("UserId")
-                                .HasColumnType("uuid");
+                                .HasColumnType("uuid")
+                                .HasColumnName("user_id");
 
                             b1.Property<Guid>("BranchId")
                                 .ValueGeneratedOnAdd()
-                                .HasColumnType("uuid");
+                                .HasColumnType("uuid")
+                                .HasColumnName("branch_id");
 
-                            b1.HasKey("UserId", "BranchId");
+                            b1.HasKey("UserId", "BranchId")
+                                .HasName("pk_user_branches");
 
                             b1.ToTable("user_branches", "identity");
 
                             b1.WithOwner()
-                                .HasForeignKey("UserId");
+                                .HasForeignKey("UserId")
+                                .HasConstraintName("fk_user_branches_users_user_id");
                         });
 
                     b.OwnsMany("ConfiOS.Modules.Identity.Domain.Users.UserRole", "Roles", b1 =>
                         {
                             b1.Property<Guid>("UserId")
-                                .HasColumnType("uuid");
+                                .HasColumnType("uuid")
+                                .HasColumnName("user_id");
 
                             b1.Property<Guid>("RoleId")
                                 .ValueGeneratedOnAdd()
-                                .HasColumnType("uuid");
+                                .HasColumnType("uuid")
+                                .HasColumnName("role_id");
 
-                            b1.HasKey("UserId", "RoleId");
+                            b1.HasKey("UserId", "RoleId")
+                                .HasName("pk_user_roles");
 
                             b1.ToTable("user_roles", "identity");
 
                             b1.WithOwner()
-                                .HasForeignKey("UserId");
+                                .HasForeignKey("UserId")
+                                .HasConstraintName("fk_user_roles_users_user_id");
                         });
 
                     b.Navigation("Branches");

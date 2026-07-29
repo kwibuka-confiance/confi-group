@@ -1,6 +1,7 @@
 using ConfiOS.BuildingBlocks.Api.Modules;
 using ConfiOS.BuildingBlocks.Application.Abstractions;
 using ConfiOS.BuildingBlocks.Infrastructure.Interceptors;
+using ConfiOS.BuildingBlocks.Infrastructure.Persistence;
 using ConfiOS.Modules.Sales.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
@@ -30,9 +31,9 @@ public sealed class SalesModule : IModule
 
         services.AddDbContext<SalesDbContext>((provider, options) =>
         {
-            options.UseNpgsql(
+            options.UseConfiOsPostgres(
                 configuration.GetConnectionString("Postgres"),
-                npgsql => npgsql.MigrationsHistoryTable("__migrations", SalesDbContext.SchemaName));
+                SalesDbContext.SchemaName);
 
             options.AddInterceptors(provider.GetRequiredService<AuditingInterceptor>());
         });

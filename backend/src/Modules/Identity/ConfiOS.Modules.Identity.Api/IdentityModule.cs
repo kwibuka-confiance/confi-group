@@ -4,6 +4,7 @@ using ConfiOS.BuildingBlocks.Application.Auditing;
 using ConfiOS.BuildingBlocks.Application.Messaging;
 using ConfiOS.BuildingBlocks.Infrastructure.Auditing;
 using ConfiOS.BuildingBlocks.Infrastructure.Interceptors;
+using ConfiOS.BuildingBlocks.Infrastructure.Persistence;
 using ConfiOS.Modules.Identity.Api.Endpoints;
 using ConfiOS.Modules.Identity.Application.Abstractions;
 using ConfiOS.Modules.Identity.Application.Tenants.ProvisionTenant;
@@ -40,9 +41,9 @@ public sealed class IdentityModule : IModule
 
         services.AddDbContext<IdentityDbContext>((provider, options) =>
         {
-            options.UseNpgsql(
+            options.UseConfiOsPostgres(
                 configuration.GetConnectionString("Postgres"),
-                npgsql => npgsql.MigrationsHistoryTable("__migrations", IdentityDbContext.SchemaName));
+                IdentityDbContext.SchemaName);
 
             options.AddInterceptors(provider.GetRequiredService<AuditingInterceptor>());
         });
