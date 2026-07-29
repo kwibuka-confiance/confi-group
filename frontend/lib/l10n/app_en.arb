@@ -1,0 +1,37 @@
+{
+  "@@locale": "en",
+  "appTitle": "ConfiOS",
+  "signUpTitle": "Create your business",
+  "signUpSubtitle": "Set up your business on ConfiOS in a minute.",
+  "businessNameLabel": "Business name",
+  "slugLabel": "Business handle",
+  "slugHelper": "Lowercase letters, numbers and hyphens, e.g. kwaconfi-depot",
+  "countryCodeLabel": "Country code",
+  "currencyCodeLabel": "Currency code",
+  "defaultLanguageLabel": "Default language",
+  "timeZoneLabel": "Time zone",
+  "firstBranchNameLabel": "First branch name",
+  "ownerFullNameLabel": "Your full name",
+  "ownerEmailLabel": "Your email",
+  "ownerPasswordLabel": "Password",
+  "createButton": "Create business",
+  "creatingButton": "Creating…",
+  "successTitle": "Business created",
+  "successBody": "Your business is ready. Tenant {tenantId} is now active.",
+  "@successBody": {
+    "placeholders": {
+      "tenantId": { "type": "String" }
+    }
+  },
+  "startOver": "Create another",
+  "fieldRequired": "This field is required",
+  "fieldInvalidFormat": "This value is not in the expected format",
+  "fieldTooShort": "This value is too short",
+  "fieldTooLong": "This value is too long",
+  "errorSlugTaken": "That business handle is already in use.",
+  "errorNetwork": "Could not reach the server. Check your connection and try again.",
+  "errorUnexpected": "Something went wrong. Please try again.",
+  "languageEnglish": "English",
+  "languageKinyarwanda": "Kinyarwanda",
+  "languageFrench": "French"
+}

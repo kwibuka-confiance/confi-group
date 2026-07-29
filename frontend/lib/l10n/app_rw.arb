@@ -1,0 +1,37 @@
+{
+  "@@locale": "rw",
+  "appTitle": "ConfiOS",
+  "signUpTitle": "Shyiraho ubucuruzi bwawe",
+  "signUpSubtitle": "Shyiraho ubucuruzi bwawe kuri ConfiOS mu munota umwe.",
+  "businessNameLabel": "Izina ry'ubucuruzi",
+  "slugLabel": "Ikimenyetso cy'ubucuruzi",
+  "slugHelper": "Inyuguti nto, imibare n'udukoni, urugero kwaconfi-depot",
+  "countryCodeLabel": "Kode y'igihugu",
+  "currencyCodeLabel": "Kode y'ifaranga",
+  "defaultLanguageLabel": "Ururimi rusanzwe",
+  "timeZoneLabel": "Isaha y'akarere",
+  "firstBranchNameLabel": "Izina ry'ishami rya mbere",
+  "ownerFullNameLabel": "Amazina yawe yombi",
+  "ownerEmailLabel": "Imeyili yawe",
+  "ownerPasswordLabel": "Ijambobanga",
+  "createButton": "Shyiraho ubucuruzi",
+  "creatingButton": "Birimo gukorwa…",
+  "successTitle": "Ubucuruzi bwashyizweho",
+  "successBody": "Ubucuruzi bwawe bwiteguye. Umukiriya {tenantId} ubu arakora.",
+  "@successBody": {
+    "placeholders": {
+      "tenantId": { "type": "String" }
+    }
+  },
+  "startOver": "Shyiraho ubundi",
+  "fieldRequired": "Iki gice kirakenewe",
+  "fieldInvalidFormat": "Iyi ndangagaciro ntabwo iri mu buryo bukwiye",
+  "fieldTooShort": "Iyi ndangagaciro ni ngufi cyane",
+  "fieldTooLong": "Iyi ndangagaciro ni ndende cyane",
+  "errorSlugTaken": "Icyo kimenyetso cy'ubucuruzi cyarakoreshejwe.",
+  "errorNetwork": "Ntabwo byashobotse kugera kuri seriveri. Reba umurongo maze wongere ugerageze.",
+  "errorUnexpected": "Habaye ikibazo. Ongera ugerageze.",
+  "languageEnglish": "Icyongereza",
+  "languageKinyarwanda": "Ikinyarwanda",
+  "languageFrench": "Igifaransa"
+}

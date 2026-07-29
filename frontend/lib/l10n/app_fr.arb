@@ -1,0 +1,37 @@
+{
+  "@@locale": "fr",
+  "appTitle": "ConfiOS",
+  "signUpTitle": "Créez votre entreprise",
+  "signUpSubtitle": "Configurez votre entreprise sur ConfiOS en une minute.",
+  "businessNameLabel": "Nom de l'entreprise",
+  "slugLabel": "Identifiant de l'entreprise",
+  "slugHelper": "Lettres minuscules, chiffres et tirets, par ex. kwaconfi-depot",
+  "countryCodeLabel": "Code pays",
+  "currencyCodeLabel": "Code devise",
+  "defaultLanguageLabel": "Langue par défaut",
+  "timeZoneLabel": "Fuseau horaire",
+  "firstBranchNameLabel": "Nom de la première succursale",
+  "ownerFullNameLabel": "Votre nom complet",
+  "ownerEmailLabel": "Votre e-mail",
+  "ownerPasswordLabel": "Mot de passe",
+  "createButton": "Créer l'entreprise",
+  "creatingButton": "Création…",
+  "successTitle": "Entreprise créée",
+  "successBody": "Votre entreprise est prête. Le locataire {tenantId} est maintenant actif.",
+  "@successBody": {
+    "placeholders": {
+      "tenantId": { "type": "String" }
+    }
+  },
+  "startOver": "En créer une autre",
+  "fieldRequired": "Ce champ est obligatoire",
+  "fieldInvalidFormat": "Cette valeur n'a pas le format attendu",
+  "fieldTooShort": "Cette valeur est trop courte",
+  "fieldTooLong": "Cette valeur est trop longue",
+  "errorSlugTaken": "Cet identifiant d'entreprise est déjà utilisé.",
+  "errorNetwork": "Impossible de joindre le serveur. Vérifiez votre connexion et réessayez.",
+  "errorUnexpected": "Une erreur s'est produite. Veuillez réessayer.",
+  "languageEnglish": "Anglais",
+  "languageKinyarwanda": "Kinyarwanda",
+  "languageFrench": "Français"
+}
