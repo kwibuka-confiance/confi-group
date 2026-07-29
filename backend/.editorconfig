@@ -51,6 +51,11 @@ dotnet_diagnostic.CA1848.severity = none
 [tests/**/*.cs]
 dotnet_diagnostic.CA1707.severity = none
 
+# EF Core migrations are generated, not hand-maintained. Treat them as generated code so the
+# analyzers and style rules that assume hand-written code do not fail the build.
+[**/Migrations/*.cs]
+generated_code = true
+
 [*.{csproj,props,targets,xml,resx}]
 indent_size = 2
 

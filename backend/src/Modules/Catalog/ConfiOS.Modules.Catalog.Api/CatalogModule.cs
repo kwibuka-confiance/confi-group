@@ -1,6 +1,7 @@
 using ConfiOS.BuildingBlocks.Api.Modules;
 using ConfiOS.BuildingBlocks.Application.Abstractions;
 using ConfiOS.BuildingBlocks.Infrastructure.Interceptors;
+using ConfiOS.BuildingBlocks.Infrastructure.Persistence;
 using ConfiOS.Modules.Catalog.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
@@ -30,9 +31,9 @@ public sealed class CatalogModule : IModule
 
         services.AddDbContext<CatalogDbContext>((provider, options) =>
         {
-            options.UseNpgsql(
+            options.UseConfiOsPostgres(
                 configuration.GetConnectionString("Postgres"),
-                npgsql => npgsql.MigrationsHistoryTable("__migrations", CatalogDbContext.SchemaName));
+                CatalogDbContext.SchemaName);
 
             options.AddInterceptors(provider.GetRequiredService<AuditingInterceptor>());
         });
