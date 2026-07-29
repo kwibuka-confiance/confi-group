@@ -1,6 +1,8 @@
 using ConfiOS.BuildingBlocks.Application.Abstractions;
 using ConfiOS.BuildingBlocks.Application.Context;
 using ConfiOS.BuildingBlocks.Infrastructure.Persistence;
+using ConfiOS.Modules.Catalog.Application.Abstractions;
+using ConfiOS.Modules.Catalog.Domain.Products;
 using Microsoft.EntityFrameworkCore;
 
 namespace ConfiOS.Modules.Catalog.Infrastructure.Persistence;
@@ -15,10 +17,12 @@ namespace ConfiOS.Modules.Catalog.Infrastructure.Persistence;
 public sealed class CatalogDbContext(
     DbContextOptions<CatalogDbContext> options,
     ITenantContext tenantContext,
-    IClock clock) : TenantDbContext(options, tenantContext, clock)
+    IClock clock) : TenantDbContext(options, tenantContext, clock), ICatalogUnitOfWork
 {
     /// <summary>Schema name, also the module name.</summary>
     public const string SchemaName = "catalog";
+
+    public DbSet<Product> Products => Set<Product>();
 
     protected override string Schema => SchemaName;
 
