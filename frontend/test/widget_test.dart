@@ -8,12 +8,13 @@ void main() {
     configureDependencies();
   });
 
-  testWidgets('renders the sign-up form', (tester) async {
+  testWidgets('opens on the sign-in screen when signed out', (tester) async {
     await tester.pumpWidget(const ConfiOsApp());
     await tester.pumpAndSettle();
 
     // English is the default test locale.
-    expect(find.text('Create your business'), findsOneWidget);
-    expect(find.text('Create business'), findsOneWidget);
+    expect(find.text('Welcome back'), findsOneWidget);
+    expect(find.text('Sign in'), findsOneWidget);
+    expect(find.text('Create a business'), findsOneWidget);
   });
 }

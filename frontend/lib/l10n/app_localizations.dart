@@ -106,23 +106,125 @@ abstract class AppLocalizations {
   /// **'ConfiOS'**
   String get appTitle;
 
-  /// No description provided for @signUpTitle.
+  /// No description provided for @brandTagline.
   ///
   /// In en, this message translates to:
-  /// **'Create your business'**
-  String get signUpTitle;
+  /// **'Run your whole business in one place'**
+  String get brandTagline;
 
-  /// No description provided for @signUpSubtitle.
+  /// No description provided for @brandBlurb.
   ///
   /// In en, this message translates to:
-  /// **'Set up your business on ConfiOS in a minute.'**
-  String get signUpSubtitle;
+  /// **'Sales, inventory, customers and reports — together, in your language. Let\'s get you set up in a few simple steps.'**
+  String get brandBlurb;
+
+  /// No description provided for @brandPointCatalog.
+  ///
+  /// In en, this message translates to:
+  /// **'Track products and stock'**
+  String get brandPointCatalog;
+
+  /// No description provided for @brandPointSales.
+  ///
+  /// In en, this message translates to:
+  /// **'Record sales and payments'**
+  String get brandPointSales;
+
+  /// No description provided for @brandPointInsights.
+  ///
+  /// In en, this message translates to:
+  /// **'See how your business is doing'**
+  String get brandPointInsights;
+
+  /// No description provided for @stepOf.
+  ///
+  /// In en, this message translates to:
+  /// **'Step {current} of {total}'**
+  String stepOf(int current, int total);
+
+  /// No description provided for @stepBusinessLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Business'**
+  String get stepBusinessLabel;
+
+  /// No description provided for @stepRegionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Region'**
+  String get stepRegionLabel;
+
+  /// No description provided for @stepAccountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get stepAccountLabel;
+
+  /// No description provided for @stepReviewLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Review'**
+  String get stepReviewLabel;
+
+  /// No description provided for @businessStepTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your business'**
+  String get businessStepTitle;
+
+  /// No description provided for @businessStepSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell us the name of the business you\'re setting up.'**
+  String get businessStepSubtitle;
+
+  /// No description provided for @regionStepTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Region & currency'**
+  String get regionStepTitle;
+
+  /// No description provided for @regionStepSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This sets how money, dates and language appear.'**
+  String get regionStepSubtitle;
+
+  /// No description provided for @accountStepTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your owner account'**
+  String get accountStepTitle;
+
+  /// No description provided for @accountStepSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ll use this to sign in and manage everything.'**
+  String get accountStepSubtitle;
+
+  /// No description provided for @reviewStepTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Review & create'**
+  String get reviewStepTitle;
+
+  /// No description provided for @reviewStepSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Check the details below, then create your business.'**
+  String get reviewStepSubtitle;
 
   /// No description provided for @businessNameLabel.
   ///
   /// In en, this message translates to:
   /// **'Business name'**
   String get businessNameLabel;
+
+  /// No description provided for @businessNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. KwaConfi Depot'**
+  String get businessNameHint;
 
   /// No description provided for @slugLabel.
   ///
@@ -133,8 +235,20 @@ abstract class AppLocalizations {
   /// No description provided for @slugHelper.
   ///
   /// In en, this message translates to:
-  /// **'Lowercase letters, numbers and hyphens, e.g. kwaconfi-depot'**
+  /// **'Lowercase letters, numbers and hyphens. Used in your web address.'**
   String get slugHelper;
+
+  /// No description provided for @firstBranchNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'First branch name'**
+  String get firstBranchNameLabel;
+
+  /// No description provided for @firstBranchNameHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'The main location you sell from. You can add more later.'**
+  String get firstBranchNameHelper;
 
   /// No description provided for @countryCodeLabel.
   ///
@@ -142,11 +256,23 @@ abstract class AppLocalizations {
   /// **'Country code'**
   String get countryCodeLabel;
 
+  /// No description provided for @countryCodeHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Two letters, e.g. RW'**
+  String get countryCodeHelper;
+
   /// No description provided for @currencyCodeLabel.
   ///
   /// In en, this message translates to:
   /// **'Currency code'**
   String get currencyCodeLabel;
+
+  /// No description provided for @currencyCodeHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Three letters, e.g. RWF'**
+  String get currencyCodeHelper;
 
   /// No description provided for @defaultLanguageLabel.
   ///
@@ -159,12 +285,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Time zone'**
   String get timeZoneLabel;
-
-  /// No description provided for @firstBranchNameLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'First branch name'**
-  String get firstBranchNameLabel;
 
   /// No description provided for @ownerFullNameLabel.
   ///
@@ -184,6 +304,36 @@ abstract class AppLocalizations {
   /// **'Password'**
   String get ownerPasswordLabel;
 
+  /// No description provided for @passwordHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Use at least 12 characters.'**
+  String get passwordHelper;
+
+  /// No description provided for @showPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Show password'**
+  String get showPassword;
+
+  /// No description provided for @hidePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide password'**
+  String get hidePassword;
+
+  /// No description provided for @backButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get backButton;
+
+  /// No description provided for @continueButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get continueButton;
+
   /// No description provided for @createButton.
   ///
   /// In en, this message translates to:
@@ -196,23 +346,65 @@ abstract class AppLocalizations {
   /// **'Creating…'**
   String get creatingButton;
 
+  /// No description provided for @editAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get editAction;
+
+  /// No description provided for @reviewBusinessHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Business'**
+  String get reviewBusinessHeading;
+
+  /// No description provided for @reviewRegionHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Region'**
+  String get reviewRegionHeading;
+
+  /// No description provided for @reviewAccountHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Owner account'**
+  String get reviewAccountHeading;
+
   /// No description provided for @successTitle.
   ///
   /// In en, this message translates to:
-  /// **'Business created'**
+  /// **'Your business is ready'**
   String get successTitle;
 
   /// No description provided for @successBody.
   ///
   /// In en, this message translates to:
-  /// **'Your business is ready. Tenant {tenantId} is now active.'**
-  String successBody(String tenantId);
+  /// **'{name} is now set up on ConfiOS.'**
+  String successBody(String name);
+
+  /// No description provided for @successTenantHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep this business ID for your records:'**
+  String get successTenantHint;
 
   /// No description provided for @startOver.
   ///
   /// In en, this message translates to:
-  /// **'Create another'**
+  /// **'Create another business'**
   String get startOver;
+
+  /// No description provided for @copyTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get copyTooltip;
+
+  /// No description provided for @copiedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied to clipboard'**
+  String get copiedMessage;
 
   /// No description provided for @fieldRequired.
   ///
@@ -238,10 +430,28 @@ abstract class AppLocalizations {
   /// **'This value is too long'**
   String get fieldTooLong;
 
+  /// No description provided for @emailInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid email address'**
+  String get emailInvalid;
+
+  /// No description provided for @slugInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Use lowercase letters, numbers and hyphens only'**
+  String get slugInvalid;
+
+  /// No description provided for @passwordTooShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Use at least 12 characters'**
+  String get passwordTooShort;
+
   /// No description provided for @errorSlugTaken.
   ///
   /// In en, this message translates to:
-  /// **'That business handle is already in use.'**
+  /// **'That business handle is already in use. Try another.'**
   String get errorSlugTaken;
 
   /// No description provided for @errorNetwork.
@@ -255,6 +465,150 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Something went wrong. Please try again.'**
   String get errorUnexpected;
+
+  /// No description provided for @signInTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome back'**
+  String get signInTitle;
+
+  /// No description provided for @signInSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to your business.'**
+  String get signInSubtitle;
+
+  /// No description provided for @handleFieldLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Business handle'**
+  String get handleFieldLabel;
+
+  /// No description provided for @signInHandleHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'The handle you chose when creating the business.'**
+  String get signInHandleHelper;
+
+  /// No description provided for @emailFieldLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get emailFieldLabel;
+
+  /// No description provided for @passwordFieldLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get passwordFieldLabel;
+
+  /// No description provided for @signInButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in'**
+  String get signInButton;
+
+  /// No description provided for @signingInButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Signing in…'**
+  String get signingInButton;
+
+  /// No description provided for @noBusinessPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'New to ConfiOS?'**
+  String get noBusinessPrompt;
+
+  /// No description provided for @createBusinessLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a business'**
+  String get createBusinessLink;
+
+  /// No description provided for @haveBusinessPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Already have a business?'**
+  String get haveBusinessPrompt;
+
+  /// No description provided for @signInLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in'**
+  String get signInLink;
+
+  /// No description provided for @goToSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to your business'**
+  String get goToSignIn;
+
+  /// No description provided for @homeWelcome.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome, {name}'**
+  String homeWelcome(String name);
+
+  /// No description provided for @homeSignedInTo.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re signed in to {business}.'**
+  String homeSignedInTo(String business);
+
+  /// No description provided for @homeBusinessIdLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Business ID'**
+  String get homeBusinessIdLabel;
+
+  /// No description provided for @homePermissionsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Permissions'**
+  String get homePermissionsLabel;
+
+  /// No description provided for @homePermissionsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} granted'**
+  String homePermissionsCount(int count);
+
+  /// No description provided for @homeComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Your dashboard will grow here as Catalog, Inventory and Sales are built.'**
+  String get homeComingSoon;
+
+  /// No description provided for @signOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out'**
+  String get signOut;
+
+  /// No description provided for @themeTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme'**
+  String get themeTooltip;
+
+  /// No description provided for @themeSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get themeSystem;
+
+  /// No description provided for @themeLight.
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get themeLight;
+
+  /// No description provided for @themeDark.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get themeDark;
 
   /// No description provided for @languageEnglish.
   ///

@@ -38,3 +38,13 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   generate: true
+
+  # Bundled (not fetched at runtime) so typography works offline on every platform.
+  # Both are variable fonts under the SIL Open Font License (see assets/fonts/*-OFL.txt).
+  fonts:
+    - family: Sora
+      fonts:
+        - asset: assets/fonts/Sora.ttf
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter.ttf

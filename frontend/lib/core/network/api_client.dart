@@ -24,6 +24,10 @@ class ApiClient {
   }
 
   final Dio _dio;
+  String? _authToken;
+
+  /// Sets (or clears, with null) the bearer token sent on subsequent requests.
+  void setAuthToken(String? token) => _authToken = token;
 
   /// POSTs [body] to [path] and returns the unwrapped `data` object.
   Future<Map<String, dynamic>> post(
@@ -36,7 +40,10 @@ class ApiClient {
         path,
         data: body,
         options: Options(
-          headers: {if (locale != null) 'Accept-Language': locale},
+          headers: {
+            if (locale != null) 'Accept-Language': locale,
+            if (_authToken != null) 'Authorization': 'Bearer $_authToken',
+          },
         ),
       );
 
