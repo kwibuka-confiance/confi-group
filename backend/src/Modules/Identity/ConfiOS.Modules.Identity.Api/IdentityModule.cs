@@ -7,6 +7,7 @@ using ConfiOS.BuildingBlocks.Infrastructure.Interceptors;
 using ConfiOS.BuildingBlocks.Infrastructure.Persistence;
 using ConfiOS.Modules.Identity.Api.Endpoints;
 using ConfiOS.Modules.Identity.Application.Abstractions;
+using ConfiOS.Modules.Identity.Application.Authentication.Login;
 using ConfiOS.Modules.Identity.Application.Tenants.ProvisionTenant;
 using ConfiOS.Modules.Identity.Application.Users.InviteUser;
 using ConfiOS.Modules.Identity.Infrastructure.Persistence;
@@ -56,13 +57,16 @@ public sealed class IdentityModule : IModule
         services.AddScoped<IRoleRepository, RoleRepository>();
 
         services.AddSingleton<IPasswordHasher, PasswordHasher>();
+        services.AddSingleton<IAccessTokenGenerator, AccessTokenGenerator>();
         services.AddScoped<IPermissionService, PermissionService>();
 
         services.AddScoped<ICommandHandler<ProvisionTenantCommand, ProvisionTenantResult>, ProvisionTenantHandler>();
         services.AddScoped<ICommandHandler<InviteUserCommand, Guid>, InviteUserHandler>();
+        services.AddScoped<ICommandHandler<LoginCommand, LoginResult>, LoginHandler>();
 
         services.AddScoped<BuildingBlocks.Application.Validation.IValidator<ProvisionTenantCommand>, ProvisionTenantValidator>();
         services.AddScoped<BuildingBlocks.Application.Validation.IValidator<InviteUserCommand>, InviteUserValidator>();
+        services.AddScoped<BuildingBlocks.Application.Validation.IValidator<LoginCommand>, LoginValidator>();
     }
 
     public void MapEndpoints(IEndpointRouteBuilder endpoints)
@@ -71,5 +75,6 @@ public sealed class IdentityModule : IModule
 
         endpoints.MapTenantEndpoints();
         endpoints.MapUserEndpoints();
+        endpoints.MapAuthenticationEndpoints();
     }
 }

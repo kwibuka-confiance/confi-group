@@ -40,3 +40,20 @@ public sealed record InviteUserRequest(
     string FullName,
     IReadOnlyList<Guid> RoleIds,
     IReadOnlyList<Guid> BranchIds);
+
+/// <summary>Sign-in payload.</summary>
+/// <param name="BusinessHandle">The tenant's handle (slug) the user belongs to.</param>
+/// <param name="Email">The user's email.</param>
+/// <param name="Password">The user's password.</param>
+public sealed record LoginRequest(string BusinessHandle, string Email, string Password);
+
+/// <summary>The identity carried by the current access token.</summary>
+/// <param name="UserId">Subject (user) identifier.</param>
+/// <param name="TenantId">Tenant the token is scoped to.</param>
+/// <param name="Email">The user's email.</param>
+/// <param name="Permissions">Permission keys the token grants.</param>
+public sealed record CurrentUserResponse(
+    string? UserId,
+    string? TenantId,
+    string? Email,
+    IReadOnlyList<string> Permissions);

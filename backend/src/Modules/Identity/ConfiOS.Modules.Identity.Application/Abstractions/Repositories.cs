@@ -24,6 +24,15 @@ public interface IUserRepository
 
     Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default);
 
+    /// <summary>
+    /// Loads a user for authentication by tenant and email, bypassing the tenant query
+    /// filter because sign-in runs before any tenant context has been resolved.
+    /// </summary>
+    Task<User?> GetForAuthenticationAsync(
+        TenantId tenantId,
+        string email,
+        CancellationToken cancellationToken = default);
+
     Task<bool> EmailExistsAsync(string email, CancellationToken cancellationToken = default);
 
     void Add(User user);

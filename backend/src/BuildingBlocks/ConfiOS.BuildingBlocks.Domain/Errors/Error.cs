@@ -30,6 +30,9 @@ public sealed record Error(
 
     public static Error Forbidden(string code, IReadOnlyDictionary<string, object?>? details = null)
         => new(code, ErrorType.Forbidden, details);
+
+    public static Error Unauthorized(string code, IReadOnlyDictionary<string, object?>? details = null)
+        => new(code, ErrorType.Unauthorized, details);
 }
 
 /// <summary>Maps a failure onto a transport-level category.</summary>

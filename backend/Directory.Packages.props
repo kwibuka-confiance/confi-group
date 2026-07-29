@@ -47,6 +47,9 @@
 
   <ItemGroup Label="Security">
     <PackageVersion Include="Microsoft.AspNetCore.Cryptography.KeyDerivation" Version="10.0.0" />
+    <!-- Pinned to match the Microsoft.IdentityModel.* that JwtBearer 10.0.0 already resolves,
+         so token creation and validation share one version. -->
+    <PackageVersion Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.0.1" />
     <!-- Transitive pin: a 9.0.0 System.Security.Cryptography.Xml is pulled in with several
          known advisories. Pin to the current net10 servicing release. -->
     <PackageVersion Include="System.Security.Cryptography.Xml" Version="10.0.10" />
