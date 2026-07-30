@@ -119,6 +119,24 @@
   "homeComingSoon": "Your dashboard will grow here as Catalog, Inventory and Sales are built.",
   "signOut": "Sign out",
 
+  "navGroupMain": "Main",
+  "navGroupOperations": "Operations",
+  "searchProductsHint": "Search products or SKU",
+  "columnProduct": "Product",
+  "columnSku": "SKU",
+  "columnPrice": "Price",
+  "columnStatus": "Status",
+  "statusActive": "Active",
+  "statusArchived": "Archived",
+  "noSearchResults": "Nothing matches your search.",
+  "clearSearch": "Clear search",
+  "itemCount": "{count, plural, =1{1 item} other{{count} items}}",
+  "@itemCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
   "navDashboard": "Dashboard",
   "navProducts": "Products",
   "navInventory": "Inventory",

@@ -61,7 +61,9 @@ void main() {
     // Redirected past sign-in into the shell: dashboard content plus the side
     // navigation and the signed-in business.
     expect(find.text('Welcome, Confiance Owner'), findsOneWidget);
-    expect(find.text('KwaConfi Depot'), findsWidgets);
+    expect(find.text("You're signed in to KwaConfi Depot."), findsOneWidget);
+    // The rail's user card and the Products destination are both present.
+    expect(find.text('owner@kwaconfi.rw'), findsOneWidget);
     expect(find.text('Products'), findsWidgets);
     expect(find.text('Welcome back'), findsNothing);
   });

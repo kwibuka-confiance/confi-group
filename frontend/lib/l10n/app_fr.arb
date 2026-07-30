@@ -119,6 +119,24 @@
   "homeComingSoon": "Votre tableau de bord s'enrichira ici à mesure que le Catalogue, l'Inventaire et les Ventes seront développés.",
   "signOut": "Se déconnecter",
 
+  "navGroupMain": "Principal",
+  "navGroupOperations": "Opérations",
+  "searchProductsHint": "Rechercher un produit ou un SKU",
+  "columnProduct": "Produit",
+  "columnSku": "SKU",
+  "columnPrice": "Prix",
+  "columnStatus": "Statut",
+  "statusActive": "Actif",
+  "statusArchived": "Archivé",
+  "noSearchResults": "Aucun résultat ne correspond à votre recherche.",
+  "clearSearch": "Effacer la recherche",
+  "itemCount": "{count, plural, =1{1 article} other{{count} articles}}",
+  "@itemCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
   "navDashboard": "Tableau de bord",
   "navProducts": "Produits",
   "navInventory": "Stock",

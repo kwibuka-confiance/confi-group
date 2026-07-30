@@ -274,6 +274,50 @@ class AppLocalizationsRw extends AppLocalizations {
   String get signOut => 'Sohoka';
 
   @override
+  String get navGroupMain => 'Ibanze';
+
+  @override
+  String get navGroupOperations => 'Ibikorwa';
+
+  @override
+  String get searchProductsHint => 'Shakisha igicuruzwa cyangwa SKU';
+
+  @override
+  String get columnProduct => 'Igicuruzwa';
+
+  @override
+  String get columnSku => 'SKU';
+
+  @override
+  String get columnPrice => 'Igiciro';
+
+  @override
+  String get columnStatus => 'Imiterere';
+
+  @override
+  String get statusActive => 'Kirakora';
+
+  @override
+  String get statusArchived => 'Cyabitswe';
+
+  @override
+  String get noSearchResults => 'Nta kintu gihuye n\'ubushakashatsi bwawe.';
+
+  @override
+  String get clearSearch => 'Siba ubushakashatsi';
+
+  @override
+  String itemCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Ibintu $count',
+      one: 'Ikintu 1',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get navDashboard => 'Imbonerahamwe';
 
   @override

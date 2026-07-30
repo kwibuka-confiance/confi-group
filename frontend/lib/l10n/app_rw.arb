@@ -119,6 +119,24 @@
   "homeComingSoon": "Imbonerahamwe yawe izakura hano uko Ibicuruzwa, Ububiko n'Ibyagurishijwe bizubakwa.",
   "signOut": "Sohoka",
 
+  "navGroupMain": "Ibanze",
+  "navGroupOperations": "Ibikorwa",
+  "searchProductsHint": "Shakisha igicuruzwa cyangwa SKU",
+  "columnProduct": "Igicuruzwa",
+  "columnSku": "SKU",
+  "columnPrice": "Igiciro",
+  "columnStatus": "Imiterere",
+  "statusActive": "Kirakora",
+  "statusArchived": "Cyabitswe",
+  "noSearchResults": "Nta kintu gihuye n'ubushakashatsi bwawe.",
+  "clearSearch": "Siba ubushakashatsi",
+  "itemCount": "{count, plural, =1{Ikintu 1} other{Ibintu {count}}}",
+  "@itemCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
   "navDashboard": "Imbonerahamwe",
   "navProducts": "Ibicuruzwa",
   "navInventory": "Ububiko",

@@ -275,6 +275,51 @@ class AppLocalizationsFr extends AppLocalizations {
   String get signOut => 'Se déconnecter';
 
   @override
+  String get navGroupMain => 'Principal';
+
+  @override
+  String get navGroupOperations => 'Opérations';
+
+  @override
+  String get searchProductsHint => 'Rechercher un produit ou un SKU';
+
+  @override
+  String get columnProduct => 'Produit';
+
+  @override
+  String get columnSku => 'SKU';
+
+  @override
+  String get columnPrice => 'Prix';
+
+  @override
+  String get columnStatus => 'Statut';
+
+  @override
+  String get statusActive => 'Actif';
+
+  @override
+  String get statusArchived => 'Archivé';
+
+  @override
+  String get noSearchResults =>
+      'Aucun résultat ne correspond à votre recherche.';
+
+  @override
+  String get clearSearch => 'Effacer la recherche';
+
+  @override
+  String itemCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count articles',
+      one: '1 article',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get navDashboard => 'Tableau de bord';
 
   @override

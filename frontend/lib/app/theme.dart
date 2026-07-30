@@ -6,6 +6,11 @@ abstract final class ConfiTheme {
   /// Brand seed (placeholder). Swap for the official brand colour when defined.
   static const Color seed = Color(0xFF12715E);
 
+  /// Navigation rail background. Deliberately dark in both themes: a dark rail
+  /// beside a light content panel is the intended contrast, so it is a fixed
+  /// brand surface rather than a scheme colour that flips with the theme.
+  static const Color navSurface = Color(0xFF0D1A17);
+
   static const String _headingFont = 'Sora';
   static const String _bodyFont = 'Inter';
 

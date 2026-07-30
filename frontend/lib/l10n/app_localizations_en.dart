@@ -273,6 +273,50 @@ class AppLocalizationsEn extends AppLocalizations {
   String get signOut => 'Sign out';
 
   @override
+  String get navGroupMain => 'Main';
+
+  @override
+  String get navGroupOperations => 'Operations';
+
+  @override
+  String get searchProductsHint => 'Search products or SKU';
+
+  @override
+  String get columnProduct => 'Product';
+
+  @override
+  String get columnSku => 'SKU';
+
+  @override
+  String get columnPrice => 'Price';
+
+  @override
+  String get columnStatus => 'Status';
+
+  @override
+  String get statusActive => 'Active';
+
+  @override
+  String get statusArchived => 'Archived';
+
+  @override
+  String get noSearchResults => 'Nothing matches your search.';
+
+  @override
+  String get clearSearch => 'Clear search';
+
+  @override
+  String itemCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items',
+      one: '1 item',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get navDashboard => 'Dashboard';
 
   @override

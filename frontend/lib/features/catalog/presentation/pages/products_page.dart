@@ -10,8 +10,8 @@ import '../../data/models/product.dart';
 import '../../data/product_repository.dart';
 import '../cubit/products_cubit.dart';
 
-/// Lists the tenant's products and lets the user add one. Rendered inside the
-/// application shell, which supplies the app bar and navigation.
+/// The catalog table: search, add, and the tenant's products. Rendered inside the
+/// application shell, which supplies the top bar and navigation.
 class ProductsPage extends StatelessWidget {
   const ProductsPage({super.key});
 
@@ -30,36 +30,15 @@ class _ProductsView extends StatelessWidget {
 
   final String locale;
 
+  static const double _wideTable = 640;
+
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-
     return BlocBuilder<ProductsCubit, ProductsState>(
       builder: (context, state) {
         return Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(24, 20, 24, 12),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      state.status == ProductsStatus.loaded
-                          ? '${state.products.length} ${l10n.productsTitle.toLowerCase()}'
-                          : l10n.productsTitle,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                  FilledButton.icon(
-                    onPressed: () => _openCreateForm(context),
-                    icon: const Icon(Icons.add),
-                    label: Text(l10n.addProduct),
-                  ),
-                ],
-              ),
-            ),
+            _Toolbar(state: state, onAdd: () => _openCreateForm(context)),
             Expanded(
               child: switch (state.status) {
                 ProductsStatus.loading || ProductsStatus.initial =>
@@ -67,10 +46,11 @@ class _ProductsView extends StatelessWidget {
                 ProductsStatus.error => _ErrorView(
                   onRetry: () => context.read<ProductsCubit>().load(locale),
                 ),
-                ProductsStatus.loaded =>
-                  state.products.isEmpty
-                      ? _EmptyView(onAdd: () => _openCreateForm(context))
-                      : _ProductList(products: state.products, locale: locale),
+                ProductsStatus.loaded => _Results(
+                  state: state,
+                  locale: locale,
+                  onAdd: () => _openCreateForm(context),
+                ),
               },
             ),
           ],
@@ -92,83 +72,344 @@ class _ProductsView extends StatelessWidget {
   }
 }
 
-class _ProductList extends StatelessWidget {
-  const _ProductList({required this.products, required this.locale});
+class _Toolbar extends StatelessWidget {
+  const _Toolbar({required this.state, required this.onAdd});
 
-  final List<Product> products;
+  final ProductsState state;
+  final VoidCallback onAdd;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    final narrow = MediaQuery.sizeOf(context).width < 720;
+
+    final search = TextField(
+      onChanged: context.read<ProductsCubit>().search,
+      decoration: InputDecoration(
+        hintText: l10n.searchProductsHint,
+        prefixIcon: const Icon(Icons.search, size: 20),
+        isDense: true,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+      ),
+    );
+
+    final addButton = FilledButton.icon(
+      onPressed: onAdd,
+      icon: const Icon(Icons.add),
+      label: Text(l10n.addProduct),
+    );
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 18, 20, 14),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              if (state.status == ProductsStatus.loaded)
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 5,
+                  ),
+                  decoration: BoxDecoration(
+                    color: scheme.secondaryContainer,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    l10n.itemCount(state.visibleProducts.length),
+                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                      color: scheme.onSecondaryContainer,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              const Spacer(),
+              if (!narrow) ...[
+                SizedBox(width: 280, child: search),
+                const SizedBox(width: 12),
+              ],
+              addButton,
+            ],
+          ),
+          if (narrow) ...[const SizedBox(height: 12), search],
+        ],
+      ),
+    );
+  }
+}
+
+class _Results extends StatelessWidget {
+  const _Results({
+    required this.state,
+    required this.locale,
+    required this.onAdd,
+  });
+
+  final ProductsState state;
   final String locale;
+  final VoidCallback onAdd;
+
+  @override
+  Widget build(BuildContext context) {
+    if (state.products.isEmpty) {
+      return _EmptyView(onAdd: onAdd);
+    }
+
+    final rows = state.visibleProducts;
+    if (rows.isEmpty) {
+      return const _NoMatchesView();
+    }
+
+    final wide =
+        MediaQuery.sizeOf(context).width >= _ProductsView._wideTable;
+
+    return Column(
+      children: [
+        if (wide) const _TableHeader(),
+        Expanded(
+          child: ListView.separated(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+            itemCount: rows.length,
+            separatorBuilder: (context, _) => Divider(
+              height: 1,
+              color: Theme.of(context).colorScheme.outlineVariant,
+            ),
+            itemBuilder: (context, index) =>
+                _ProductRow(product: rows[index], locale: locale, wide: wide),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _TableHeader extends StatelessWidget {
+  const _TableHeader();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    final style = Theme.of(context).textTheme.labelMedium?.copyWith(
+      color: scheme.onSurfaceVariant,
+      fontWeight: FontWeight.w700,
+    );
+
+    return Container(
+      padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+      color: scheme.surfaceContainerLow,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 11),
+        child: Row(
+          children: [
+            const SizedBox(width: 52),
+            Expanded(flex: 4, child: Text(l10n.columnProduct, style: style)),
+            Expanded(flex: 2, child: Text(l10n.columnSku, style: style)),
+            Expanded(
+              flex: 2,
+              child: Text(
+                l10n.columnPrice,
+                style: style,
+                textAlign: TextAlign.right,
+              ),
+            ),
+            const SizedBox(width: 16),
+            // Flexible rather than a fixed width: the status word length varies by
+            // language (for example "Cyabitswe" in Kinyarwanda).
+            Expanded(
+              flex: 2,
+              child: Text(
+                l10n.columnStatus,
+                style: style,
+                textAlign: TextAlign.right,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ProductRow extends StatelessWidget {
+  const _ProductRow({
+    required this.product,
+    required this.locale,
+    required this.wide,
+  });
+
+  final Product product;
+  final String locale;
+  final bool wide;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final price =
+        '${NumberFormat.decimalPattern(locale).format(product.priceAmount)} ${product.currencyCode}';
 
-    return ListView.separated(
-      padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
-      itemCount: products.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 8),
-      itemBuilder: (context, index) {
-        final product = products[index];
-        final amount = NumberFormat.decimalPattern(
-          locale,
-        ).format(product.priceAmount);
+    final icon = Container(
+      width: 38,
+      height: 38,
+      decoration: BoxDecoration(
+        color: scheme.primaryContainer,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Icon(
+        Icons.inventory_2_outlined,
+        size: 19,
+        color: scheme.onPrimaryContainer,
+      ),
+    );
 
-        return Container(
-          decoration: BoxDecoration(
-            color: scheme.surfaceContainerLow,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: scheme.outlineVariant),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-            child: Row(
+    if (!wide) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        child: Row(
+          children: [
+            icon,
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    product.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  Text(
+                    product.sku,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: scheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 12),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: scheme.primaryContainer,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Icon(
-                    Icons.inventory_2_outlined,
-                    size: 20,
-                    color: scheme.onPrimaryContainer,
-                  ),
-                ),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        product.name,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      Text(
-                        product.sku,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: scheme.onSurfaceVariant,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 12),
                 Text(
-                  '$amount ${product.currencyCode}',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  price,
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
                 ),
+                const SizedBox(height: 4),
+                _StatusChip(isActive: product.isActive),
               ],
             ),
+          ],
+        ),
+      );
+    }
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 11),
+      child: Row(
+        children: [
+          icon,
+          const SizedBox(width: 14),
+          Expanded(
+            flex: 4,
+            child: Text(
+              product.name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(
+                context,
+              ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
+            ),
           ),
-        );
-      },
+          Expanded(
+            flex: 2,
+            child: Text(
+              product.sku,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: scheme.onSurfaceVariant,
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 2,
+            child: Text(
+              price,
+              textAlign: TextAlign.right,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(
+                context,
+              ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            flex: 2,
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: _StatusChip(isActive: product.isActive),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// State is carried by an icon and a label, never by colour alone.
+class _StatusChip extends StatelessWidget {
+  const _StatusChip({required this.isActive});
+
+  final bool isActive;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    final background = isActive
+        ? scheme.primaryContainer
+        : scheme.surfaceContainerHighest;
+    final foreground = isActive
+        ? scheme.onPrimaryContainer
+        : scheme.onSurfaceVariant;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+      decoration: BoxDecoration(
+        color: background,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            isActive ? Icons.check_circle : Icons.inventory_2_outlined,
+            size: 13,
+            color: foreground,
+          ),
+          const SizedBox(width: 5),
+          Flexible(
+            child: Text(
+              isActive ? l10n.statusActive : l10n.statusArchived,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                color: foreground,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -188,12 +429,20 @@ class _EmptyView extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              Icons.inventory_2_outlined,
-              size: 56,
-              color: scheme.onSurfaceVariant,
+            Container(
+              width: 72,
+              height: 72,
+              decoration: BoxDecoration(
+                color: scheme.surfaceContainerHighest,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.inventory_2_outlined,
+                size: 32,
+                color: scheme.onSurfaceVariant,
+              ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 18),
             Text(
               l10n.noProductsTitle,
               style: Theme.of(
@@ -213,6 +462,35 @@ class _EmptyView extends StatelessWidget {
               onPressed: onAdd,
               icon: const Icon(Icons.add),
               label: Text(l10n.addProduct),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _NoMatchesView extends StatelessWidget {
+  const _NoMatchesView();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.search_off, size: 40, color: scheme.onSurfaceVariant),
+            const SizedBox(height: 12),
+            Text(
+              l10n.noSearchResults,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: scheme.onSurfaceVariant,
+              ),
             ),
           ],
         ),

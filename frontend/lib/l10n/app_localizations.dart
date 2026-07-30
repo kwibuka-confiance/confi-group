@@ -586,6 +586,78 @@ abstract class AppLocalizations {
   /// **'Sign out'**
   String get signOut;
 
+  /// No description provided for @navGroupMain.
+  ///
+  /// In en, this message translates to:
+  /// **'Main'**
+  String get navGroupMain;
+
+  /// No description provided for @navGroupOperations.
+  ///
+  /// In en, this message translates to:
+  /// **'Operations'**
+  String get navGroupOperations;
+
+  /// No description provided for @searchProductsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search products or SKU'**
+  String get searchProductsHint;
+
+  /// No description provided for @columnProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'Product'**
+  String get columnProduct;
+
+  /// No description provided for @columnSku.
+  ///
+  /// In en, this message translates to:
+  /// **'SKU'**
+  String get columnSku;
+
+  /// No description provided for @columnPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Price'**
+  String get columnPrice;
+
+  /// No description provided for @columnStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get columnStatus;
+
+  /// No description provided for @statusActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get statusActive;
+
+  /// No description provided for @statusArchived.
+  ///
+  /// In en, this message translates to:
+  /// **'Archived'**
+  String get statusArchived;
+
+  /// No description provided for @noSearchResults.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing matches your search.'**
+  String get noSearchResults;
+
+  /// No description provided for @clearSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear search'**
+  String get clearSearch;
+
+  /// No description provided for @itemCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 item} other{{count} items}}'**
+  String itemCount(int count);
+
   /// No description provided for @navDashboard.
   ///
   /// In en, this message translates to:

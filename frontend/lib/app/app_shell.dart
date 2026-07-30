@@ -6,14 +6,11 @@ import '../features/auth/data/models/session.dart';
 import '../features/auth/presentation/cubit/session_cubit.dart';
 import '../features/auth/presentation/widgets/onboarding_widgets.dart';
 import '../l10n/app_localizations.dart';
+import 'theme.dart';
 
 /// A destination in the side navigation.
 class NavDestination {
-  const NavDestination({
-    required this.label,
-    required this.icon,
-    this.route,
-  });
+  const NavDestination({required this.label, required this.icon, this.route});
 
   final String label;
   final IconData icon;
@@ -24,9 +21,17 @@ class NavDestination {
   bool get isAvailable => route != null;
 }
 
-/// The signed-in application frame: a persistent side navigation next to the
-/// current section. Wide layouts show the navigation inline; narrower ones move
-/// it into a drawer reached from the app bar.
+/// A titled group of destinations.
+class NavGroup {
+  const NavGroup({required this.title, required this.destinations});
+
+  final String title;
+  final List<NavDestination> destinations;
+}
+
+/// The signed-in application frame: a dark navigation rail beside a light content
+/// panel. Wide layouts show the navigation inline; narrower ones move it into a
+/// drawer reached from the top bar.
 class AppShell extends StatelessWidget {
   const AppShell({super.key, required this.child, required this.location});
 
@@ -34,22 +39,32 @@ class AppShell extends StatelessWidget {
   final String location;
 
   static const double _wideBreakpoint = 1000;
-  static const double _navWidth = 268;
+  static const double _navWidth = 264;
 
-  List<NavDestination> _destinations(AppLocalizations l10n) => [
-    NavDestination(
-      label: l10n.navDashboard,
-      icon: Icons.space_dashboard_outlined,
-      route: '/dashboard',
+  List<NavGroup> _groups(AppLocalizations l10n) => [
+    NavGroup(
+      title: l10n.navGroupMain,
+      destinations: [
+        NavDestination(
+          label: l10n.navDashboard,
+          icon: Icons.space_dashboard_outlined,
+          route: '/dashboard',
+        ),
+        NavDestination(
+          label: l10n.navProducts,
+          icon: Icons.inventory_2_outlined,
+          route: '/products',
+        ),
+      ],
     ),
-    NavDestination(
-      label: l10n.navProducts,
-      icon: Icons.inventory_2_outlined,
-      route: '/products',
+    NavGroup(
+      title: l10n.navGroupOperations,
+      destinations: [
+        NavDestination(label: l10n.navInventory, icon: Icons.warehouse_outlined),
+        NavDestination(label: l10n.navSales, icon: Icons.point_of_sale_outlined),
+        NavDestination(label: l10n.navReports, icon: Icons.insights_outlined),
+      ],
     ),
-    NavDestination(label: l10n.navInventory, icon: Icons.warehouse_outlined),
-    NavDestination(label: l10n.navSales, icon: Icons.point_of_sale_outlined),
-    NavDestination(label: l10n.navReports, icon: Icons.insights_outlined),
   ];
 
   String _titleFor(AppLocalizations l10n) => switch (location) {
@@ -60,107 +75,193 @@ class AppShell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
     final session = context.watch<SessionCubit>().state;
-    final destinations = _destinations(l10n);
     final wide = MediaQuery.sizeOf(context).width >= _wideBreakpoint;
 
-    final nav = _SideNav(
-      destinations: destinations,
-      location: location,
-      session: session,
-      onNavigate: (route) {
-        if (!wide) {
-          Navigator.of(context).pop();
-        }
-        context.go(route);
-      },
+    final nav = Builder(
+      builder: (navContext) => _SideNav(
+        groups: _groups(l10n),
+        location: location,
+        session: session,
+        onNavigate: (route) {
+          if (!wide) {
+            Navigator.of(navContext).pop();
+          }
+          navContext.go(route);
+        },
+      ),
+    );
+
+    final content = Column(
+      children: [
+        _TopBar(title: _titleFor(l10n), showMenu: !wide, session: session),
+        Expanded(child: child),
+      ],
     );
 
     return Scaffold(
+      backgroundColor: scheme.surfaceContainerHigh,
       drawer: wide ? null : Drawer(child: nav),
-      appBar: AppBar(
-        title: Text(_titleFor(l10n)),
-        actions: const [ThemeMenuButton(), SizedBox(width: 4)],
-      ),
-      body: wide
-          ? Row(
-              children: [
+      body: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.all(wide ? 12 : 0),
+          child: Row(
+            children: [
+              if (wide) ...[
                 SizedBox(width: _navWidth, child: nav),
-                const VerticalDivider(width: 1, thickness: 1),
-                Expanded(child: child),
+                const SizedBox(width: 12),
               ],
-            )
-          : child,
+              Expanded(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: scheme.surface,
+                    borderRadius: BorderRadius.circular(wide ? 22 : 0),
+                    border: wide
+                        ? Border.all(color: scheme.outlineVariant)
+                        : null,
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(wide ? 22 : 0),
+                    child: content,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
 
+/// The panel header: section title, theme control and the signed-in initials.
+class _TopBar extends StatelessWidget {
+  const _TopBar({
+    required this.title,
+    required this.showMenu,
+    required this.session,
+  });
+
+  final String title;
+  final bool showMenu;
+  final Session? session;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Container(
+      padding: const EdgeInsets.fromLTRB(12, 10, 16, 10),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: scheme.outlineVariant)),
+      ),
+      child: Row(
+        children: [
+          if (showMenu)
+            IconButton(
+              icon: const Icon(Icons.menu),
+              tooltip: AppLocalizations.of(context).menuTooltip,
+              onPressed: () => Scaffold.of(context).openDrawer(),
+            )
+          else
+            const SizedBox(width: 8),
+          Text(
+            title,
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+          ),
+          const Spacer(),
+          const ThemeMenuButton(),
+          const SizedBox(width: 8),
+          CircleAvatar(
+            radius: 17,
+            backgroundColor: scheme.primaryContainer,
+            child: Text(
+              initialsOf(session?.fullName ?? ''),
+              style: TextStyle(
+                color: scheme.onPrimaryContainer,
+                fontWeight: FontWeight.w700,
+                fontSize: 13,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Two-letter initials for an avatar, or "?" when the name is unusable.
+String initialsOf(String fullName) {
+  final parts = fullName.trim().split(RegExp(r'\s+'));
+  if (parts.isEmpty || parts.first.isEmpty) {
+    return '?';
+  }
+  if (parts.length == 1) {
+    return parts.first.characters.first.toUpperCase();
+  }
+  return (parts.first.characters.first + parts.last.characters.first)
+      .toUpperCase();
+}
+
 class _SideNav extends StatelessWidget {
   const _SideNav({
-    required this.destinations,
+    required this.groups,
     required this.location,
     required this.session,
     required this.onNavigate,
   });
 
-  final List<NavDestination> destinations;
+  final List<NavGroup> groups;
   final String location;
   final Session? session;
   final ValueChanged<String> onNavigate;
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final scheme = Theme.of(context).colorScheme;
+    final wide = MediaQuery.sizeOf(context).width >= AppShell._wideBreakpoint;
 
-    return Material(
-      color: scheme.surfaceContainerLow,
+    // The rail keeps its dark treatment in both themes: light content beside a
+    // dark rail is the intended contrast, not an artefact of the active theme.
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: ConfiTheme.navSurface,
+        borderRadius: BorderRadius.circular(wide ? 22 : 0),
+      ),
       child: SafeArea(
         child: Column(
           children: [
-            _BusinessHeader(session: session),
-            const Divider(height: 1),
+            const _BrandBlock(),
             Expanded(
               child: ListView(
-                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                padding: const EdgeInsets.symmetric(horizontal: 12),
                 children: [
-                  for (final destination in destinations)
-                    _NavTile(
-                      destination: destination,
-                      selected: destination.route == location,
-                      onTap: destination.isAvailable
-                          ? () => onNavigate(destination.route!)
-                          : null,
-                    ),
-                ],
-              ),
-            ),
-            const Divider(height: 1),
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  if (session != null)
+                  for (final group in groups) ...[
                     Padding(
-                      padding: const EdgeInsets.only(bottom: 8, left: 4),
+                      padding: const EdgeInsets.fromLTRB(10, 16, 10, 8),
                       child: Text(
-                        session!.email,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: scheme.onSurfaceVariant,
+                        group.title.toUpperCase(),
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          color: Colors.white.withValues(alpha: 0.45),
+                          letterSpacing: 1.1,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),
-                  OutlinedButton.icon(
-                    onPressed: () => context.read<SessionCubit>().signOut(),
-                    icon: const Icon(Icons.logout, size: 18),
-                    label: Text(l10n.signOut),
-                  ),
+                    for (final destination in group.destinations)
+                      _NavTile(
+                        destination: destination,
+                        selected: destination.route == location,
+                        onTap: destination.isAvailable
+                            ? () => onNavigate(destination.route!)
+                            : null,
+                      ),
+                  ],
                 ],
               ),
             ),
+            _UserCard(session: session),
           ],
         ),
       ),
@@ -168,53 +269,35 @@ class _SideNav extends StatelessWidget {
   }
 }
 
-class _BusinessHeader extends StatelessWidget {
-  const _BusinessHeader({required this.session});
-
-  final Session? session;
+class _BrandBlock extends StatelessWidget {
+  const _BrandBlock();
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final scheme = Theme.of(context).colorScheme;
-
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 20, 16, 20),
+      padding: const EdgeInsets.fromLTRB(20, 22, 20, 6),
       child: Row(
         children: [
           Container(
-            width: 42,
-            height: 42,
+            width: 36,
+            height: 36,
             decoration: BoxDecoration(
-              color: scheme.primary,
-              borderRadius: BorderRadius.circular(12),
+              color: ConfiTheme.seed,
+              borderRadius: BorderRadius.circular(10),
             ),
-            child: Icon(
+            child: const Icon(
               Icons.storefront_rounded,
-              color: scheme.onPrimary,
-              size: 22,
+              color: Colors.white,
+              size: 20,
             ),
           ),
           const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  session?.businessName ?? l10n.appTitle,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                Text(
-                  l10n.appTitle,
-                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: scheme.onSurfaceVariant,
-                  ),
-                ),
-              ],
+          Text(
+            l10n.appTitle,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.w700,
             ),
           ),
         ],
@@ -237,29 +320,26 @@ class _NavTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final scheme = Theme.of(context).colorScheme;
     final disabled = onTap == null;
-
     final foreground = selected
-        ? scheme.onSecondaryContainer
-        : disabled
-        ? scheme.onSurfaceVariant.withValues(alpha: 0.5)
-        : scheme.onSurfaceVariant;
+        ? Colors.white
+        : Colors.white.withValues(alpha: disabled ? 0.34 : 0.72);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 4),
       child: Material(
-        color: selected ? scheme.secondaryContainer : Colors.transparent,
-        borderRadius: BorderRadius.circular(12),
+        color: selected ? ConfiTheme.seed : Colors.transparent,
+        borderRadius: BorderRadius.circular(11),
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(11),
+          hoverColor: Colors.white.withValues(alpha: 0.06),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
             child: Row(
               children: [
-                Icon(destination.icon, size: 21, color: foreground),
-                const SizedBox(width: 14),
+                Icon(destination.icon, size: 20, color: foreground),
+                const SizedBox(width: 12),
                 Expanded(
                   child: Text(
                     destination.label,
@@ -274,21 +354,92 @@ class _NavTile extends StatelessWidget {
                 // Sections that are not built yet say so, rather than looking broken.
                 if (disabled)
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 7,
+                      vertical: 3,
+                    ),
                     decoration: BoxDecoration(
-                      color: scheme.surfaceContainerHighest,
+                      color: Colors.white.withValues(alpha: 0.08),
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Text(
                       l10n.comingSoonBadge,
                       style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                        color: scheme.onSurfaceVariant,
+                        color: Colors.white.withValues(alpha: 0.5),
                       ),
                     ),
                   ),
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _UserCard extends StatelessWidget {
+  const _UserCard({required this.session});
+
+  final Session? session;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Padding(
+      padding: const EdgeInsets.all(12),
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(12, 10, 6, 10),
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.06),
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: Row(
+          children: [
+            CircleAvatar(
+              radius: 17,
+              backgroundColor: ConfiTheme.seed,
+              child: Text(
+                initialsOf(session?.fullName ?? ''),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 13,
+                ),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    session?.fullName ?? '',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  Text(
+                    session?.email ?? '',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: Colors.white.withValues(alpha: 0.55),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            IconButton(
+              icon: const Icon(Icons.logout, size: 18),
+              color: Colors.white.withValues(alpha: 0.7),
+              tooltip: l10n.signOut,
+              onPressed: () => context.read<SessionCubit>().signOut(),
+            ),
+          ],
         ),
       ),
     );
