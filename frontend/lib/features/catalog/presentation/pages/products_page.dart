@@ -10,7 +10,8 @@ import '../../data/models/product.dart';
 import '../../data/product_repository.dart';
 import '../cubit/products_cubit.dart';
 
-/// Lists the tenant's products and lets the user add one.
+/// Lists the tenant's products and lets the user add one. Rendered inside the
+/// application shell, which supplies the app bar and navigation.
 class ProductsPage extends StatelessWidget {
   const ProductsPage({super.key});
 
@@ -32,42 +33,61 @@ class _ProductsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.productsTitle),
-        actions: const [ThemeMenuButton(), SizedBox(width: 4)],
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _openCreateForm(context),
-        icon: const Icon(Icons.add),
-        label: Text(l10n.addProduct),
-      ),
-      body: BlocBuilder<ProductsCubit, ProductsState>(
-        builder: (context, state) {
-          return switch (state.status) {
-            ProductsStatus.loading || ProductsStatus.initial =>
-              const Center(child: CircularProgressIndicator()),
-            ProductsStatus.error => _ErrorView(
-              onRetry: () => context.read<ProductsCubit>().load(locale),
+
+    return BlocBuilder<ProductsCubit, ProductsState>(
+      builder: (context, state) {
+        return Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(24, 20, 24, 12),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      state.status == ProductsStatus.loaded
+                          ? '${state.products.length} ${l10n.productsTitle.toLowerCase()}'
+                          : l10n.productsTitle,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  FilledButton.icon(
+                    onPressed: () => _openCreateForm(context),
+                    icon: const Icon(Icons.add),
+                    label: Text(l10n.addProduct),
+                  ),
+                ],
+              ),
             ),
-            ProductsStatus.loaded =>
-              state.products.isEmpty
-                  ? const _EmptyView()
-                  : _ProductList(products: state.products, locale: locale),
-          };
-        },
-      ),
+            Expanded(
+              child: switch (state.status) {
+                ProductsStatus.loading || ProductsStatus.initial =>
+                  const Center(child: CircularProgressIndicator()),
+                ProductsStatus.error => _ErrorView(
+                  onRetry: () => context.read<ProductsCubit>().load(locale),
+                ),
+                ProductsStatus.loaded =>
+                  state.products.isEmpty
+                      ? _EmptyView(onAdd: () => _openCreateForm(context))
+                      : _ProductList(products: state.products, locale: locale),
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 
   Future<void> _openCreateForm(BuildContext context) async {
+    final cubit = context.read<ProductsCubit>();
     final created = await showModalBottomSheet<bool>(
       context: context,
       isScrollControlled: true,
       builder: (_) => _CreateProductSheet(locale: locale),
     );
-    if (created == true && context.mounted) {
-      await context.read<ProductsCubit>().load(locale);
+    if (created == true) {
+      await cubit.load(locale);
     }
   }
 }
@@ -81,48 +101,82 @@ class _ProductList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    return Center(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 720),
-        child: ListView.separated(
-          padding: const EdgeInsets.all(16),
-          itemCount: products.length,
-          separatorBuilder: (_, __) => const SizedBox(height: 8),
-          itemBuilder: (context, index) {
-            final product = products[index];
-            return Card(
-              child: ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: scheme.primaryContainer,
+
+    return ListView.separated(
+      padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+      itemCount: products.length,
+      separatorBuilder: (_, __) => const SizedBox(height: 8),
+      itemBuilder: (context, index) {
+        final product = products[index];
+        final amount = NumberFormat.decimalPattern(
+          locale,
+        ).format(product.priceAmount);
+
+        return Container(
+          decoration: BoxDecoration(
+            color: scheme.surfaceContainerLow,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: scheme.outlineVariant),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            child: Row(
+              children: [
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: scheme.primaryContainer,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                   child: Icon(
                     Icons.inventory_2_outlined,
+                    size: 20,
                     color: scheme.onPrimaryContainer,
                   ),
                 ),
-                title: Text(product.name),
-                subtitle: Text(product.sku),
-                trailing: Text(
-                  _formatPrice(product, locale),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        product.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Text(
+                        product.sku,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: scheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  '$amount ${product.currencyCode}',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-              ),
-            );
-          },
-        ),
-      ),
+              ],
+            ),
+          ),
+        );
+      },
     );
-  }
-
-  static String _formatPrice(Product product, String locale) {
-    final amount = NumberFormat.decimalPattern(locale).format(product.priceAmount);
-    return '$amount ${product.currencyCode}';
   }
 }
 
 class _EmptyView extends StatelessWidget {
-  const _EmptyView();
+  const _EmptyView({required this.onAdd});
+
+  final VoidCallback onAdd;
 
   @override
   Widget build(BuildContext context) {
@@ -134,7 +188,11 @@ class _EmptyView extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.inventory_2_outlined, size: 56, color: scheme.onSurfaceVariant),
+            Icon(
+              Icons.inventory_2_outlined,
+              size: 56,
+              color: scheme.onSurfaceVariant,
+            ),
             const SizedBox(height: 16),
             Text(
               l10n.noProductsTitle,
@@ -149,6 +207,12 @@ class _EmptyView extends StatelessWidget {
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: scheme.onSurfaceVariant,
               ),
+            ),
+            const SizedBox(height: 20),
+            FilledButton.icon(
+              onPressed: onAdd,
+              icon: const Icon(Icons.add),
+              label: Text(l10n.addProduct),
             ),
           ],
         ),
@@ -241,95 +305,103 @@ class _CreateProductSheetState extends State<_CreateProductSheet> {
     final viewInsets = MediaQuery.of(context).viewInsets.bottom;
     return Padding(
       padding: EdgeInsets.fromLTRB(24, 24, 24, 24 + viewInsets),
-      child: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              l10n.addProduct,
-              style: Theme.of(
-                context,
-              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
-            ),
-            const SizedBox(height: 16),
-            if (_error != null) ...[
-              InfoBanner(message: _error!),
-              const SizedBox(height: 16),
-            ],
-            TextFormField(
-              controller: _name,
-              decoration: InputDecoration(
-                labelText: l10n.productNameLabel,
-                prefixIcon: const Icon(Icons.inventory_2_outlined),
-              ),
-              validator: (v) =>
-                  (v == null || v.trim().isEmpty) ? l10n.fieldRequired : null,
-            ),
-            const SizedBox(height: 12),
-            TextFormField(
-              controller: _sku,
-              decoration: InputDecoration(
-                labelText: l10n.productSkuLabel,
-                prefixIcon: const Icon(Icons.tag_outlined),
-              ),
-              validator: (v) =>
-                  (v == null || v.trim().isEmpty) ? l10n.fieldRequired : null,
-            ),
-            const SizedBox(height: 12),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 520),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Expanded(
-                  flex: 2,
-                  child: TextFormField(
-                    controller: _price,
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                    decoration: InputDecoration(
-                      labelText: l10n.productPriceLabel,
-                      prefixIcon: const Icon(Icons.payments_outlined),
-                    ),
-                    validator: (v) {
-                      final parsed = double.tryParse((v ?? '').trim());
-                      return (parsed == null || parsed < 0)
-                          ? l10n.fieldInvalidFormat
-                          : null;
-                    },
-                  ),
+                Text(
+                  l10n.addProduct,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: TextFormField(
-                    controller: _currency,
-                    decoration: InputDecoration(labelText: l10n.currencyCodeLabel),
-                    validator: (v) =>
-                        (v != null && v.trim().length == 3)
-                        ? null
-                        : l10n.fieldInvalidFormat,
+                const SizedBox(height: 16),
+                if (_error != null) ...[
+                  InfoBanner(message: _error!),
+                  const SizedBox(height: 16),
+                ],
+                TextFormField(
+                  controller: _name,
+                  decoration: InputDecoration(
+                    labelText: l10n.productNameLabel,
+                    prefixIcon: const Icon(Icons.inventory_2_outlined),
                   ),
+                  validator: (v) =>
+                      (v == null || v.trim().isEmpty) ? l10n.fieldRequired : null,
+                ),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: _sku,
+                  decoration: InputDecoration(
+                    labelText: l10n.productSkuLabel,
+                    prefixIcon: const Icon(Icons.tag_outlined),
+                  ),
+                  validator: (v) =>
+                      (v == null || v.trim().isEmpty) ? l10n.fieldRequired : null,
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: TextFormField(
+                        controller: _price,
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true,
+                        ),
+                        decoration: InputDecoration(
+                          labelText: l10n.productPriceLabel,
+                          prefixIcon: const Icon(Icons.payments_outlined),
+                        ),
+                        validator: (v) {
+                          final parsed = double.tryParse((v ?? '').trim());
+                          return (parsed == null || parsed < 0)
+                              ? l10n.fieldInvalidFormat
+                              : null;
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: TextFormField(
+                        controller: _currency,
+                        decoration: InputDecoration(
+                          labelText: l10n.currencyCodeLabel,
+                        ),
+                        validator: (v) => (v != null && v.trim().length == 3)
+                            ? null
+                            : l10n.fieldInvalidFormat,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                FilledButton(
+                  onPressed: _submitting ? null : _submit,
+                  child: _submitting
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const SizedBox(
+                              height: 18,
+                              width: 18,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            ),
+                            const SizedBox(width: 12),
+                            Text(l10n.creatingButton),
+                          ],
+                        )
+                      : Text(l10n.createProductButton),
                 ),
               ],
             ),
-            const SizedBox(height: 20),
-            FilledButton(
-              onPressed: _submitting ? null : _submit,
-              child: _submitting
-                  ? Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const SizedBox(
-                          height: 18,
-                          width: 18,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        ),
-                        const SizedBox(width: 12),
-                        Text(l10n.creatingButton),
-                      ],
-                    )
-                  : Text(l10n.createProductButton),
-            ),
-          ],
+          ),
         ),
       ),
     );

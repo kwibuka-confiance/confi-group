@@ -14,8 +14,9 @@ import '../features/auth/presentation/cubit/session_cubit.dart';
 import '../features/auth/presentation/pages/login_page.dart';
 import '../features/auth/presentation/pages/sign_up_page.dart';
 import '../features/catalog/presentation/pages/products_page.dart';
-import '../features/home/presentation/pages/home_page.dart';
+import '../features/dashboard/presentation/pages/dashboard_page.dart';
 import '../l10n/app_localizations.dart';
+import 'app_shell.dart';
 import 'theme.dart';
 import 'theme_cubit.dart';
 
@@ -39,25 +40,18 @@ class _ConfiOsAppState extends State<ConfiOsApp> {
 
   GoRouter _buildRouter() {
     return GoRouter(
-      initialLocation: '/signin',
+      initialLocation: '/dashboard',
       refreshListenable: GoRouterRefreshStream(_session.stream),
-      errorBuilder: (context, state) => Scaffold(
-        body: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Text('Route error: ${state.error}'),
-          ),
-        ),
-      ),
       redirect: (context, state) {
         final loggedIn = _session.state != null;
         final location = state.matchedLocation;
         final onAuthScreen = location == '/signin' || location == '/signup';
+
         if (!loggedIn && !onAuthScreen) {
           return '/signin';
         }
         if (loggedIn && onAuthScreen) {
-          return '/home';
+          return '/dashboard';
         }
         return null;
       },
@@ -81,18 +75,21 @@ class _ConfiOsAppState extends State<ConfiOsApp> {
             ),
           ),
         ),
-        GoRoute(
-          path: '/home',
-          builder: (context, state) {
-            final session = _session.state;
-            return session == null
-                ? const SizedBox.shrink()
-                : HomePage(session: session);
-          },
-        ),
-        GoRoute(
-          path: '/products',
-          builder: (context, state) => const ProductsPage(),
+        // Everything signed in lives inside the shell, so the side navigation
+        // stays put while only the section changes.
+        ShellRoute(
+          builder: (context, state, child) =>
+              AppShell(location: state.matchedLocation, child: child),
+          routes: [
+            GoRoute(
+              path: '/dashboard',
+              builder: (context, state) => const DashboardPage(),
+            ),
+            GoRoute(
+              path: '/products',
+              builder: (context, state) => const ProductsPage(),
+            ),
+          ],
         ),
       ],
     );

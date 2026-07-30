@@ -275,6 +275,63 @@ class AppLocalizationsFr extends AppLocalizations {
   String get signOut => 'Se déconnecter';
 
   @override
+  String get navDashboard => 'Tableau de bord';
+
+  @override
+  String get navProducts => 'Produits';
+
+  @override
+  String get navInventory => 'Stock';
+
+  @override
+  String get navSales => 'Ventes';
+
+  @override
+  String get navReports => 'Rapports';
+
+  @override
+  String get navSettings => 'Paramètres';
+
+  @override
+  String get comingSoonBadge => 'Bientôt';
+
+  @override
+  String get menuTooltip => 'Menu';
+
+  @override
+  String get dashboardTitle => 'Tableau de bord';
+
+  @override
+  String get statProducts => 'Produits';
+
+  @override
+  String get statActiveProducts => 'Actifs';
+
+  @override
+  String get statCatalogValue => 'Valeur du catalogue';
+
+  @override
+  String get statPermissions => 'Autorisations';
+
+  @override
+  String currencyCount(int count) {
+    return '$count devises';
+  }
+
+  @override
+  String get recentlyAddedTitle => 'Ajoutés récemment';
+
+  @override
+  String get viewAllAction => 'Tout voir';
+
+  @override
+  String get dashboardEmptyHint =>
+      'Ajoutez votre premier produit et les indicateurs du catalogue apparaîtront ici.';
+
+  @override
+  String get quickActionsTitle => 'Actions rapides';
+
+  @override
   String get productsTitle => 'Produits';
 
   @override

@@ -586,6 +586,114 @@ abstract class AppLocalizations {
   /// **'Sign out'**
   String get signOut;
 
+  /// No description provided for @navDashboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Dashboard'**
+  String get navDashboard;
+
+  /// No description provided for @navProducts.
+  ///
+  /// In en, this message translates to:
+  /// **'Products'**
+  String get navProducts;
+
+  /// No description provided for @navInventory.
+  ///
+  /// In en, this message translates to:
+  /// **'Inventory'**
+  String get navInventory;
+
+  /// No description provided for @navSales.
+  ///
+  /// In en, this message translates to:
+  /// **'Sales'**
+  String get navSales;
+
+  /// No description provided for @navReports.
+  ///
+  /// In en, this message translates to:
+  /// **'Reports'**
+  String get navReports;
+
+  /// No description provided for @navSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get navSettings;
+
+  /// No description provided for @comingSoonBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Soon'**
+  String get comingSoonBadge;
+
+  /// No description provided for @menuTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Menu'**
+  String get menuTooltip;
+
+  /// No description provided for @dashboardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Dashboard'**
+  String get dashboardTitle;
+
+  /// No description provided for @statProducts.
+  ///
+  /// In en, this message translates to:
+  /// **'Products'**
+  String get statProducts;
+
+  /// No description provided for @statActiveProducts.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get statActiveProducts;
+
+  /// No description provided for @statCatalogValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Catalog value'**
+  String get statCatalogValue;
+
+  /// No description provided for @statPermissions.
+  ///
+  /// In en, this message translates to:
+  /// **'Permissions'**
+  String get statPermissions;
+
+  /// No description provided for @currencyCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} currencies'**
+  String currencyCount(int count);
+
+  /// No description provided for @recentlyAddedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recently added'**
+  String get recentlyAddedTitle;
+
+  /// No description provided for @viewAllAction.
+  ///
+  /// In en, this message translates to:
+  /// **'View all'**
+  String get viewAllAction;
+
+  /// No description provided for @dashboardEmptyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your first product and your catalog insights appear here.'**
+  String get dashboardEmptyHint;
+
+  /// No description provided for @quickActionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick actions'**
+  String get quickActionsTitle;
+
   /// No description provided for @productsTitle.
   ///
   /// In en, this message translates to:

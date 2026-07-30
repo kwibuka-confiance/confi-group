@@ -119,6 +119,31 @@
   "homeComingSoon": "Imbonerahamwe yawe izakura hano uko Ibicuruzwa, Ububiko n'Ibyagurishijwe bizubakwa.",
   "signOut": "Sohoka",
 
+  "navDashboard": "Imbonerahamwe",
+  "navProducts": "Ibicuruzwa",
+  "navInventory": "Ububiko",
+  "navSales": "Ibyagurishijwe",
+  "navReports": "Raporo",
+  "navSettings": "Igenamiterere",
+  "comingSoonBadge": "Biraza",
+  "menuTooltip": "Ibikubiye",
+
+  "dashboardTitle": "Imbonerahamwe",
+  "statProducts": "Ibicuruzwa",
+  "statActiveProducts": "Bikora",
+  "statCatalogValue": "Agaciro k'ibicuruzwa",
+  "statPermissions": "Uburenganzira",
+  "currencyCount": "Amafaranga {count}",
+  "@currencyCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "recentlyAddedTitle": "Byongewemo vuba",
+  "viewAllAction": "Reba byose",
+  "dashboardEmptyHint": "Ongeraho igicuruzwa cyawe cya mbere, hanyuma incamake y'ibicuruzwa igaragare hano.",
+  "quickActionsTitle": "Ibikorwa byihuse",
+
   "productsTitle": "Ibicuruzwa",
   "openCatalog": "Fungura ibicuruzwa",
   "addProduct": "Ongeraho igicuruzwa",

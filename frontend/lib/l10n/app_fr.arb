@@ -119,6 +119,31 @@
   "homeComingSoon": "Votre tableau de bord s'enrichira ici à mesure que le Catalogue, l'Inventaire et les Ventes seront développés.",
   "signOut": "Se déconnecter",
 
+  "navDashboard": "Tableau de bord",
+  "navProducts": "Produits",
+  "navInventory": "Stock",
+  "navSales": "Ventes",
+  "navReports": "Rapports",
+  "navSettings": "Paramètres",
+  "comingSoonBadge": "Bientôt",
+  "menuTooltip": "Menu",
+
+  "dashboardTitle": "Tableau de bord",
+  "statProducts": "Produits",
+  "statActiveProducts": "Actifs",
+  "statCatalogValue": "Valeur du catalogue",
+  "statPermissions": "Autorisations",
+  "currencyCount": "{count} devises",
+  "@currencyCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "recentlyAddedTitle": "Ajoutés récemment",
+  "viewAllAction": "Tout voir",
+  "dashboardEmptyHint": "Ajoutez votre premier produit et les indicateurs du catalogue apparaîtront ici.",
+  "quickActionsTitle": "Actions rapides",
+
   "productsTitle": "Produits",
   "openCatalog": "Ouvrir le catalogue",
   "addProduct": "Ajouter un produit",

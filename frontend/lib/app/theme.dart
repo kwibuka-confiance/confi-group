@@ -76,7 +76,9 @@ abstract final class ConfiTheme {
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
-          minimumSize: const Size.fromHeight(52),
+          // Height only. Size.fromHeight would force an infinite minimum width,
+          // which breaks any button placed in a Row; parents stretch buttons.
+          minimumSize: const Size(64, 52),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
           textStyle: const TextStyle(
             fontFamily: _bodyFont,
@@ -87,7 +89,7 @@ abstract final class ConfiTheme {
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
-          minimumSize: const Size.fromHeight(52),
+          minimumSize: const Size(64, 52),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
           textStyle: const TextStyle(
             fontFamily: _bodyFont,

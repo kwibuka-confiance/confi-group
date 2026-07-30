@@ -119,6 +119,31 @@
   "homeComingSoon": "Your dashboard will grow here as Catalog, Inventory and Sales are built.",
   "signOut": "Sign out",
 
+  "navDashboard": "Dashboard",
+  "navProducts": "Products",
+  "navInventory": "Inventory",
+  "navSales": "Sales",
+  "navReports": "Reports",
+  "navSettings": "Settings",
+  "comingSoonBadge": "Soon",
+  "menuTooltip": "Menu",
+
+  "dashboardTitle": "Dashboard",
+  "statProducts": "Products",
+  "statActiveProducts": "Active",
+  "statCatalogValue": "Catalog value",
+  "statPermissions": "Permissions",
+  "currencyCount": "{count} currencies",
+  "@currencyCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "recentlyAddedTitle": "Recently added",
+  "viewAllAction": "View all",
+  "dashboardEmptyHint": "Add your first product and your catalog insights appear here.",
+  "quickActionsTitle": "Quick actions",
+
   "productsTitle": "Products",
   "openCatalog": "Open catalog",
   "addProduct": "Add product",

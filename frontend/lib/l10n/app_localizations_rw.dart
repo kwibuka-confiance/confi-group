@@ -274,6 +274,63 @@ class AppLocalizationsRw extends AppLocalizations {
   String get signOut => 'Sohoka';
 
   @override
+  String get navDashboard => 'Imbonerahamwe';
+
+  @override
+  String get navProducts => 'Ibicuruzwa';
+
+  @override
+  String get navInventory => 'Ububiko';
+
+  @override
+  String get navSales => 'Ibyagurishijwe';
+
+  @override
+  String get navReports => 'Raporo';
+
+  @override
+  String get navSettings => 'Igenamiterere';
+
+  @override
+  String get comingSoonBadge => 'Biraza';
+
+  @override
+  String get menuTooltip => 'Ibikubiye';
+
+  @override
+  String get dashboardTitle => 'Imbonerahamwe';
+
+  @override
+  String get statProducts => 'Ibicuruzwa';
+
+  @override
+  String get statActiveProducts => 'Bikora';
+
+  @override
+  String get statCatalogValue => 'Agaciro k\'ibicuruzwa';
+
+  @override
+  String get statPermissions => 'Uburenganzira';
+
+  @override
+  String currencyCount(int count) {
+    return 'Amafaranga $count';
+  }
+
+  @override
+  String get recentlyAddedTitle => 'Byongewemo vuba';
+
+  @override
+  String get viewAllAction => 'Reba byose';
+
+  @override
+  String get dashboardEmptyHint =>
+      'Ongeraho igicuruzwa cyawe cya mbere, hanyuma incamake y\'ibicuruzwa igaragare hano.';
+
+  @override
+  String get quickActionsTitle => 'Ibikorwa byihuse';
+
+  @override
   String get productsTitle => 'Ibicuruzwa';
 
   @override

@@ -273,6 +273,63 @@ class AppLocalizationsEn extends AppLocalizations {
   String get signOut => 'Sign out';
 
   @override
+  String get navDashboard => 'Dashboard';
+
+  @override
+  String get navProducts => 'Products';
+
+  @override
+  String get navInventory => 'Inventory';
+
+  @override
+  String get navSales => 'Sales';
+
+  @override
+  String get navReports => 'Reports';
+
+  @override
+  String get navSettings => 'Settings';
+
+  @override
+  String get comingSoonBadge => 'Soon';
+
+  @override
+  String get menuTooltip => 'Menu';
+
+  @override
+  String get dashboardTitle => 'Dashboard';
+
+  @override
+  String get statProducts => 'Products';
+
+  @override
+  String get statActiveProducts => 'Active';
+
+  @override
+  String get statCatalogValue => 'Catalog value';
+
+  @override
+  String get statPermissions => 'Permissions';
+
+  @override
+  String currencyCount(int count) {
+    return '$count currencies';
+  }
+
+  @override
+  String get recentlyAddedTitle => 'Recently added';
+
+  @override
+  String get viewAllAction => 'View all';
+
+  @override
+  String get dashboardEmptyHint =>
+      'Add your first product and your catalog insights appear here.';
+
+  @override
+  String get quickActionsTitle => 'Quick actions';
+
+  @override
   String get productsTitle => 'Products';
 
   @override
