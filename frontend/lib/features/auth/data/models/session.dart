@@ -35,4 +35,17 @@ class Session {
   final String fullName;
   final String email;
   final List<String> permissions;
+
+  bool get isExpired => DateTime.now().isAfter(expiresAt);
+
+  Map<String, dynamic> toJson() => {
+    'accessToken': accessToken,
+    'expiresAt': expiresAt.toIso8601String(),
+    'userId': userId,
+    'tenantId': tenantId,
+    'businessName': businessName,
+    'fullName': fullName,
+    'email': email,
+    'permissions': permissions,
+  };
 }
