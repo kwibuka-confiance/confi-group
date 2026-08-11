@@ -68,4 +68,7 @@
   <data name="LAST_OWNER_CANNOT_BE_REMOVED" xml:space="preserve"><value>Une entreprise doit conserver au moins un propriétaire.</value></data>
   <data name="PRODUCT_SKU_TAKEN" xml:space="preserve"><value>Un produit avec ce SKU existe déjà dans cette entreprise.</value></data>
   <data name="PRODUCT_NOT_FOUND" xml:space="preserve"><value>Ce produit est introuvable.</value></data>
+  <data name="PACKAGING_UNIT_TAKEN" xml:space="preserve"><value>Cette unité est déjà définie pour ce produit.</value></data>
+  <data name="PACKAGING_IS_BASE_UNIT" xml:space="preserve"><value>Un conditionnement ne peut pas utiliser l’unité de base du produit.</value></data>
+  <data name="FRACTIONAL_BASE_UNIT" xml:space="preserve"><value>Cette quantité ne correspond pas à un nombre entier d’articles.</value></data>
 </root>

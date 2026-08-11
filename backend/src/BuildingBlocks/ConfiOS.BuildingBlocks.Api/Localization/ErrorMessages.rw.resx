@@ -68,4 +68,7 @@
   <data name="LAST_OWNER_CANNOT_BE_REMOVED" xml:space="preserve"><value>Ubucuruzi bugomba gusigarana nibura nyirabwo umwe.</value></data>
   <data name="PRODUCT_SKU_TAKEN" xml:space="preserve"><value>Igicuruzwa gifite iyo SKU gisanzwe kiri muri ubu bucuruzi.</value></data>
   <data name="PRODUCT_NOT_FOUND" xml:space="preserve"><value>Icyo gicuruzwa nticyabonetse.</value></data>
+  <data name="PACKAGING_UNIT_TAKEN" xml:space="preserve"><value>Iyo ngero isanzwe yashyiriweho iki gicuruzwa.</value></data>
+  <data name="PACKAGING_IS_BASE_UNIT" xml:space="preserve"><value>Ipakira ntishobora gukoresha ingero shingiro y’igicuruzwa.</value></data>
+  <data name="FRACTIONAL_BASE_UNIT" xml:space="preserve"><value>Uwo mubare ntutanga umubare wuzuye w’ibintu.</value></data>
 </root>
