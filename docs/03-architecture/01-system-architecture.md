@@ -1,91 +1,193 @@
 # System Architecture
 
-## Architectural Style
+## 1. Introduction
 
-Use a modular monolith for the initial platform.
+- Purpose
+- Goals
+- Scope
 
-Reasons:
+## 2. Architecture Principles
 
-- Faster development
-- Easier debugging
-- Lower infrastructure complexity
-- Strong transactional consistency
-- Clear module boundaries
-- Easier future extraction into services
+- Business First
+- Modular Monolith
+- Clean Architecture
+- Domain-Driven Design
+- Security by Design
+- Localization by Default
+- Workflow First
+- Event-Driven Communication
 
-## Major Components
+## 3. High-Level Architecture
 
-### Client Applications
+System Context Diagram
 
-- Admin and owner app
-- POS app
-- Warehouse app
-- Future customer app
-- Future driver app
+Client Applications
 
-### Backend
+Backend
 
-- ASP.NET Core API
-- Background worker
-- Modular application services
-- Domain modules
-- Infrastructure adapters
+Database
 
-### Data
+Infrastructure
 
-- PostgreSQL
-- Redis when needed
-- Object storage for documents and files
+## 4. Client Applications
 
-### Observability
+- Admin Web
+- Mobile App
+- POS
+- Warehouse App
+- Driver App
+- Customer App
 
-- OpenTelemetry
-- Structured logging
-- Metrics
-- Distributed tracing
-- Alerting
+## 5. Backend
 
-## Request Flow
+Modules
 
-Client
+Identity
 
-→ API
+Catalog
 
-→ Authentication
+Inventory
 
-→ Tenant resolution
+Sales
 
-→ Permission check
+Customers
 
-→ Feature license check
+Procurement
 
-→ Application use case
+Finance
 
-→ Domain model
+Logistics
 
-→ Persistence
+Notifications
 
-→ Domain events
+Localization
 
-→ Response
+AI
 
-## Module Boundaries
+Reporting
 
-- Identity
-- Catalog
-- Inventory
-- Sales
-- Procurement
-- Customers
-- Finance
-- Logistics
-- Notifications
-- Localization
-- AI
+## 6. Shared Platform
 
-## Integration Principles
+Authentication
 
-- Prefer in-process module contracts initially.
-- Use domain events for decoupled reactions.
-- Use an outbox pattern before introducing external messaging.
-- Introduce RabbitMQ only when asynchronous scaling justifies it.
+Authorization
+
+Audit
+
+Feature Flags
+
+Licensing
+
+Background Jobs
+
+Caching
+
+Search
+
+Files
+
+## 7. Module Communication
+
+Direct Calls
+
+Domain Events
+
+Background Processing
+
+## 8. Database Layer
+
+PostgreSQL
+
+Read Models
+
+Transactions
+
+Migrations
+
+## 9. Infrastructure
+
+Redis
+
+Docker
+
+Azure
+
+Blob Storage
+
+Email
+
+SMS
+
+WhatsApp
+
+## 10. Security
+
+Authentication
+
+Authorization
+
+Tenant Isolation
+
+Encryption
+
+Secrets
+
+Rate Limiting
+
+## 11. Observability
+
+Logging
+
+Tracing
+
+Metrics
+
+Health Checks
+
+Alerts
+
+## 12. Deployment
+
+Development
+
+Staging
+
+Production
+
+## 13. Scalability
+
+Horizontal Scaling
+
+Caching
+
+Background Workers
+
+Future Microservices
+
+## 14. Technology Decisions
+
+Flutter
+
+.NET
+
+PostgreSQL
+
+Redis
+
+Docker
+
+Azure
+
+OpenTelemetry
+
+## 15. Future Evolution
+
+Marketplace
+
+AI Agents
+
+Payments
+
+Multi-country
+
+## ADR References

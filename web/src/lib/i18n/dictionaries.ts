@@ -59,6 +59,10 @@ const en = {
   auth: {
     signInTitle: 'Welcome back',
     signInSubtitle: 'Sign in to your business.',
+    chooseBusinessTitle: 'Choose a business',
+    chooseBusinessSubtitle: 'Your account works with more than one business.',
+    continueTo: 'Continue',
+    backToSignIn: 'Use a different account',
     businessHandle: 'Business handle',
     businessHandleHint: 'The handle you chose when creating the business.',
     email: 'Email',
@@ -135,6 +139,10 @@ const rw: Dictionary = {
   auth: {
     signInTitle: 'Murakaza garuka',
     signInSubtitle: 'Injira mu bucuruzi bwawe.',
+    chooseBusinessTitle: 'Hitamo ubucuruzi',
+    chooseBusinessSubtitle: 'Konti yawe ikoreshwa mu bucuruzi burenze bumwe.',
+    continueTo: 'Komeza',
+    backToSignIn: 'Koresha indi konti',
     businessHandle: "Ikimenyetso cy'ubucuruzi",
     businessHandleHint: 'Ikimenyetso wahisemo igihe washyiragaho ubucuruzi.',
     email: 'Imeyili',
@@ -203,6 +211,10 @@ const fr: Dictionary = {
   auth: {
     signInTitle: 'Bon retour',
     signInSubtitle: 'Connectez-vous à votre entreprise.',
+    chooseBusinessTitle: 'Choisissez une entreprise',
+    chooseBusinessSubtitle: 'Votre compte fonctionne avec plusieurs entreprises.',
+    continueTo: 'Continuer',
+    backToSignIn: 'Utiliser un autre compte',
     businessHandle: "Identifiant de l'entreprise",
     businessHandleHint: "L'identifiant choisi lors de la création de l'entreprise.",
     email: 'E-mail',

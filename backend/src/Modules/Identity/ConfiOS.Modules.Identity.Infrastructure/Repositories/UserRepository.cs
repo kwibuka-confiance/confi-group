@@ -48,6 +48,22 @@ public sealed class UserRepository(IdentityDbContext context) : IUserRepository
                 cancellationToken);
     }
 
+    public async Task<IReadOnlyList<User>> FindByEmailAcrossBusinessesAsync(
+        string email,
+        CancellationToken cancellationToken = default)
+    {
+        var address = EmailAddress.Create(email);
+
+        // Sign-in happens before a tenant is known, so this query intentionally
+        // spans tenants. It is limited to live, active accounts, and the caller
+        // still has to verify each account's own password.
+        return await context.Users
+            .IgnoreQueryFilters()
+            .Where(user => user.Email == address && !user.IsDeleted)
+            .ToListAsync(cancellationToken)
+            .ConfigureAwait(false);
+    }
+
     public Task<bool> EmailExistsAsync(string email, CancellationToken cancellationToken = default)
     {
         var address = EmailAddress.Create(email);

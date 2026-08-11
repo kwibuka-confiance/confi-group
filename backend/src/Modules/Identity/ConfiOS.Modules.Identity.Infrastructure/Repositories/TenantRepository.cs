@@ -21,6 +21,23 @@ public sealed class TenantRepository(IdentityDbContext context) : ITenantReposit
     public Task<Tenant?> GetBySlugAsync(string slug, CancellationToken cancellationToken = default) =>
         context.Tenants.FirstOrDefaultAsync(tenant => tenant.Slug == slug, cancellationToken);
 
+    public async Task<IReadOnlyList<Tenant>> GetManyAsync(
+        IReadOnlyCollection<Guid> tenantIds,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(tenantIds);
+
+        if (tenantIds.Count == 0)
+        {
+            return [];
+        }
+
+        return await context.Tenants
+            .Where(tenant => tenantIds.Contains(tenant.Id))
+            .ToListAsync(cancellationToken)
+            .ConfigureAwait(false);
+    }
+
     public Task<bool> SlugExistsAsync(string slug, CancellationToken cancellationToken = default) =>
         context.Tenants.AnyAsync(tenant => tenant.Slug == slug, cancellationToken);
 

@@ -3,6 +3,7 @@ using ConfiOS.BuildingBlocks.Domain.Errors;
 using ConfiOS.BuildingBlocks.Domain.Primitives;
 using ConfiOS.BuildingBlocks.Domain.ValueObjects;
 using ConfiOS.Modules.Identity.Application.Abstractions;
+using ConfiOS.Modules.Identity.Application.Authentication;
 using ConfiOS.Modules.Identity.Application.Authentication.Login;
 using ConfiOS.Modules.Identity.Domain;
 using ConfiOS.Modules.Identity.Domain.Tenants;
@@ -14,42 +15,73 @@ namespace ConfiOS.Modules.Identity.Tests.Authentication;
 
 public sealed class LoginHandlerTests
 {
-    private const string Handle = "kwaconfi-depot";
     private const string Email = "owner@kwaconfi.rw";
     private const string Password = "Str0ngPass!23";
+    private const string DepotHandle = "kwaconfi-depot";
+    private const string CafeHandle = "kwaconfi-cafe";
 
     [Fact]
-    public async Task Valid_credentials_issue_a_token_and_record_the_sign_in()
+    public async Task One_matching_business_signs_in_without_choosing()
     {
-        var tenant = CreateTenant();
-        var user = CreateActiveUser(tenant.TenantId);
-        var tokenGenerator = new FakeTokenGenerator();
+        var depot = CreateTenant("KwaConfi Depot", DepotHandle);
+        var user = CreateActiveUser(depot.TenantId);
         var unitOfWork = new FakeUnitOfWork();
-        var handler = CreateHandler(tenant, user, passwordVerifies: true, tokenGenerator, unitOfWork);
+        var handler = CreateHandler([depot], [user], passwordVerifies: true, unitOfWork: unitOfWork);
 
-        var result = await handler.HandleAsync(
-            new LoginCommand(Handle, Email, Password),
-            CancellationToken.None);
+        var result = await handler.HandleAsync(new LoginCommand(Email, Password), CancellationToken.None);
 
         result.IsSuccess.ShouldBeTrue();
-        result.Value.AccessToken.ShouldBe("signed-token");
-        result.Value.BusinessName.ShouldBe("KwaConfi Depot");
-        result.Value.Permissions.ShouldContain("identity.users.read");
-        tokenGenerator.Captured!.TenantId.ShouldBe(tenant.TenantId);
+        var authenticated = result.Value.ShouldBeOfType<SignInOutcome.Authenticated>();
+        authenticated.Session.BusinessName.ShouldBe("KwaConfi Depot");
+        authenticated.Session.AccessToken.ShouldBe("signed-token");
         user.LastSignedInAt.ShouldNotBeNull();
         unitOfWork.SaveCount.ShouldBe(1);
     }
 
     [Fact]
-    public async Task A_wrong_password_is_rejected_as_unauthorized()
+    public async Task Several_matching_businesses_ask_the_caller_to_choose()
     {
-        var tenant = CreateTenant();
-        var user = CreateActiveUser(tenant.TenantId);
-        var handler = CreateHandler(tenant, user, passwordVerifies: false);
+        var depot = CreateTenant("KwaConfi Depot", DepotHandle);
+        var cafe = CreateTenant("KwaConfi Cafe", CafeHandle);
+        var handler = CreateHandler(
+            [depot, cafe],
+            [CreateActiveUser(depot.TenantId), CreateActiveUser(cafe.TenantId)],
+            passwordVerifies: true);
+
+        var result = await handler.HandleAsync(new LoginCommand(Email, Password), CancellationToken.None);
+
+        result.IsSuccess.ShouldBeTrue();
+        var choice = result.Value.ShouldBeOfType<SignInOutcome.ChoiceRequired>();
+        choice.SelectionToken.ShouldBe("selection-token");
+        choice.Businesses.Select(business => business.Slug)
+            .ShouldBe([CafeHandle, DepotHandle]); // ordered by name
+    }
+
+    [Fact]
+    public async Task A_handle_skips_the_choice_even_with_several_businesses()
+    {
+        var depot = CreateTenant("KwaConfi Depot", DepotHandle);
+        var cafe = CreateTenant("KwaConfi Cafe", CafeHandle);
+        var handler = CreateHandler(
+            [depot, cafe],
+            [CreateActiveUser(depot.TenantId), CreateActiveUser(cafe.TenantId)],
+            passwordVerifies: true);
 
         var result = await handler.HandleAsync(
-            new LoginCommand(Handle, Email, "nope"),
+            new LoginCommand(Email, Password, CafeHandle),
             CancellationToken.None);
+
+        var authenticated = result.Value.ShouldBeOfType<SignInOutcome.Authenticated>();
+        authenticated.Session.BusinessName.ShouldBe("KwaConfi Cafe");
+    }
+
+    [Fact]
+    public async Task A_wrong_password_is_rejected_as_unauthorized()
+    {
+        var depot = CreateTenant("KwaConfi Depot", DepotHandle);
+        var handler = CreateHandler([depot], [CreateActiveUser(depot.TenantId)], passwordVerifies: false);
+
+        var result = await handler.HandleAsync(new LoginCommand(Email, "nope"), CancellationToken.None);
 
         result.IsSuccess.ShouldBeFalse();
         result.Error.Code.ShouldBe(IdentityErrorCodes.InvalidCredentials);
@@ -57,12 +89,12 @@ public sealed class LoginHandlerTests
     }
 
     [Fact]
-    public async Task An_unknown_business_is_rejected_with_the_same_code()
+    public async Task An_unknown_email_is_rejected_with_the_same_code()
     {
-        var handler = CreateHandler(tenant: null, user: null, passwordVerifies: true);
+        var handler = CreateHandler([], [], passwordVerifies: true);
 
         var result = await handler.HandleAsync(
-            new LoginCommand("ghost-business", Email, Password),
+            new LoginCommand("ghost@example.com", Password),
             CancellationToken.None);
 
         result.IsSuccess.ShouldBeFalse();
@@ -70,26 +102,35 @@ public sealed class LoginHandlerTests
     }
 
     [Fact]
-    public async Task A_deactivated_user_cannot_sign_in()
+    public async Task A_deactivated_account_is_not_offered()
     {
-        var tenant = CreateTenant();
-        var user = CreateActiveUser(tenant.TenantId);
+        var depot = CreateTenant("KwaConfi Depot", DepotHandle);
+        var user = CreateActiveUser(depot.TenantId);
         user.Deactivate();
-        var handler = CreateHandler(tenant, user, passwordVerifies: true);
+        var handler = CreateHandler([depot], [user], passwordVerifies: true);
+
+        var result = await handler.HandleAsync(new LoginCommand(Email, Password), CancellationToken.None);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.Error.Code.ShouldBe(IdentityErrorCodes.InvalidCredentials);
+    }
+
+    [Fact]
+    public async Task An_unknown_handle_is_rejected_even_when_the_password_matches()
+    {
+        var depot = CreateTenant("KwaConfi Depot", DepotHandle);
+        var handler = CreateHandler([depot], [CreateActiveUser(depot.TenantId)], passwordVerifies: true);
 
         var result = await handler.HandleAsync(
-            new LoginCommand(Handle, Email, Password),
+            new LoginCommand(Email, Password, "somebody-elses-shop"),
             CancellationToken.None);
 
         result.IsSuccess.ShouldBeFalse();
         result.Error.Code.ShouldBe(IdentityErrorCodes.InvalidCredentials);
     }
 
-    private static Tenant CreateTenant() =>
-        Tenant.Register(
-            "KwaConfi Depot",
-            Handle,
-            TenantSettings.Create("RW", "RWF", "en", "Africa/Kigali"));
+    private static Tenant CreateTenant(string name, string slug) =>
+        Tenant.Register(name, slug, TenantSettings.Create("RW", "RWF", "en", "Africa/Kigali"));
 
     private static User CreateActiveUser(TenantId tenantId)
     {
@@ -99,27 +140,34 @@ public sealed class LoginHandlerTests
     }
 
     private static LoginHandler CreateHandler(
-        Tenant? tenant,
-        User? user,
+        IReadOnlyList<Tenant> tenants,
+        IReadOnlyList<User> users,
         bool passwordVerifies,
-        FakeTokenGenerator? tokenGenerator = null,
         FakeUnitOfWork? unitOfWork = null) =>
         new(
-            new FakeTenantRepository(tenant),
-            new FakeUserRepository(user),
+            new FakeTenantRepository(tenants),
+            new FakeUserRepository(users),
             new FakePasswordHasher(passwordVerifies),
-            new FakePermissionService(["identity.users.read"]),
-            tokenGenerator ?? new FakeTokenGenerator(),
-            new FixedClock(DateTimeOffset.UnixEpoch),
-            unitOfWork ?? new FakeUnitOfWork());
+            new FakeSelectionTokens(),
+            new SessionIssuer(
+                new FakePermissionService(["identity.users.read"]),
+                new FakeTokenGenerator(),
+                new FixedClock(DateTimeOffset.UnixEpoch),
+                unitOfWork ?? new FakeUnitOfWork()));
 
-    private sealed class FakeTenantRepository(Tenant? tenant) : ITenantRepository
+    private sealed class FakeTenantRepository(IReadOnlyList<Tenant> tenants) : ITenantRepository
     {
         public Task<Tenant?> GetAsync(TenantId tenantId, CancellationToken cancellationToken = default) =>
-            Task.FromResult(tenant);
+            Task.FromResult(tenants.FirstOrDefault(tenant => tenant.Id == tenantId.Value));
 
         public Task<Tenant?> GetBySlugAsync(string slug, CancellationToken cancellationToken = default) =>
-            Task.FromResult(tenant is not null && tenant.Slug == slug ? tenant : null);
+            Task.FromResult(tenants.FirstOrDefault(tenant => tenant.Slug == slug));
+
+        public Task<IReadOnlyList<Tenant>> GetManyAsync(
+            IReadOnlyCollection<Guid> tenantIds,
+            CancellationToken cancellationToken = default) =>
+            Task.FromResult<IReadOnlyList<Tenant>>(
+                tenants.Where(tenant => tenantIds.Contains(tenant.Id)).ToList());
 
         public Task<bool> SlugExistsAsync(string slug, CancellationToken cancellationToken = default) =>
             Task.FromResult(false);
@@ -129,19 +177,25 @@ public sealed class LoginHandlerTests
         }
     }
 
-    private sealed class FakeUserRepository(User? user) : IUserRepository
+    private sealed class FakeUserRepository(IReadOnlyList<User> users) : IUserRepository
     {
         public Task<User?> GetAsync(UserId userId, CancellationToken cancellationToken = default) =>
-            Task.FromResult(user);
+            Task.FromResult(users.FirstOrDefault(user => user.Id == userId.Value));
 
         public Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default) =>
-            Task.FromResult(user);
+            Task.FromResult(users.Count == 0 ? null : users[0]);
 
         public Task<User?> GetForAuthenticationAsync(
             TenantId tenantId,
             string email,
             CancellationToken cancellationToken = default) =>
-            Task.FromResult(user);
+            Task.FromResult(users.FirstOrDefault(user => user.TenantId == tenantId.Value));
+
+        public Task<IReadOnlyList<User>> FindByEmailAcrossBusinessesAsync(
+            string email,
+            CancellationToken cancellationToken = default) =>
+            Task.FromResult<IReadOnlyList<User>>(
+                users.Where(user => user.Email.Value == email).ToList());
 
         public Task<bool> EmailExistsAsync(string email, CancellationToken cancellationToken = default) =>
             Task.FromResult(false);
@@ -156,6 +210,14 @@ public sealed class LoginHandlerTests
         public string Hash(string password) => "HASH";
 
         public bool Verify(string password, string hash) => verifies;
+    }
+
+    private sealed class FakeSelectionTokens : IBusinessSelectionTokens
+    {
+        public BusinessSelectionToken Issue(string email, IReadOnlyCollection<Guid> tenantIds) =>
+            new("selection-token", DateTimeOffset.UnixEpoch.AddMinutes(5));
+
+        public BusinessSelectionPayload? Validate(string token) => null;
     }
 
     private sealed class FakePermissionService(IReadOnlyList<string> permissions) : IPermissionService
@@ -180,13 +242,8 @@ public sealed class LoginHandlerTests
 
     private sealed class FakeTokenGenerator : IAccessTokenGenerator
     {
-        public AccessTokenClaims? Captured { get; private set; }
-
-        public AccessToken Generate(AccessTokenClaims claims)
-        {
-            Captured = claims;
-            return new AccessToken("signed-token", DateTimeOffset.UnixEpoch.AddHours(2));
-        }
+        public AccessToken Generate(AccessTokenClaims claims) =>
+            new("signed-token", DateTimeOffset.UnixEpoch.AddHours(2));
     }
 
     private sealed class FixedClock(DateTimeOffset now) : IClock

@@ -3,7 +3,7 @@ import 'server-only';
 import { cookies } from 'next/headers';
 
 import { apiRequest } from '@/lib/api/client';
-import type { Session } from '@/lib/api/types';
+import type { Session, SignInResponse } from '@/lib/api/types';
 
 const SESSION_COOKIE = 'confios_session';
 
@@ -45,15 +45,46 @@ export async function clearSession(): Promise<void> {
 }
 
 export interface LoginInput {
-  businessHandle: string;
   email: string;
   password: string;
+  /** Optional: skips the chooser when the business is already known. */
+  businessHandle?: string;
 }
 
-export function login(input: LoginInput, locale?: string): Promise<Session> {
-  return apiRequest<Session>('/api/v1/auth/login', {
+export function login(input: LoginInput, locale?: string): Promise<SignInResponse> {
+  return apiRequest<SignInResponse>('/api/v1/auth/login', {
     method: 'POST',
     body: input,
     locale,
   });
+}
+
+export function selectBusiness(
+  selectionToken: string,
+  tenantId: string,
+  locale?: string,
+): Promise<SignInResponse> {
+  return apiRequest<SignInResponse>('/api/v1/auth/select-business', {
+    method: 'POST',
+    body: { selectionToken, tenantId },
+    locale,
+  });
+}
+
+/** Narrows an authenticated sign-in response into a stored session. */
+export function toSession(response: SignInResponse): Session | null {
+  if (response.status !== 'authenticated' || !response.accessToken) {
+    return null;
+  }
+
+  return {
+    accessToken: response.accessToken,
+    expiresAt: response.expiresAt ?? new Date().toISOString(),
+    userId: response.userId ?? '',
+    tenantId: response.tenantId ?? '',
+    businessName: response.businessName ?? '',
+    fullName: response.fullName ?? '',
+    email: response.email ?? '',
+    permissions: response.permissions ?? [],
+  };
 }

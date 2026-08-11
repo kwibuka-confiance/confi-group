@@ -42,10 +42,52 @@ public sealed record InviteUserRequest(
     IReadOnlyList<Guid> BranchIds);
 
 /// <summary>Sign-in payload.</summary>
-/// <param name="BusinessHandle">The tenant's handle (slug) the user belongs to.</param>
 /// <param name="Email">The user's email.</param>
 /// <param name="Password">The user's password.</param>
-public sealed record LoginRequest(string BusinessHandle, string Email, string Password);
+/// <param name="BusinessHandle">
+/// Optional. Supplying it signs straight in to that business; leaving it out lets
+/// the caller choose when the credentials unlock more than one.
+/// </param>
+public sealed record LoginRequest(string Email, string Password, string? BusinessHandle = null);
+
+/// <summary>Completes a sign-in that offered several businesses.</summary>
+/// <param name="SelectionToken">Token returned by the sign-in call.</param>
+/// <param name="TenantId">The chosen business.</param>
+public sealed record SelectBusinessRequest(string SelectionToken, Guid TenantId);
+
+/// <summary>
+/// Sign-in response. <c>status</c> is <c>authenticated</c> when a session was
+/// issued and <c>select_business</c> when the caller must choose one first.
+/// </summary>
+/// <param name="Status">Which of the two shapes this is.</param>
+/// <param name="AccessToken">Session token, when authenticated.</param>
+/// <param name="ExpiresAt">Expiry of whichever token is present.</param>
+/// <param name="UserId">The signed-in user, when authenticated.</param>
+/// <param name="TenantId">The business, when authenticated.</param>
+/// <param name="BusinessName">Trading name, when authenticated.</param>
+/// <param name="FullName">The user's name, when authenticated.</param>
+/// <param name="Email">The user's email, when authenticated.</param>
+/// <param name="Permissions">Granted permissions, when authenticated.</param>
+/// <param name="SelectionToken">Short-lived token to send back with the choice.</param>
+/// <param name="Businesses">The businesses to choose between.</param>
+public sealed record SignInResponse(
+    string Status,
+    string? AccessToken = null,
+    DateTimeOffset? ExpiresAt = null,
+    Guid? UserId = null,
+    Guid? TenantId = null,
+    string? BusinessName = null,
+    string? FullName = null,
+    string? Email = null,
+    IReadOnlyList<string>? Permissions = null,
+    string? SelectionToken = null,
+    IReadOnlyList<BusinessSummary>? Businesses = null);
+
+/// <summary>A business offered during sign-in.</summary>
+/// <param name="TenantId">The business identifier.</param>
+/// <param name="Name">Trading name.</param>
+/// <param name="Slug">URL-safe handle.</param>
+public sealed record BusinessSummary(Guid TenantId, string Name, string Slug);
 
 /// <summary>The identity carried by the current access token.</summary>
 /// <param name="UserId">Subject (user) identifier.</param>

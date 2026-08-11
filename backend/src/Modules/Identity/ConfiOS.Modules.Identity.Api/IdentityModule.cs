@@ -8,7 +8,9 @@ using ConfiOS.BuildingBlocks.Infrastructure.Interceptors;
 using ConfiOS.BuildingBlocks.Infrastructure.Persistence;
 using ConfiOS.Modules.Identity.Api.Endpoints;
 using ConfiOS.Modules.Identity.Application.Abstractions;
+using ConfiOS.Modules.Identity.Application.Authentication;
 using ConfiOS.Modules.Identity.Application.Authentication.Login;
+using ConfiOS.Modules.Identity.Application.Authentication.SelectBusiness;
 using ConfiOS.Modules.Identity.Application.Tenants.ProvisionTenant;
 using ConfiOS.Modules.Identity.Application.Users.InviteUser;
 using ConfiOS.Modules.Identity.Domain.Authorization;
@@ -65,11 +67,19 @@ public sealed class IdentityModule : IModule
 
         services.AddScoped<ICommandHandler<ProvisionTenantCommand, ProvisionTenantResult>, ProvisionTenantHandler>();
         services.AddScoped<ICommandHandler<InviteUserCommand, Guid>, InviteUserHandler>();
-        services.AddScoped<ICommandHandler<LoginCommand, LoginResult>, LoginHandler>();
+        services.AddSingleton<IBusinessSelectionTokens, BusinessSelectionTokens>();
+        services.AddScoped<SessionIssuer>();
+        services.AddScoped<ICommandHandler<LoginCommand, SignInOutcome>, LoginHandler>();
+        services.AddScoped<
+            ICommandHandler<SelectBusinessCommand, AuthenticatedSession>,
+            SelectBusinessHandler>();
 
         services.AddScoped<BuildingBlocks.Application.Validation.IValidator<ProvisionTenantCommand>, ProvisionTenantValidator>();
         services.AddScoped<BuildingBlocks.Application.Validation.IValidator<InviteUserCommand>, InviteUserValidator>();
         services.AddScoped<BuildingBlocks.Application.Validation.IValidator<LoginCommand>, LoginValidator>();
+        services.AddScoped<
+            BuildingBlocks.Application.Validation.IValidator<SelectBusinessCommand>,
+            SelectBusinessValidator>();
     }
 
     public void MapEndpoints(IEndpointRouteBuilder endpoints)

@@ -12,6 +12,11 @@ public interface ITenantRepository
 
     Task<Tenant?> GetBySlugAsync(string slug, CancellationToken cancellationToken = default);
 
+    /// <summary>Loads several tenants at once, for listing a user's businesses.</summary>
+    Task<IReadOnlyList<Tenant>> GetManyAsync(
+        IReadOnlyCollection<Guid> tenantIds,
+        CancellationToken cancellationToken = default);
+
     Task<bool> SlugExistsAsync(string slug, CancellationToken cancellationToken = default);
 
     void Add(Tenant tenant);
@@ -30,6 +35,15 @@ public interface IUserRepository
     /// </summary>
     Task<User?> GetForAuthenticationAsync(
         TenantId tenantId,
+        string email,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Every active account using this email, across all businesses. Sign-in runs
+    /// before a tenant is known, so this deliberately crosses the tenant filter;
+    /// the caller must still verify the password for each account it returns.
+    /// </summary>
+    Task<IReadOnlyList<User>> FindByEmailAcrossBusinessesAsync(
         string email,
         CancellationToken cancellationToken = default);
 

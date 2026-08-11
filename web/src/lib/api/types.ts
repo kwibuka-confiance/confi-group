@@ -52,6 +52,31 @@ export interface Product {
   isActive: boolean;
 }
 
+/** A business offered when credentials unlock more than one. */
+export interface BusinessSummary {
+  tenantId: string;
+  name: string;
+  slug: string;
+}
+
+/**
+ * Sign-in returns one of two shapes, told apart by `status`: a session, or the
+ * businesses to choose between.
+ */
+export interface SignInResponse {
+  status: 'authenticated' | 'select_business';
+  accessToken: string | null;
+  expiresAt: string | null;
+  userId: string | null;
+  tenantId: string | null;
+  businessName: string | null;
+  fullName: string | null;
+  email: string | null;
+  permissions: string[] | null;
+  selectionToken: string | null;
+  businesses: BusinessSummary[] | null;
+}
+
 export interface Session {
   accessToken: string;
   expiresAt: string;

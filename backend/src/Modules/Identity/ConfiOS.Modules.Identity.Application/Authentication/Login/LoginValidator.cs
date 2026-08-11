@@ -11,10 +11,6 @@ public sealed class LoginValidator : IValidator<LoginCommand>
 
         var result = ValidationResult.Valid();
         result.AddIf(
-            string.IsNullOrWhiteSpace(request.BusinessHandle),
-            nameof(request.BusinessHandle),
-            ValidationCodes.Required);
-        result.AddIf(
             string.IsNullOrWhiteSpace(request.Email),
             nameof(request.Email),
             ValidationCodes.Required);

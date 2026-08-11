@@ -1,92 +1,109 @@
-using ConfiOS.BuildingBlocks.Application.Abstractions;
 using ConfiOS.BuildingBlocks.Application.Messaging;
 using ConfiOS.BuildingBlocks.Domain.Errors;
-using ConfiOS.BuildingBlocks.Domain.Primitives;
 using ConfiOS.Modules.Identity.Application.Abstractions;
 using ConfiOS.Modules.Identity.Domain;
+using ConfiOS.Modules.Identity.Domain.Tenants;
 using ConfiOS.Modules.Identity.Domain.Users;
 
 namespace ConfiOS.Modules.Identity.Application.Authentication.Login;
 
 /// <summary>
-/// Verifies a user's credentials and issues an access token.
+/// Verifies credentials and either issues a session or asks which business to
+/// continue into.
 /// </summary>
 /// <remarks>
-/// Every failure — unknown business, unknown user, deactivated account, wrong password —
-/// returns the same <c>INVALID_CREDENTIALS</c> so sign-in cannot be used to discover which
-/// businesses, emails or accounts exist.
+/// Accounts are per business, so one email can exist several times with its own
+/// password each. The password is therefore checked against every account using
+/// that email, and only the businesses it actually unlocks are offered — a
+/// password for one business never reveals another.
+/// <para>
+/// Every failure returns the same <c>INVALID_CREDENTIALS</c>, so sign-in cannot be
+/// used to discover which businesses, emails or accounts exist.
+/// </para>
 /// </remarks>
-/// <param name="tenants">Resolves the tenant from its handle, above the tenant filter.</param>
-/// <param name="users">Loads the user for authentication.</param>
-/// <param name="passwordHasher">Verifies the password against the stored hash.</param>
-/// <param name="permissions">Gathers the user's permissions for the token.</param>
-/// <param name="tokenGenerator">Signs the access token.</param>
-/// <param name="clock">Records the sign-in time.</param>
-/// <param name="unitOfWork">Persists the sign-in timestamp.</param>
+/// <param name="tenants">Resolves businesses, above the tenant filter.</param>
+/// <param name="users">Finds the accounts using an email.</param>
+/// <param name="passwordHasher">Verifies the password against each stored hash.</param>
+/// <param name="selectionTokens">Carries the completed password check to the second step.</param>
+/// <param name="sessionIssuer">Issues the session once one business is settled on.</param>
 public sealed class LoginHandler(
     ITenantRepository tenants,
     IUserRepository users,
     IPasswordHasher passwordHasher,
-    IPermissionService permissions,
-    IAccessTokenGenerator tokenGenerator,
-    IClock clock,
-    IIdentityUnitOfWork unitOfWork) : ICommandHandler<LoginCommand, LoginResult>
+    IBusinessSelectionTokens selectionTokens,
+    SessionIssuer sessionIssuer) : ICommandHandler<LoginCommand, SignInOutcome>
 {
-    public async Task<Result<LoginResult>> HandleAsync(
+    public async Task<Result<SignInOutcome>> HandleAsync(
         LoginCommand command,
         CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(command);
 
-        var invalid = Result.Failure<LoginResult>(
+        var invalid = Result.Failure<SignInOutcome>(
             Error.Unauthorized(IdentityErrorCodes.InvalidCredentials));
 
-        var handle = command.BusinessHandle.Trim().ToLowerInvariant();
-        var tenant = await tenants.GetBySlugAsync(handle, cancellationToken).ConfigureAwait(false);
-        if (tenant is null)
-        {
-            return invalid;
-        }
-
         var email = command.Email.Trim().ToLowerInvariant();
-        var user = await users
-            .GetForAuthenticationAsync(tenant.TenantId, email, cancellationToken)
+
+        var candidates = await users
+            .FindByEmailAcrossBusinessesAsync(email, cancellationToken)
             .ConfigureAwait(false);
 
-        if (user is null || user.Status != UserStatus.Active)
+        // Only accounts whose own password matches are ever revealed.
+        var verified = candidates
+            .Where(user => user.Status == UserStatus.Active)
+            .Where(user => passwordHasher.Verify(command.Password, user.PasswordHash))
+            .ToList();
+
+        if (verified.Count == 0)
         {
             return invalid;
         }
 
-        if (!passwordHasher.Verify(command.Password, user.PasswordHash))
-        {
-            return invalid;
-        }
-
-        var userId = UserId.From(user.Id);
-        var granted = await permissions
-            .GetPermissionsAsync(userId, tenant.TenantId, cancellationToken)
+        var businesses = await tenants
+            .GetManyAsync(verified.Select(user => user.TenantId).ToList(), cancellationToken)
             .ConfigureAwait(false);
 
-        var token = tokenGenerator.Generate(new AccessTokenClaims(
-            tenant.TenantId,
-            userId,
-            user.Email.Value,
-            tenant.Settings.Currency.Code,
-            tenant.Settings.TimeZoneId,
-            granted));
+        var byTenant = businesses.ToDictionary(tenant => tenant.Id);
 
-        user.RecordSignIn(clock.UtcNow);
-        await unitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+        // A handle was supplied, so there is nothing to choose.
+        if (!string.IsNullOrWhiteSpace(command.BusinessHandle))
+        {
+            var handle = command.BusinessHandle.Trim().ToLowerInvariant();
+            var match = businesses.FirstOrDefault(tenant =>
+                string.Equals(tenant.Slug, handle, StringComparison.Ordinal));
 
-        return Result.Success(new LoginResult(
-            token.Value,
-            token.ExpiresAt,
-            user.Id,
-            tenant.Id,
-            tenant.Name,
-            user.FullName,
-            user.Email.Value,
-            granted));
+            if (match is null)
+            {
+                return invalid;
+            }
+
+            return await AuthenticateAsync(match, verified, cancellationToken).ConfigureAwait(false);
+        }
+
+        if (verified.Count == 1 && byTenant.TryGetValue(verified[0].TenantId, out var only))
+        {
+            return await AuthenticateAsync(only, verified, cancellationToken).ConfigureAwait(false);
+        }
+
+        var selection = selectionTokens.Issue(email, verified.Select(user => user.TenantId).ToList());
+
+        IReadOnlyList<BusinessOption> options = businesses
+            .OrderBy(tenant => tenant.Name, StringComparer.OrdinalIgnoreCase)
+            .Select(tenant => new BusinessOption(tenant.Id, tenant.Name, tenant.Slug))
+            .ToList();
+
+        return Result.Success<SignInOutcome>(
+            new SignInOutcome.ChoiceRequired(selection.Value, selection.ExpiresAt, options));
+    }
+
+    private async Task<Result<SignInOutcome>> AuthenticateAsync(
+        Tenant tenant,
+        IReadOnlyList<User> verified,
+        CancellationToken cancellationToken)
+    {
+        var user = verified.First(candidate => candidate.TenantId == tenant.Id);
+        var session = await sessionIssuer.IssueAsync(tenant, user, cancellationToken).ConfigureAwait(false);
+
+        return Result.Success<SignInOutcome>(new SignInOutcome.Authenticated(session));
     }
 }

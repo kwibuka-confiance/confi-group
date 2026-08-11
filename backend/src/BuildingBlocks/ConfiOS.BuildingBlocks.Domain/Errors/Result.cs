@@ -51,4 +51,16 @@ public class Result<TValue> : Result
         : throw new InvalidOperationException("The value of a failed result cannot be read.");
 
     public static implicit operator Result<TValue>(TValue value) => Success(value);
+
+    /// <summary>
+    /// Projects the value of a successful result, carrying a failure through
+    /// untouched. Lets an endpoint shape a handler's value into a response
+    /// without unwrapping and re-wrapping the result by hand.
+    /// </summary>
+    public Result<TNext> Map<TNext>(Func<TValue, TNext> selector)
+    {
+        ArgumentNullException.ThrowIfNull(selector);
+
+        return IsSuccess ? Success(selector(Value)) : Failure<TNext>(Error);
+    }
 }
