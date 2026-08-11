@@ -78,6 +78,13 @@ function CredentialsForm({ dict, state, formAction, pending }: CredentialsFormPr
       >
         {pending ? dict.auth.signingIn : dict.auth.signIn}
       </button>
+
+      <p className="mt-5 text-center text-sm text-ink-muted">
+        {dict.signUp.newHere}{' '}
+        <a href="/sign-up" className="font-semibold text-brand hover:underline">
+          {dict.signUp.createLink}
+        </a>
+      </p>
     </motion.form>
   );
 }
