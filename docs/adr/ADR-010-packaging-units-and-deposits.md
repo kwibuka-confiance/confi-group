@@ -31,9 +31,18 @@ exists.
 A product has one **base unit** that stock is held in, plus any number of
 **packagings** that convert to it.
 
-- `Mutsig Large 650ml` — base unit `BOTTLE`; packaging `CASE` = 12 bottles.
-- `Mutsig Mid 500ml` — base unit `BOTTLE`; packaging `CASE` = 20 bottles.
-- `Mutsig Small 330ml` — base unit `BOTTLE`; packaging `CASE` = 24 bottles.
+- `Mutsig Large 650ml` — base unit `BOTTLE`; packaging `CRATE` = 12 bottles.
+- `Mutsig Mid 500ml` — base unit `BOTTLE`; packaging `CRATE` = 20 bottles.
+- `Mutsig Small 330ml` — base unit `BOTTLE`; packaging `CRATE` = 24 bottles.
+
+Selling happens in crates and in quarters of a crate, so a sale of three quarters
+of Mutsig Small is 18 bottles. The bottle stays the counting unit because it is
+the indivisible physical thing; every screen still speaks in crates.
+
+A quarter only exists if it resolves to whole bottles. Twelve, twenty and
+twenty-four all divide by four, but a crate of ten would make a quarter two and a
+half bottles. A pack size that cannot be quartered must not offer quarters, and
+that is checked when the product is set up rather than at the counter.
 
 Stock is always recorded in the base unit. Buying 100 cases of Mutsig Large adds
 1,200 bottles; selling one case removes 12; selling three loose bottles removes 3.
@@ -44,14 +53,30 @@ Each packaging carries **its own selling and cost price** and **its own barcode*
 because a case is priced below twelve singles and scans to a different code. This
 is why the domain model lists barcodes and prices in the plural.
 
-### Containers are catalog items with a deposit
+### The crate is a unit, not a container that moves
 
-A returnable crate or bottle is itself a catalog item with a deposit value. A
-packaging may reference the container it ships in.
+At KwaConfi no crate leaves the depot. Customers arrive with their own crate,
+hand over empty bottles and leave with filled ones in the same crate. A part-crate
+(a quarter, half or three quarters) goes out as loose bottles into whatever the
+customer brought.
 
-- Selling a case issues the container and charges its deposit.
-- Returning empties refunds the deposit and takes the containers back into stock.
-- Empty containers are ordinary stock: countable, and visible in inventory.
+So `CRATE` is a **unit of measure only** — a way of saying "24 bottles" for
+counting and pricing. It is not modelled as a container, carries no deposit, and
+is never tracked against a customer.
+
+### The bottle is the returnable, tracked as a balance
+
+The exchange is bottle for bottle, so what matters is **how many bottles a
+customer is holding**, not a payment on every transaction.
+
+- Bring 24 empties, take 24 full → balance unchanged, the customer pays for the
+  drink only.
+- Bring 18, take 24 → the customer now holds 6 more of your bottles.
+- Bring 30, take 24 → you hold 6 of theirs.
+
+Each customer therefore has a **running bottle balance**. A deposit is the way an
+imbalance is settled, not something charged on every sale. Empty bottles held at
+the depot are ordinary stock and are counted like anything else.
 
 A deposit is a **liability, not revenue**. It is money held that may be repaid, so
 reporting must never fold deposits into sales figures.
@@ -70,8 +95,11 @@ concepts in the platform, which keeps CLAUDE.md's industry-agnostic rule intact.
   happens once, at the edge of the domain.
 - Inventory holds one figure per product, in the base unit, and reports it in
   whichever unit the user asked for.
-- Sales gains deposit lines distinct from product lines, and a path for returning
-  empties that is not a refund of a sale.
+- Sales records the empties handed in alongside what is taken out, and adjusts the
+  customer's bottle balance by the difference. Returning empties is its own
+  transaction, not a refund of a sale.
+- Customers gain a bottle balance, which is where the exchange is actually
+  settled.
 - Reporting must separate revenue from deposit movements, or margin will be wrong.
 - Changing a packaging's conversion after stock exists rewrites the meaning of
   historical quantities, so conversions are fixed once a product has movements.
