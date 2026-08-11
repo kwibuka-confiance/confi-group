@@ -1,10 +1,11 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { LogOut, Store } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
+import { BusinessSwitcher } from './business-switcher';
 import type { NavGroup } from './nav-config';
 import { initialsOf } from '@/lib/format';
 import type { Dictionary } from '@/lib/i18n/dictionaries';
@@ -13,11 +14,12 @@ interface SidebarProps {
   groups: NavGroup[];
   dict: Dictionary;
   user: { fullName: string; email: string };
+  business: { name: string; tenantId: string };
   /** Closes the drawer after navigating on small screens. */
   onNavigate?: () => void;
 }
 
-export function Sidebar({ groups, dict, user, onNavigate }: SidebarProps) {
+export function Sidebar({ groups, dict, user, business, onNavigate }: SidebarProps) {
   const pathname = usePathname();
 
   return (
@@ -25,11 +27,13 @@ export function Sidebar({ groups, dict, user, onNavigate }: SidebarProps) {
       aria-label={dict.nav.groupMain}
       className="flex h-full flex-col rounded-2xl bg-rail text-white/80"
     >
-      <div className="flex items-center gap-3 px-5 pt-6 pb-2">
-        <span className="grid size-9 place-items-center rounded-xl bg-brand text-white">
-          <Store size={19} aria-hidden />
-        </span>
-        <span className="font-display text-lg font-bold text-white">{dict.appName}</span>
+      <div className="px-3 pt-4 pb-1">
+        <p className="px-2 pb-2 font-display text-base font-bold text-white/90">{dict.appName}</p>
+        <BusinessSwitcher
+          dict={dict}
+          businessName={business.name}
+          tenantId={business.tenantId}
+        />
       </div>
 
       <div className="flex-1 overflow-y-auto px-3 py-2">

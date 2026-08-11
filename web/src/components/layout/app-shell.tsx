@@ -13,6 +13,7 @@ import type { Dictionary } from '@/lib/i18n/dictionaries';
 interface AppShellProps {
   dict: Dictionary;
   user: { fullName: string; email: string };
+  business: { name: string; tenantId: string };
   children: ReactNode;
 }
 
@@ -20,7 +21,7 @@ interface AppShellProps {
  * The signed-in frame: a dark rail beside a light content panel. The rail is
  * inline from `lg` up and moves into a drawer below it.
  */
-export function AppShell({ dict, user, children }: AppShellProps) {
+export function AppShell({ dict, user, business, children }: AppShellProps) {
   const [opened, setOpened] = useState(false);
   const open = () => setOpened(true);
   const close = () => setOpened(false);
@@ -45,7 +46,7 @@ export function AppShell({ dict, user, children }: AppShellProps) {
   return (
     <div className="flex min-h-dvh gap-3 bg-page p-0 lg:p-3">
       <aside className="hidden w-[264px] shrink-0 lg:block">
-        <Sidebar groups={groups} dict={dict} user={user} />
+        <Sidebar groups={groups} dict={dict} user={user} business={business} />
       </aside>
 
       {/* Navigation drawer for narrow screens. Hand-rolled so there is no portal
@@ -59,7 +60,7 @@ export function AppShell({ dict, user, children }: AppShellProps) {
             className="absolute inset-0 cursor-default bg-black/50"
           />
           <div className="absolute inset-y-0 left-0 w-[264px]">
-            <Sidebar groups={groups} dict={dict} user={user} onNavigate={close} />
+            <Sidebar groups={groups} dict={dict} user={user} business={business} onNavigate={close} />
           </div>
         </div>
       )}

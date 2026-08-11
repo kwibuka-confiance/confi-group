@@ -18,7 +18,11 @@ export default async function DashboardLayout({ children }: { children: ReactNod
   const dict = getDictionary();
 
   return (
-    <AppShell dict={dict} user={{ fullName: session.fullName, email: session.email }}>
+    <AppShell
+      dict={dict}
+      user={{ fullName: session.fullName, email: session.email }}
+      business={{ name: session.businessName, tenantId: session.tenantId }}
+    >
       {children}
     </AppShell>
   );

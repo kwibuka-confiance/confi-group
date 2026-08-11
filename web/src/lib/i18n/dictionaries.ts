@@ -14,6 +14,18 @@ export function isLocale(value: string | undefined): value is Locale {
 
 const en = {
   appName: 'ConfiOS',
+  business: {
+    switchAction: 'Switch business',
+    switchTitle: 'Switch business',
+    switchPrompt:
+      'Each business has its own account, so confirm your password to see the others.',
+    continue: 'Continue',
+    checking: 'Checking…',
+    chooseHint: 'Choose the business to open.',
+    currentBadge: 'Currently open',
+    onlyOne: 'This password only opens the business you are already in.',
+    countHint: '{count} businesses use this email and password.',
+  },
   nav: {
     groupMain: 'Main',
     groupOperations: 'Operations',
@@ -169,6 +181,18 @@ export type Dictionary = typeof en;
 
 const rw: Dictionary = {
   appName: 'ConfiOS',
+  business: {
+    switchAction: 'Hindura ubucuruzi',
+    switchTitle: 'Hindura ubucuruzi',
+    switchPrompt:
+      'Buri bucuruzi bufite konti yabwo, andika ijambobanga kugira ubone ubundi.',
+    continue: 'Komeza',
+    checking: 'Turimo kugenzura…',
+    chooseHint: 'Hitamo ubucuruzi ushaka gufungura.',
+    currentBadge: 'Ubufunguye ubu',
+    onlyOne: 'Iri jambobanga rifungura gusa ubucuruzi urimo.',
+    countHint: 'Ubucuruzi {count} bukoresha iyi imeri n’iri jambobanga.',
+  },
   nav: {
     groupMain: 'Ibanze',
     groupOperations: 'Ibikorwa',
@@ -316,6 +340,18 @@ const rw: Dictionary = {
 
 const fr: Dictionary = {
   appName: 'ConfiOS',
+  business: {
+    switchAction: 'Changer d’entreprise',
+    switchTitle: 'Changer d’entreprise',
+    switchPrompt:
+      'Chaque entreprise a son propre compte : confirmez votre mot de passe pour voir les autres.',
+    continue: 'Continuer',
+    checking: 'Vérification…',
+    chooseHint: 'Choisissez l’entreprise à ouvrir.',
+    currentBadge: 'Actuellement ouverte',
+    onlyOne: 'Ce mot de passe n’ouvre que l’entreprise où vous êtes déjà.',
+    countHint: '{count} entreprises utilisent cet e-mail et ce mot de passe.',
+  },
   nav: {
     groupMain: 'Principal',
     groupOperations: 'Opérations',
