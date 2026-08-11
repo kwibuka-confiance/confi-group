@@ -11,7 +11,7 @@ import { theme } from '@/theme/mantine-theme';
  */
 export function Providers({ children }: { children: ReactNode }) {
   return (
-    <MantineProvider theme={theme} defaultColorScheme="auto">
+    <MantineProvider theme={theme} defaultColorScheme="light">
       {children}
     </MantineProvider>
   );

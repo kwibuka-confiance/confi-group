@@ -4,6 +4,8 @@ import { motion } from 'framer-motion';
 import { CheckCircle2, Package, Plus, Search, SearchX } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
+import { AddProductModal } from './add-product-modal';
+
 import { formatMoney } from '@/lib/format';
 import type { Product } from '@/lib/api/types';
 import { format, type Dictionary, type Locale } from '@/lib/i18n/dictionaries';
@@ -20,6 +22,7 @@ interface ProductsTableProps {
  */
 export function ProductsTable({ products, dict, locale }: ProductsTableProps) {
   const [query, setQuery] = useState('');
+  const [adding, setAdding] = useState(false);
 
   const visible = useMemo(() => {
     const needle = query.trim().toLowerCase();
@@ -62,6 +65,7 @@ export function ProductsTable({ products, dict, locale }: ProductsTableProps) {
 
           <button
             type="button"
+            onClick={() => setAdding(true)}
             className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-strong"
           >
             <Plus size={17} aria-hidden />
@@ -71,7 +75,7 @@ export function ProductsTable({ products, dict, locale }: ProductsTableProps) {
       </div>
 
       {products.length === 0 ? (
-        <EmptyState dict={dict} />
+        <EmptyState dict={dict} onAdd={() => setAdding(true)} />
       ) : visible.length === 0 ? (
         <NoMatches dict={dict} />
       ) : (
@@ -137,6 +141,8 @@ export function ProductsTable({ products, dict, locale }: ProductsTableProps) {
           </table>
         </div>
       )}
+
+      <AddProductModal opened={adding} onClose={() => setAdding(false)} dict={dict} />
     </div>
   );
 }
@@ -155,7 +161,7 @@ function StatusBadge({ isActive, dict }: { isActive: boolean; dict: Dictionary }
   );
 }
 
-function EmptyState({ dict }: { dict: Dictionary }) {
+function EmptyState({ dict, onAdd }: { dict: Dictionary; onAdd: () => void }) {
   return (
     <div className="grid flex-1 place-items-center px-6 py-16 text-center">
       <div>
@@ -164,6 +170,13 @@ function EmptyState({ dict }: { dict: Dictionary }) {
         </span>
         <h2 className="mt-4 font-display text-lg font-bold text-ink">{dict.products.empty}</h2>
         <p className="mt-1 text-sm text-ink-muted">{dict.products.emptyHint}</p>
+        <button
+          type="button"
+          onClick={onAdd}
+          className="mt-5 rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-strong"
+        >
+          {dict.products.add}
+        </button>
       </div>
     </div>
   );
