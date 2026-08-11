@@ -1,10 +1,8 @@
 'use client';
 
-import { Drawer } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
 import { Menu } from 'lucide-react';
 import { usePathname } from 'next/navigation';
-import type { ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 
 import { buildNav } from './nav-config';
 import { Sidebar } from './sidebar';
@@ -23,8 +21,20 @@ interface AppShellProps {
  * inline from `lg` up and moves into a drawer below it.
  */
 export function AppShell({ dict, user, children }: AppShellProps) {
-  const [opened, { open, close }] = useDisclosure(false);
+  const [opened, setOpened] = useState(false);
+  const open = () => setOpened(true);
+  const close = () => setOpened(false);
   const pathname = usePathname();
+
+  // Escape closes the navigation drawer, as people expect of an overlay.
+  useEffect(() => {
+    if (!opened) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') close();
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [opened]);
   const groups = buildNav(dict);
 
   // The header names the current section, so it stays in step with the rail.
@@ -38,17 +48,21 @@ export function AppShell({ dict, user, children }: AppShellProps) {
         <Sidebar groups={groups} dict={dict} user={user} />
       </aside>
 
-      <Drawer
-        opened={opened}
-        onClose={close}
-        size={264}
-        padding={0}
-        withCloseButton={false}
-        classNames={{ content: 'bg-rail', body: 'h-full p-0' }}
-        aria-label={dict.nav.openMenu}
-      >
-        <Sidebar groups={groups} dict={dict} user={user} onNavigate={close} />
-      </Drawer>
+      {/* Navigation drawer for narrow screens. Hand-rolled so there is no portal
+          to go wrong and the rail keeps its own styling. */}
+      {opened && (
+        <div className="fixed inset-0 z-50 lg:hidden">
+          <button
+            type="button"
+            aria-label={dict.nav.openMenu}
+            onClick={close}
+            className="absolute inset-0 cursor-default bg-black/50"
+          />
+          <div className="absolute inset-y-0 left-0 w-[264px]">
+            <Sidebar groups={groups} dict={dict} user={user} onNavigate={close} />
+          </div>
+        </div>
+      )}
 
       <main className="flex min-w-0 flex-1 flex-col overflow-hidden border-line bg-panel lg:rounded-2xl lg:border">
         <header className="flex items-center gap-2 border-b border-line px-3 py-2.5 sm:px-4">

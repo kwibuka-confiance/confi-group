@@ -20,8 +20,8 @@
   --ink-muted: #5b6b66;
 }
 
-/* Mantine stamps the scheme on <html>, so the tokens follow its switch. */
-:root[data-mantine-color-scheme='dark'] {
+/* The theme provider stamps data-theme on <html>. */
+:root[data-theme='dark'] {
   --page: #0a1210;
   --panel: #101a17;
   --panel-muted: #16211e;
