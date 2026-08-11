@@ -20,8 +20,24 @@ public sealed class GetProductsHandler(IProductRepository products)
                 product.Id,
                 product.Name,
                 product.Sku,
+                product.Description,
                 product.Price.Amount,
+                product.CostPrice?.Amount,
                 product.Price.Currency.Code,
+                product.BaseUnitCode,
+                product.TaxClass.ToString(),
+                product.IsReturnable,
+                product.DepositPerBaseUnit?.Amount,
+                product.Packagings
+                    .OrderBy(packaging => packaging.QuantityInBaseUnit)
+                    .Select(packaging => new PackagingSummary(
+                        packaging.UnitCode,
+                        packaging.QuantityInBaseUnit,
+                        packaging.SellingPrice.Amount,
+                        packaging.CostPrice?.Amount,
+                        packaging.Barcode,
+                        packaging.AllowsQuarters))
+                    .ToList(),
                 product.IsActive))
             .ToList();
 

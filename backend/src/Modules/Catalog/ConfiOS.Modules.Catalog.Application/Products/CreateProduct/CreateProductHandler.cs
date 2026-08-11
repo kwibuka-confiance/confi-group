@@ -30,12 +30,55 @@ public sealed class CreateProductHandler(
             return Result.Failure<Guid>(Error.Conflict(CatalogErrorCodes.ProductSkuTaken));
         }
 
-        var price = Money.Of(command.PriceAmount, command.CurrencyCode);
-        var product = Product.Create(tenantContext.TenantId, command.Name, sku, price);
+        var currency = Currency.FromCode(command.CurrencyCode);
+        Money Amount(decimal value) => Money.Of(value, currency);
+
+        var product = Product.Create(
+            tenantContext.TenantId,
+            command.Name,
+            sku,
+            Amount(command.PriceAmount),
+            command.BaseUnitCode,
+            command.Description);
+
+        if (command.CostAmount is { } cost)
+        {
+            product.SetCostPrice(Amount(cost));
+        }
+
+        if (TryParseTaxClass(command.TaxClass, out var taxClass))
+        {
+            product.SetTaxClass(taxClass);
+        }
+
+        // A deposit is what marks a base unit as returnable: it is the amount that
+        // settles the exchange when a customer takes more than they bring back.
+        if (command.DepositAmount is { } deposit)
+        {
+            product.MakeReturnable(Amount(deposit));
+        }
+
+        foreach (var packaging in command.Packagings ?? [])
+        {
+            product.AddPackaging(Packaging.Create(
+                packaging.UnitCode,
+                packaging.QuantityInBaseUnit,
+                Amount(packaging.SellingPriceAmount),
+                packaging.CostAmount is { } packagingCost ? Amount(packagingCost) : null,
+                packaging.Barcode));
+        }
 
         products.Add(product);
         await unitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         return Result.Success(product.Id);
+    }
+
+    /// <summary>Unrecognised values fall back to the standard rate rather than failing.</summary>
+    private static bool TryParseTaxClass(string? value, out TaxClass taxClass)
+    {
+        taxClass = TaxClass.Standard;
+        return !string.IsNullOrWhiteSpace(value)
+            && Enum.TryParse(value, ignoreCase: true, out taxClass);
     }
 }

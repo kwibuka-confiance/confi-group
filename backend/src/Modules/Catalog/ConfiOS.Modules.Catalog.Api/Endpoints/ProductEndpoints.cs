@@ -60,7 +60,20 @@ public static class ProductEndpoints
                 request.Name,
                 request.Sku,
                 request.PriceAmount,
-                request.CurrencyCode),
+                request.CurrencyCode,
+                request.BaseUnitCode,
+                request.Description,
+                request.CostAmount,
+                request.TaxClass,
+                request.DepositAmount,
+                request.Packagings
+                    ?.Select(packaging => new PackagingInput(
+                        packaging.UnitCode,
+                        packaging.QuantityInBaseUnit,
+                        packaging.SellingPriceAmount,
+                        packaging.CostAmount,
+                        packaging.Barcode))
+                    .ToList()),
             cancellationToken).ConfigureAwait(false);
 
         return result.ToHttpResult(httpContext, localizer, successStatusCode: StatusCodes.Status201Created);
