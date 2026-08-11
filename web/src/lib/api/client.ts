@@ -3,7 +3,7 @@ import { ApiError, ApiErrorCodes, type ApiErrorBody, type ApiResponse } from './
 const BASE_URL = process.env.API_BASE_URL ?? 'http://localhost:5080';
 
 interface RequestOptions {
-  method?: 'GET' | 'POST';
+  method?: 'GET' | 'POST' | 'PUT';
   body?: unknown;
   /** Bearer token for authenticated calls. */
   token?: string;
@@ -54,6 +54,12 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
       error.details?.failures ?? {},
       error.traceId,
     );
+  }
+
+  // A 204 carries no body, so there is no envelope to unwrap. Callers that expect
+  // nothing back get undefined; reading `.data` off null would throw instead.
+  if (response.status === 204 || payload === null) {
+    return undefined as T;
   }
 
   return (payload as ApiResponse<T>).data;

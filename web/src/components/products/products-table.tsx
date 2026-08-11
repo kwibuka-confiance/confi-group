@@ -1,11 +1,12 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { CheckCircle2, Package, Plus, Search, SearchX } from 'lucide-react';
+import { ArchiveRestore, CheckCircle2, Package, PackageX, Pencil, Plus, Search, SearchX } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
-import { AddProductModal } from './add-product-modal';
+import { ProductFormModal } from './product-form-modal';
 
+import { setProductStatusAction } from '@/app/(dashboard)/products/actions';
 import { formatMoney } from '@/lib/format';
 import type { Product } from '@/lib/api/types';
 import { format, type Dictionary, type Locale } from '@/lib/i18n/dictionaries';
@@ -23,6 +24,11 @@ interface ProductsTableProps {
 export function ProductsTable({ products, dict, locale }: ProductsTableProps) {
   const [query, setQuery] = useState('');
   const [adding, setAdding] = useState(false);
+
+  // The product being corrected. Held by id rather than by value so the dialog
+  // always reflects the row as the server last sent it.
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const editing = products.find((product) => product.id === editingId);
 
   const visible = useMemo(() => {
     const needle = query.trim().toLowerCase();
@@ -92,8 +98,11 @@ export function ProductsTable({ products, dict, locale }: ProductsTableProps) {
                 <th scope="col" className="px-3 py-3 text-right font-bold">
                   {dict.products.columnPrice}
                 </th>
-                <th scope="col" className="py-3 pr-4 pl-3 text-right font-bold sm:pr-6">
+                <th scope="col" className="px-3 py-3 text-right font-bold">
                   {dict.products.columnStatus}
+                </th>
+                <th scope="col" className="py-3 pr-4 pl-3 text-right font-bold sm:pr-6">
+                  <span className="sr-only">{dict.products.rowActions}</span>
                 </th>
               </tr>
             </thead>
@@ -133,8 +142,15 @@ export function ProductsTable({ products, dict, locale }: ProductsTableProps) {
                     <td className="px-3 py-3 text-right text-sm font-bold text-ink tabular-nums">
                       {formatMoney(product.priceAmount, product.currencyCode, locale)}
                     </td>
-                    <td className="py-3 pr-4 pl-3 text-right sm:pr-6">
+                    <td className="px-3 py-3 text-right">
                       <StatusBadge isActive={product.isActive} dict={dict} />
+                    </td>
+                    <td className="py-3 pr-4 pl-3 text-right sm:pr-6">
+                      <RowActions
+                        product={product}
+                        dict={dict}
+                        onEdit={() => setEditingId(product.id)}
+                      />
                     </td>
                   </motion.tr>
               ))}
@@ -143,7 +159,64 @@ export function ProductsTable({ products, dict, locale }: ProductsTableProps) {
         </div>
       )}
 
-      {adding && <AddProductModal onClose={() => setAdding(false)} dict={dict} />}
+      {adding && <ProductFormModal onClose={() => setAdding(false)} dict={dict} />}
+
+      {editing && (
+        <ProductFormModal
+          key={editing.id}
+          product={editing}
+          onClose={() => setEditingId(null)}
+          dict={dict}
+        />
+      )}
+    </div>
+  );
+}
+
+/**
+ * Correct a product, or take it out of sale.
+ *
+ * Archiving posts a form rather than calling on click, so it still works before
+ * hydration and the table re-renders from the server afterwards.
+ */
+function RowActions({
+  product,
+  dict,
+  onEdit,
+}: {
+  product: Product;
+  dict: Dictionary;
+  onEdit: () => void;
+}) {
+  const withdraw = product.isActive;
+
+  return (
+    <div className="flex items-center justify-end gap-1">
+      <button
+        type="button"
+        onClick={onEdit}
+        aria-label={format(dict.products.editLabel, { name: product.name })}
+        title={dict.products.editTitle}
+        className="grid size-8 place-items-center rounded-lg text-ink-muted transition-colors hover:bg-panel-muted hover:text-ink"
+      >
+        <Pencil size={16} aria-hidden />
+      </button>
+
+      <form action={setProductStatusAction}>
+        <input type="hidden" name="productId" value={product.id} />
+        <input type="hidden" name="isActive" value={withdraw ? 'false' : 'true'} />
+        <button
+          type="submit"
+          aria-label={format(
+            withdraw ? dict.products.archiveLabel : dict.products.restoreLabel,
+            { name: product.name },
+          )}
+          title={withdraw ? dict.products.archive : dict.products.restore}
+          className="grid size-8 place-items-center rounded-lg text-ink-muted transition-colors hover:bg-panel-muted hover:text-ink"
+        >
+          {withdraw ? <PackageX size={16} aria-hidden /> : <ArchiveRestore size={16} aria-hidden />}
+        </button>
+      </form>
     </div>
   );
 }

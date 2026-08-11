@@ -6,34 +6,49 @@ import { useActionState, useEffect, useId, useRef, useState } from 'react';
 
 import {
   createProductAction,
+  updateProductAction,
   type CreateProductState,
 } from '@/app/(dashboard)/products/actions';
+import type { Packaging, Product } from '@/lib/api/types';
 import { format, type Dictionary } from '@/lib/i18n/dictionaries';
 
 const initialState: CreateProductState = {};
 
-interface AddProductModalProps {
+interface ProductFormModalProps {
   onClose: () => void;
   dict: Dictionary;
+  /** Absent when adding; the product being corrected when editing. */
+  product?: Product;
 }
 
 /**
- * A self-contained dialog. Deliberately not a component-library modal: this
- * renders inline, so there is no portal to go wrong and the overlay is styled
- * with the same tokens as the rest of the panel.
+ * A self-contained dialog for adding a product or correcting one.
  *
- * The caller mounts this only while the dialog is open, so a half-filled form is
+ * Deliberately not a component-library modal: this renders inline, so there is no
+ * portal to go wrong and the overlay is styled with the same tokens as the rest of
+ * the panel. The caller mounts it only while open, so a half-filled form is
  * discarded on close without any state to reset by hand.
+ *
+ * Editing shows the whole record rather than a subset, because that is what is
+ * submitted: a pack removed here is a pack the business no longer sells.
  */
-export function AddProductModal({ onClose, dict }: AddProductModalProps) {
-  const [state, formAction, pending] = useActionState(createProductAction, initialState);
+export function ProductFormModal({ onClose, dict, product }: ProductFormModalProps) {
+  const editing = product !== undefined;
+  const [state, formAction, pending] = useActionState(
+    editing ? updateProductAction : createProductAction,
+    initialState,
+  );
 
-  // Rows are identified by key so removing one does not renumber the others.
-  const [packRows, setPackRows] = useState<number[]>([]);
-  const nextRowKey = useRef(0);
+  // Rows are identified by key so removing one does not renumber the others. The
+  // stored packs take the first keys; the counter carries on from there.
+  const storedPacks = product?.packagings ?? [];
+  const nextRowKey = useRef(storedPacks.length);
+  const [packRows, setPackRows] = useState<PackRow[]>(() =>
+    storedPacks.map((packaging, index) => ({ key: index, packaging })),
+  );
 
   // What the base unit is called drives the deposit label: "Deposit per BOTTLE".
-  const [baseUnit, setBaseUnit] = useState('');
+  const [baseUnit, setBaseUnit] = useState(product?.baseUnitCode ?? '');
 
   // Unmounting on success discards the form; there is no local state to clear.
   useEffect(() => {
@@ -71,7 +86,7 @@ export function AddProductModal({ onClose, dict }: AddProductModalProps) {
       >
         <div className="mb-4 flex items-center justify-between">
           <h2 id="add-product-title" className="font-display text-lg font-bold text-ink">
-            {dict.products.add}
+            {editing ? dict.products.editTitle : dict.products.add}
           </h2>
           <button
             type="button"
@@ -84,6 +99,8 @@ export function AddProductModal({ onClose, dict }: AddProductModalProps) {
         </div>
 
         <form action={formAction} className="space-y-5">
+          {editing && <input type="hidden" name="productId" value={product.id} />}
+
           {state.error && (
             <p
               role="alert"
@@ -95,20 +112,47 @@ export function AddProductModal({ onClose, dict }: AddProductModalProps) {
           )}
 
           <Section title={dict.products.basics}>
-            <Field name="name" label={dict.products.columnProduct} icon={Package} required autoFocus />
+            <Field
+              name="name"
+              label={dict.products.columnProduct}
+              icon={Package}
+              required
+              autoFocus
+              defaultValue={product?.name}
+            />
             <div className="grid grid-cols-2 gap-3">
-              <Field name="sku" label={dict.products.columnSku} icon={Hash} required />
               <Field
-                name="baseUnitCode"
-                label={dict.products.baseUnit}
-                hint={dict.products.baseUnitHint}
-                placeholder="EA"
-                maxLength={16}
-                value={baseUnit}
-                onChange={setBaseUnit}
+                name="sku"
+                label={dict.products.columnSku}
+                icon={Hash}
+                required
+                defaultValue={product?.sku}
               />
+              {editing ? (
+                // Stock is counted in the base unit and every pack is a multiple of
+                // it, so changing it would reinterpret quantities already recorded.
+                <ReadOnlyField
+                  label={dict.products.baseUnit}
+                  hint={dict.products.baseUnitLocked}
+                  value={product.baseUnitCode}
+                />
+              ) : (
+                <Field
+                  name="baseUnitCode"
+                  label={dict.products.baseUnit}
+                  hint={dict.products.baseUnitHint}
+                  placeholder="EA"
+                  maxLength={16}
+                  value={baseUnit}
+                  onChange={setBaseUnit}
+                />
+              )}
             </div>
-            <Field name="description" label={dict.products.descriptionLabel} />
+            <Field
+              name="description"
+              label={dict.products.descriptionLabel}
+              defaultValue={product?.description ?? undefined}
+            />
           </Section>
 
           <Section title={dict.products.pricing}>
@@ -121,6 +165,7 @@ export function AddProductModal({ onClose, dict }: AddProductModalProps) {
                 step="0.01"
                 min="0"
                 required
+                defaultValue={product?.priceAmount?.toString()}
               />
               <Field
                 name="costAmount"
@@ -128,8 +173,15 @@ export function AddProductModal({ onClose, dict }: AddProductModalProps) {
                 type="number"
                 step="0.01"
                 min="0"
+                defaultValue={product?.costAmount?.toString()}
               />
-              <Field name="currencyCode" label="ISO" defaultValue="RWF" maxLength={3} required />
+              <Field
+                name="currencyCode"
+                label="ISO"
+                defaultValue={product?.currencyCode ?? 'RWF'}
+                maxLength={3}
+                required
+              />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <label className="block">
@@ -138,7 +190,7 @@ export function AddProductModal({ onClose, dict }: AddProductModalProps) {
                 </span>
                 <select
                   name="taxClass"
-                  defaultValue="Standard"
+                  defaultValue={product?.taxClass ?? 'Standard'}
                   className="w-full rounded-xl border border-line bg-panel-muted px-3 py-2.5 text-sm text-ink"
                 >
                   <option value="Standard">{dict.products.taxStandard}</option>
@@ -153,14 +205,21 @@ export function AddProductModal({ onClose, dict }: AddProductModalProps) {
                 type="number"
                 step="0.01"
                 min="0"
+                defaultValue={product?.depositAmount?.toString()}
               />
             </div>
           </Section>
 
           <Section title={dict.products.packagingSection} hint={dict.products.packHint}>
-            {packRows.map((key) => (
+            {packRows.map(({ key, packaging }) => (
               <div key={key} className="grid grid-cols-[1fr_1fr_1.4fr_auto] items-end gap-2">
-                <Field name="packagingUnit" label={dict.products.packUnit} placeholder="CRATE" maxLength={16} />
+                <Field
+                  name="packagingUnit"
+                  label={dict.products.packUnit}
+                  placeholder="CRATE"
+                  maxLength={16}
+                  defaultValue={packaging?.unitCode}
+                />
                 <Field
                   name="packagingQuantity"
                   label={dict.products.packQuantity}
@@ -168,6 +227,7 @@ export function AddProductModal({ onClose, dict }: AddProductModalProps) {
                   min="1"
                   step="1"
                   placeholder="24"
+                  defaultValue={packaging?.quantityInBaseUnit?.toString()}
                 />
                 <Field
                   name="packagingPrice"
@@ -175,10 +235,11 @@ export function AddProductModal({ onClose, dict }: AddProductModalProps) {
                   type="number"
                   min="0"
                   step="0.01"
+                  defaultValue={packaging?.sellingPriceAmount?.toString()}
                 />
                 <button
                   type="button"
-                  onClick={() => setPackRows((rows) => rows.filter((row) => row !== key))}
+                  onClick={() => setPackRows((rows) => rows.filter((row) => row.key !== key))}
                   aria-label={dict.products.removePack}
                   title={dict.products.removePack}
                   className="mb-0.5 grid size-9 shrink-0 place-items-center rounded-lg text-ink-muted transition-colors hover:bg-panel-muted hover:text-ink"
@@ -190,7 +251,9 @@ export function AddProductModal({ onClose, dict }: AddProductModalProps) {
 
             <button
               type="button"
-              onClick={() => setPackRows((rows) => [...rows, nextRowKey.current++])}
+              onClick={() =>
+                setPackRows((rows) => [...rows, { key: nextRowKey.current++ }])
+              }
               className="inline-flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-sm font-semibold text-brand transition-colors hover:bg-brand-soft"
             >
               <Plus size={15} aria-hidden />
@@ -203,10 +266,33 @@ export function AddProductModal({ onClose, dict }: AddProductModalProps) {
             disabled={pending}
             className="w-full rounded-xl bg-brand px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-strong disabled:opacity-60"
           >
-            {pending ? dict.products.adding : dict.products.add}
+            {pending
+              ? dict.products.adding
+              : editing
+                ? dict.products.saveChanges
+                : dict.products.add}
           </button>
         </form>
       </motion.div>
+    </div>
+  );
+}
+
+/** A pack row. `packaging` is present for rows that came from the stored product. */
+interface PackRow {
+  key: number;
+  packaging?: Packaging;
+}
+
+/** Shows a value that cannot be changed, without submitting it. */
+function ReadOnlyField({ label, hint, value }: { label: string; hint: string; value: string }) {
+  return (
+    <div>
+      <span className="mb-1.5 block text-sm font-medium text-ink">{label}</span>
+      <p className="w-full rounded-xl border border-line border-dashed bg-panel-muted px-3 py-2.5 text-sm text-ink-muted">
+        {value}
+      </p>
+      <p className="mt-1 text-xs text-ink-muted">{hint}</p>
     </div>
   );
 }

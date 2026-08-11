@@ -46,6 +46,43 @@ export function createProduct(
   });
 }
 
+/**
+ * Everything needed to correct a product.
+ *
+ * A whole-record replacement, not a patch: an omitted optional field is cleared
+ * and the packagings sent become the complete set. The base unit is absent
+ * deliberately — stock is counted in it, so the API does not allow changing it.
+ */
+export type UpdateProductInput = Omit<CreateProductInput, 'baseUnitCode'>;
+
+export function updateProduct(
+  token: string,
+  id: string,
+  input: UpdateProductInput,
+  locale?: string,
+): Promise<void> {
+  return apiRequest<void>(`/api/v1/products/${id}`, {
+    method: 'PUT',
+    body: input,
+    token,
+    locale,
+  });
+}
+
+/** Withdraws a product from sale, or puts it back. Never deletes. */
+export function setProductStatus(
+  token: string,
+  id: string,
+  isActive: boolean,
+  locale?: string,
+): Promise<void> {
+  return apiRequest<void>(`/api/v1/products/${id}/${isActive ? 'restore' : 'archive'}`, {
+    method: 'POST',
+    token,
+    locale,
+  });
+}
+
 /** Figures the dashboard reports, derived only from what the API returned. */
 export interface CatalogSummary {
   total: number;

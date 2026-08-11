@@ -2,7 +2,13 @@
 
 import { revalidatePath } from 'next/cache';
 
-import { createProduct, type CreatePackagingInput } from '@/lib/api/catalog';
+import {
+  createProduct,
+  setProductStatus,
+  updateProduct,
+  type CreatePackagingInput,
+  type UpdateProductInput,
+} from '@/lib/api/catalog';
 import { ApiError } from '@/lib/api/types';
 import { readSession } from '@/lib/auth/session';
 import { getDictionary } from '@/lib/i18n/dictionaries';
@@ -50,23 +56,13 @@ function readPackagings(formData: FormData): CreatePackagingInput[] {
 }
 
 /**
- * Adds a product to the signed-in tenant's catalog.
- *
- * The catalog feeds both the products table and the dashboard figures, so both
- * are revalidated on success rather than leaving the dashboard stale.
+ * Reads the product fields common to adding and correcting, or returns the message
+ * to show when the form does not carry a usable product.
  */
-export async function createProductAction(
-  _previous: CreateProductState,
+function readProduct(
   formData: FormData,
-): Promise<CreateProductState> {
-  const locale = await readLocale();
-  const dict = getDictionary(locale);
-
-  const session = await readSession();
-  if (!session) {
-    return { error: dict.errors.unexpected };
-  }
-
+  dict: ReturnType<typeof getDictionary>,
+): { input: UpdateProductInput } | { error: string } {
   const name = text(formData, 'name');
   const sku = text(formData, 'sku');
   const currencyCode = text(formData, 'currencyCode')?.toUpperCase() ?? '';
@@ -97,21 +93,54 @@ export async function createProductAction(
     return { error: dict.products.packagingInvalid };
   }
 
+  return {
+    input: {
+      name,
+      sku,
+      priceAmount,
+      currencyCode,
+      description: text(formData, 'description'),
+      costAmount: number(formData, 'costAmount'),
+      taxClass: text(formData, 'taxClass'),
+      depositAmount: number(formData, 'depositAmount'),
+      packagings,
+    },
+  };
+}
+
+/** The catalog feeds the table and the dashboard figures, so both are refreshed. */
+function revalidateCatalog(): void {
+  revalidatePath('/products');
+  revalidatePath('/');
+}
+
+/**
+ * Adds a product to the signed-in tenant's catalog.
+ *
+ * The catalog feeds both the products table and the dashboard figures, so both
+ * are revalidated on success rather than leaving the dashboard stale.
+ */
+export async function createProductAction(
+  _previous: CreateProductState,
+  formData: FormData,
+): Promise<CreateProductState> {
+  const locale = await readLocale();
+  const dict = getDictionary(locale);
+
+  const session = await readSession();
+  if (!session) {
+    return { error: dict.errors.unexpected };
+  }
+
+  const parsed = readProduct(formData, dict);
+  if ('error' in parsed) {
+    return parsed;
+  }
+
   try {
     await createProduct(
       session.accessToken,
-      {
-        name,
-        sku,
-        priceAmount,
-        currencyCode,
-        baseUnitCode: text(formData, 'baseUnitCode'),
-        description: text(formData, 'description'),
-        costAmount: number(formData, 'costAmount'),
-        taxClass: text(formData, 'taxClass'),
-        depositAmount: number(formData, 'depositAmount'),
-        packagings,
-      },
+      { ...parsed.input, baseUnitCode: text(formData, 'baseUnitCode') },
       locale,
     );
   } catch (error) {
@@ -122,8 +151,81 @@ export async function createProductAction(
     return { error: dict.errors.unexpected };
   }
 
-  revalidatePath('/products');
-  revalidatePath('/');
+  revalidateCatalog();
 
   return { ok: true };
+}
+
+/**
+ * Corrects a product.
+ *
+ * The whole record is sent, so a field the person cleared is cleared here too and
+ * the packagings left in the form become the complete set. The base unit is not
+ * sent: the API refuses to change it, because stock is counted in it.
+ */
+export async function updateProductAction(
+  _previous: CreateProductState,
+  formData: FormData,
+): Promise<CreateProductState> {
+  const locale = await readLocale();
+  const dict = getDictionary(locale);
+
+  const session = await readSession();
+  if (!session) {
+    return { error: dict.errors.unexpected };
+  }
+
+  const productId = text(formData, 'productId');
+  if (!productId) {
+    return { error: dict.errors.unexpected };
+  }
+
+  const parsed = readProduct(formData, dict);
+  if ('error' in parsed) {
+    return parsed;
+  }
+
+  try {
+    await updateProduct(session.accessToken, productId, parsed.input, locale);
+  } catch (error) {
+    if (error instanceof ApiError) {
+      return { error: error.message, fieldErrors: error.fieldErrors };
+    }
+    return { error: dict.errors.unexpected };
+  }
+
+  revalidateCatalog();
+
+  return { ok: true };
+}
+
+/**
+ * Withdraws a product from sale, or puts it back.
+ *
+ * Archiving never deletes: the product stays on past orders and can be restored.
+ */
+export async function setProductStatusAction(formData: FormData): Promise<void> {
+  const locale = await readLocale();
+
+  const session = await readSession();
+  if (!session) {
+    return;
+  }
+
+  const productId = String(formData.get('productId') ?? '');
+  if (!productId) {
+    return;
+  }
+
+  const isActive = String(formData.get('isActive')) === 'true';
+
+  try {
+    await setProductStatus(session.accessToken, productId, isActive, locale);
+  } catch {
+    // The table re-renders from the server either way, so a failure shows as the
+    // row simply not having changed rather than as a stale optimistic update.
+    return;
+  }
+
+  revalidateCatalog();
 }
