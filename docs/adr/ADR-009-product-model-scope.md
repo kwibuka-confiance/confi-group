@@ -20,9 +20,10 @@ two products.
 **A product is flat.** Every sellable thing is its own product with its own SKU,
 price and barcodes. There is no parent/variant relationship.
 
-Pack sizes are expressed through the unit and pack fields on the product itself
-(`unitCode`, `unitsPerPack`), not through variants — a crate of 24 is a product
-whose unit is CRATE and whose pack size is 24.
+Pack sizes are **not** expressed by making each pack its own product. That
+sentence appeared in the first version of this ADR and was wrong: two products
+means two stock pools, so selling twelve bottles would leave the case count
+untouched. Packs are units of one product, described in ADR-010.
 
 ## Consequences
 
