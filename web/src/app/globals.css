@@ -1,0 +1,74 @@
+@import 'tailwindcss';
+
+/*
+ * Design tokens. The rail keeps a fixed dark treatment in both schemes: a light
+ * content panel beside a dark rail is the intended contrast, not a side effect
+ * of the active theme.
+ */
+:root {
+  --brand: #12715e;
+  --brand-strong: #0f5f4f;
+  --brand-soft: #d6efe7;
+  --rail: #0d1a17;
+  --rail-hover: rgb(255 255 255 / 6%);
+
+  --page: #eef2f0;
+  --panel: #ffffff;
+  --panel-muted: #f7faf9;
+  --border: #e2e8e5;
+  --ink: #0f1a17;
+  --ink-muted: #5b6b66;
+}
+
+/* Mantine stamps the scheme on <html>, so the tokens follow its switch. */
+:root[data-mantine-color-scheme='dark'] {
+  --page: #0a1210;
+  --panel: #101a17;
+  --panel-muted: #16211e;
+  --border: #23302c;
+  --ink: #e9f1ee;
+  --ink-muted: #94a8a2;
+  --brand-soft: #143b33;
+}
+
+@theme inline {
+  --color-brand: var(--brand);
+  --color-brand-strong: var(--brand-strong);
+  --color-brand-soft: var(--brand-soft);
+  --color-rail: var(--rail);
+  --color-page: var(--page);
+  --color-panel: var(--panel);
+  --color-panel-muted: var(--panel-muted);
+  --color-line: var(--border);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-sora);
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--page);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* A single, consistent focus treatment for every interactive element. */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
