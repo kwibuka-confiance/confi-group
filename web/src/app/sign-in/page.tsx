@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import { SignInForm } from './sign-in-form';
 import { readSession } from '@/lib/auth/session';
 import { getDictionary } from '@/lib/i18n/dictionaries';
+import { readLocale } from '@/lib/i18n/locale';
 
 export const dynamic = 'force-dynamic';
 
@@ -12,7 +13,7 @@ export default async function SignInPage() {
     redirect('/');
   }
 
-  const dict = getDictionary();
+  const dict = getDictionary(await readLocale());
   const points = [
     { icon: Package, label: dict.auth.pointCatalog },
     { icon: ShoppingCart, label: dict.auth.pointSales },

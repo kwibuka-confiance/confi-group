@@ -7,7 +7,8 @@ import { getProducts, summariseCatalog } from '@/lib/api/catalog';
 import { ApiError } from '@/lib/api/types';
 import { readSession } from '@/lib/auth/session';
 import { formatCount, formatMoney, initialsOf } from '@/lib/format';
-import { defaultLocale, format, getDictionary } from '@/lib/i18n/dictionaries';
+import { format, getDictionary } from '@/lib/i18n/dictionaries';
+import { readLocale } from '@/lib/i18n/locale';
 
 /** Tenant data is per-request; nothing here is cached across users. */
 export const dynamic = 'force-dynamic';
@@ -16,8 +17,8 @@ export default async function DashboardPage() {
   const session = await readSession();
   if (!session) return null; // The layout has already redirected.
 
-  const dict = getDictionary();
-  const locale = defaultLocale;
+  const locale = await readLocale();
+  const dict = getDictionary(locale);
 
   let summary: ReturnType<typeof summariseCatalog> | null = null;
   let loadFailed = false;

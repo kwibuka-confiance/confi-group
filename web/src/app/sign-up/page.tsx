@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import { SignUpForm } from './sign-up-form';
 import { readSession } from '@/lib/auth/session';
 import { getDictionary } from '@/lib/i18n/dictionaries';
+import { readLocale } from '@/lib/i18n/locale';
 
 export const dynamic = 'force-dynamic';
 
@@ -12,7 +13,7 @@ export default async function SignUpPage() {
     redirect('/');
   }
 
-  const dict = getDictionary();
+  const dict = getDictionary(await readLocale());
   const points = [
     { icon: Package, label: dict.auth.pointCatalog },
     { icon: ShoppingCart, label: dict.auth.pointSales },

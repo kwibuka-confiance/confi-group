@@ -5,7 +5,8 @@ import { redirect } from 'next/navigation';
 import { provisionTenant } from '@/lib/api/tenants';
 import { ApiError } from '@/lib/api/types';
 import { login, toSession, writeSession } from '@/lib/auth/session';
-import { defaultLocale, getDictionary } from '@/lib/i18n/dictionaries';
+import { getDictionary } from '@/lib/i18n/dictionaries';
+import { readLocale } from '@/lib/i18n/locale';
 
 export interface SignUpState {
   error?: string;
@@ -24,7 +25,8 @@ export async function signUpAction(
   _previous: SignUpState,
   formData: FormData,
 ): Promise<SignUpState> {
-  const dict = getDictionary();
+  const locale = await readLocale();
+  const dict = getDictionary(locale);
   const read = (key: string) => String(formData.get(key) ?? '').trim();
 
   const ownerEmail = read('ownerEmail');
@@ -44,7 +46,7 @@ export async function signUpAction(
         ownerPassword,
         firstBranchName: read('firstBranchName'),
       },
-      defaultLocale,
+      locale,
     );
   } catch (error) {
     if (error instanceof ApiError) {
@@ -56,7 +58,7 @@ export async function signUpAction(
   try {
     const response = await login(
       { email: ownerEmail, password: ownerPassword, businessHandle: read('slug').toLowerCase() },
-      defaultLocale,
+      locale,
     );
     const session = toSession(response);
     if (session) {

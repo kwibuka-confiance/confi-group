@@ -6,12 +6,14 @@ import { useEffect, useState, type ReactNode } from 'react';
 
 import { buildNav } from './nav-config';
 import { Sidebar } from './sidebar';
+import { LocaleSwitcher } from './locale-switcher';
 import { ThemeToggle } from './theme-toggle';
 import { initialsOf } from '@/lib/format';
-import type { Dictionary } from '@/lib/i18n/dictionaries';
+import type { Dictionary, Locale } from '@/lib/i18n/dictionaries';
 
 interface AppShellProps {
   dict: Dictionary;
+  locale: Locale;
   user: { fullName: string; email: string };
   business: { name: string; tenantId: string };
   children: ReactNode;
@@ -21,7 +23,7 @@ interface AppShellProps {
  * The signed-in frame: a dark rail beside a light content panel. The rail is
  * inline from `lg` up and moves into a drawer below it.
  */
-export function AppShell({ dict, user, business, children }: AppShellProps) {
+export function AppShell({ dict, locale, user, business, children }: AppShellProps) {
   const [opened, setOpened] = useState(false);
   const open = () => setOpened(true);
   const close = () => setOpened(false);
@@ -79,6 +81,7 @@ export function AppShell({ dict, user, business, children }: AppShellProps) {
           <h1 className="font-display text-lg font-bold text-ink sm:text-xl">{title}</h1>
 
           <div className="ml-auto flex items-center gap-2">
+            <LocaleSwitcher dict={dict} current={locale} />
             <ThemeToggle label={dict.nav.toggleTheme} />
             <span
               aria-hidden

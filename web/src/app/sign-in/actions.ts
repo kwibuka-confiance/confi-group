@@ -4,7 +4,8 @@ import { redirect } from 'next/navigation';
 
 import { ApiError, type BusinessSummary } from '@/lib/api/types';
 import { login, selectBusiness, toSession, writeSession } from '@/lib/auth/session';
-import { defaultLocale, getDictionary } from '@/lib/i18n/dictionaries';
+import { getDictionary } from '@/lib/i18n/dictionaries';
+import { readLocale } from '@/lib/i18n/locale';
 
 export interface SignInState {
   error?: string;
@@ -29,7 +30,8 @@ export async function signInAction(
   _previous: SignInState,
   formData: FormData,
 ): Promise<SignInState> {
-  const dict = getDictionary();
+  const locale = await readLocale();
+  const dict = getDictionary(locale);
 
   const email = String(formData.get('email') ?? '').trim();
   const password = String(formData.get('password') ?? '');
@@ -39,7 +41,7 @@ export async function signInAction(
   }
 
   try {
-    const response = await login({ email, password }, defaultLocale);
+    const response = await login({ email, password }, locale);
 
     if (response.status === 'select_business') {
       return {
@@ -71,7 +73,8 @@ export async function selectBusinessAction(
   _previous: SignInState,
   formData: FormData,
 ): Promise<SignInState> {
-  const dict = getDictionary();
+  const locale = await readLocale();
+  const dict = getDictionary(locale);
 
   const selectionToken = String(formData.get('selectionToken') ?? '');
   const tenantId = String(formData.get('tenantId') ?? '');
@@ -81,7 +84,7 @@ export async function selectBusinessAction(
   }
 
   try {
-    const response = await selectBusiness(selectionToken, tenantId, defaultLocale);
+    const response = await selectBusiness(selectionToken, tenantId, locale);
     const session = toSession(response);
     if (!session) {
       return { error: dict.errors.unexpected };

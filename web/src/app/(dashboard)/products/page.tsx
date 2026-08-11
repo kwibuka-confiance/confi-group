@@ -2,7 +2,8 @@ import { ProductsTable } from '@/components/products/products-table';
 import { getProducts } from '@/lib/api/catalog';
 import { ApiError } from '@/lib/api/types';
 import { readSession } from '@/lib/auth/session';
-import { defaultLocale, getDictionary } from '@/lib/i18n/dictionaries';
+import { getDictionary } from '@/lib/i18n/dictionaries';
+import { readLocale } from '@/lib/i18n/locale';
 import type { Product } from '@/lib/api/types';
 
 export const dynamic = 'force-dynamic';
@@ -11,8 +12,8 @@ export default async function ProductsPage() {
   const session = await readSession();
   if (!session) return null; // The layout has already redirected.
 
-  const dict = getDictionary();
-  const locale = defaultLocale;
+  const locale = await readLocale();
+  const dict = getDictionary(locale);
 
   let products: Product[] = [];
   let loadFailed = false;

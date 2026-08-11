@@ -37,6 +37,7 @@ const en = {
     comingSoon: 'Soon',
     signOut: 'Sign out',
     toggleTheme: 'Toggle theme',
+    language: 'Language',
     openMenu: 'Open menu',
   },
   dashboard: {
@@ -204,6 +205,7 @@ const rw: Dictionary = {
     comingSoon: 'Biraza',
     signOut: 'Sohoka',
     toggleTheme: 'Hindura insanganyamatsiko',
+    language: 'Ururimi',
     openMenu: 'Fungura ibikubiye',
   },
   dashboard: {
@@ -363,6 +365,7 @@ const fr: Dictionary = {
     comingSoon: 'Bientôt',
     signOut: 'Se déconnecter',
     toggleTheme: 'Changer de thème',
+    language: 'Langue',
     openMenu: 'Ouvrir le menu',
   },
   dashboard: {

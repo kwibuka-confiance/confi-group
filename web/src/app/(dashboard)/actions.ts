@@ -5,7 +5,8 @@ import { redirect } from 'next/navigation';
 
 import { ApiError, type BusinessSummary } from '@/lib/api/types';
 import { login, readSession, selectBusiness, toSession, writeSession } from '@/lib/auth/session';
-import { defaultLocale, getDictionary } from '@/lib/i18n/dictionaries';
+import { getDictionary } from '@/lib/i18n/dictionaries';
+import { readLocale } from '@/lib/i18n/locale';
 
 export interface SwitchBusinessState {
   error?: string;
@@ -35,7 +36,8 @@ export async function startSwitchAction(
   _previous: SwitchBusinessState,
   formData: FormData,
 ): Promise<SwitchBusinessState> {
-  const dict = getDictionary();
+  const locale = await readLocale();
+  const dict = getDictionary(locale);
 
   const session = await readSession();
   if (!session) {
@@ -48,7 +50,7 @@ export async function startSwitchAction(
   }
 
   try {
-    const response = await login({ email: session.email, password }, defaultLocale);
+    const response = await login({ email: session.email, password }, locale);
 
     if (response.status === 'select_business') {
       return {
@@ -76,7 +78,8 @@ export async function confirmSwitchAction(
   _previous: SwitchBusinessState,
   formData: FormData,
 ): Promise<SwitchBusinessState> {
-  const dict = getDictionary();
+  const locale = await readLocale();
+  const dict = getDictionary(locale);
 
   const selectionToken = String(formData.get('selectionToken') ?? '');
   const tenantId = String(formData.get('tenantId') ?? '');
@@ -86,7 +89,7 @@ export async function confirmSwitchAction(
   }
 
   try {
-    const response = await selectBusiness(selectionToken, tenantId, defaultLocale);
+    const response = await selectBusiness(selectionToken, tenantId, locale);
     const session = toSession(response);
     if (!session) {
       return { error: dict.errors.unexpected };

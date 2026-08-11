@@ -5,7 +5,8 @@ import { revalidatePath } from 'next/cache';
 import { createProduct, type CreatePackagingInput } from '@/lib/api/catalog';
 import { ApiError } from '@/lib/api/types';
 import { readSession } from '@/lib/auth/session';
-import { defaultLocale, getDictionary } from '@/lib/i18n/dictionaries';
+import { getDictionary } from '@/lib/i18n/dictionaries';
+import { readLocale } from '@/lib/i18n/locale';
 
 export interface CreateProductState {
   ok?: boolean;
@@ -58,7 +59,8 @@ export async function createProductAction(
   _previous: CreateProductState,
   formData: FormData,
 ): Promise<CreateProductState> {
-  const dict = getDictionary();
+  const locale = await readLocale();
+  const dict = getDictionary(locale);
 
   const session = await readSession();
   if (!session) {
@@ -110,7 +112,7 @@ export async function createProductAction(
         depositAmount: number(formData, 'depositAmount'),
         packagings,
       },
-      defaultLocale,
+      locale,
     );
   } catch (error) {
     if (error instanceof ApiError) {
