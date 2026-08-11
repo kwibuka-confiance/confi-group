@@ -12,8 +12,17 @@ namespace ConfiOS.Modules.Catalog.Infrastructure.Repositories;
 /// <param name="context">Catalog database context.</param>
 public sealed class ProductRepository(CatalogDbContext context) : IProductRepository
 {
-    public Task<bool> SkuExistsAsync(string sku, CancellationToken cancellationToken = default) =>
-        context.Products.AnyAsync(product => product.Sku == sku, cancellationToken);
+    public Task<bool> SkuExistsAsync(
+        string sku,
+        Guid? excludingProductId = null,
+        CancellationToken cancellationToken = default) =>
+        context.Products.AnyAsync(
+            product => product.Sku == sku
+                && (excludingProductId == null || product.Id != excludingProductId),
+            cancellationToken);
+
+    public Task<Product?> GetAsync(Guid id, CancellationToken cancellationToken = default) =>
+        context.Products.FirstOrDefaultAsync(product => product.Id == id, cancellationToken);
 
     public async Task<IReadOnlyList<Product>> ListAsync(CancellationToken cancellationToken = default) =>
         await context.Products

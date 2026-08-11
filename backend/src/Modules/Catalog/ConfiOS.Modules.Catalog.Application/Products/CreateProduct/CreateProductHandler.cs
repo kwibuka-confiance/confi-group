@@ -25,7 +25,7 @@ public sealed class CreateProductHandler(
 
         var sku = command.Sku.Trim().ToUpperInvariant();
 
-        if (await products.SkuExistsAsync(sku, cancellationToken).ConfigureAwait(false))
+        if (await products.SkuExistsAsync(sku, cancellationToken: cancellationToken).ConfigureAwait(false))
         {
             return Result.Failure<Guid>(Error.Conflict(CatalogErrorCodes.ProductSkuTaken));
         }

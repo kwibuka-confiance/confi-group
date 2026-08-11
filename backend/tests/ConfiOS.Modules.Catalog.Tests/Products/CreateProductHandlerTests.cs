@@ -1,6 +1,3 @@
-using ConfiOS.BuildingBlocks.Application.Abstractions;
-using ConfiOS.BuildingBlocks.Application.Context;
-using ConfiOS.BuildingBlocks.Domain.Primitives;
 using ConfiOS.Modules.Catalog.Application.Abstractions;
 using ConfiOS.Modules.Catalog.Application.Products.CreateProduct;
 using ConfiOS.Modules.Catalog.Domain;
@@ -94,50 +91,4 @@ public sealed class CreateProductHandlerTests
 
     private static CreateProductHandler CreateHandler(FakeProductRepository repository) =>
         new(repository, new FakeTenantContext(), new FakeUnitOfWork());
-
-    private sealed class FakeProductRepository : IProductRepository
-    {
-        public List<Product> Added { get; } = [];
-
-        public bool SkuTaken { get; init; }
-
-        public Task<bool> SkuExistsAsync(string sku, CancellationToken cancellationToken = default) =>
-            Task.FromResult(SkuTaken);
-
-        public Task<IReadOnlyList<Product>> ListAsync(CancellationToken cancellationToken = default) =>
-            Task.FromResult<IReadOnlyList<Product>>(Added);
-
-        public void Add(Product product) => Added.Add(product);
-    }
-
-    private sealed class FakeTenantContext : ITenantContext
-    {
-        public bool IsResolved => true;
-
-        public TenantId TenantId { get; } = TenantId.New();
-
-        public BranchId? BranchId => null;
-
-        public UserId? UserId => null;
-
-        public string Locale => "en";
-
-        public string CurrencyCode => "RWF";
-
-        public string TimeZoneId => "Africa/Kigali";
-    }
-
-    private sealed class FakeUnitOfWork : ICatalogUnitOfWork
-    {
-        public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default) =>
-            Task.FromResult(1);
-
-        public Task<IAsyncDisposable> BeginTransactionAsync(CancellationToken cancellationToken = default) =>
-            Task.FromResult<IAsyncDisposable>(new NoopTransaction());
-
-        private sealed class NoopTransaction : IAsyncDisposable
-        {
-            public ValueTask DisposeAsync() => ValueTask.CompletedTask;
-        }
-    }
 }

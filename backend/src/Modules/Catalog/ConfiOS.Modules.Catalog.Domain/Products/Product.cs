@@ -29,6 +29,7 @@ public sealed class Product : TenantEntity
         string sku,
         Money price,
         string baseUnitCode)
+        : base(id, tenantId)
     {
         Name = name;
         Sku = sku;
@@ -113,6 +114,16 @@ public sealed class Product : TenantEntity
         Name = name.Trim();
     }
 
+    /// <summary>
+    /// Changes the stock-keeping unit. Uniqueness within the business is enforced by
+    /// the caller, which is the only place that can see the other products.
+    /// </summary>
+    public void SetSku(string sku)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(sku);
+        Sku = sku.Trim().ToUpperInvariant();
+    }
+
     public void Describe(string? description) =>
         Description = string.IsNullOrWhiteSpace(description) ? null : description.Trim();
 
@@ -174,6 +185,44 @@ public sealed class Product : TenantEntity
         }
 
         _packagings.Add(packaging);
+    }
+
+    /// <summary>
+    /// Replaces every way of counting this product with the ones given.
+    /// </summary>
+    /// <remarks>
+    /// Editing a product submits the full set rather than a patch, so a packaging
+    /// left out is one the business no longer sells. Replacing wholesale keeps that
+    /// unambiguous, and each entry is still validated, so the result cannot hold two
+    /// definitions of a crate.
+    /// </remarks>
+    public void ReplacePackagings(IEnumerable<Packaging> packagings)
+    {
+        ArgumentNullException.ThrowIfNull(packagings);
+
+        // Validated in full before anything is discarded, so a rejected entry leaves
+        // the product exactly as it was rather than half-replaced.
+        var replacements = new List<Packaging>();
+        foreach (var packaging in packagings)
+        {
+            ArgumentNullException.ThrowIfNull(packaging);
+
+            if (replacements.Exists(existing =>
+                string.Equals(existing.UnitCode, packaging.UnitCode, StringComparison.Ordinal)))
+            {
+                throw new DomainException(Error.Conflict(CatalogErrorCodes.PackagingUnitTaken));
+            }
+
+            if (string.Equals(packaging.UnitCode, BaseUnitCode, StringComparison.Ordinal))
+            {
+                throw new DomainException(Error.Validation(CatalogErrorCodes.PackagingIsBaseUnit));
+            }
+
+            replacements.Add(packaging);
+        }
+
+        _packagings.Clear();
+        _packagings.AddRange(replacements);
     }
 
     public void RemovePackaging(string unitCode) =>

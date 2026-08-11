@@ -46,3 +46,35 @@ public sealed record CreatePackagingRequest(
     decimal SellingPriceAmount,
     decimal? CostAmount = null,
     string? Barcode = null);
+
+/// <summary>
+/// Payload for correcting a product.
+/// </summary>
+/// <remarks>
+/// A whole-record replacement, not a patch: every field is stated, and the
+/// packagings given become the complete set. An omitted optional field is cleared.
+/// The base unit is absent deliberately — stock is counted in it, so it cannot be
+/// changed without reinterpreting quantities already recorded.
+/// </remarks>
+/// <param name="Name">Display name.</param>
+/// <param name="Sku">Stock-keeping unit, unique within the business.</param>
+/// <param name="PriceAmount">Selling price of one base unit.</param>
+/// <param name="CurrencyCode">ISO 4217 currency code for every amount here.</param>
+/// <param name="Description">Longer description, or null to clear it.</param>
+/// <param name="CostAmount">Cost of one base unit, or null to clear it.</param>
+/// <param name="TaxClass">One of <c>Standard</c>, <c>Zero</c> or <c>Exempt</c>.</param>
+/// <param name="DepositAmount">
+/// Deposit per base unit. Supplying it marks the product returnable; null makes it
+/// non-returnable again.
+/// </param>
+/// <param name="Packagings">The complete set of larger units it is sold in.</param>
+public sealed record UpdateProductRequest(
+    string Name,
+    string Sku,
+    decimal PriceAmount,
+    string CurrencyCode,
+    string? Description = null,
+    decimal? CostAmount = null,
+    string? TaxClass = null,
+    decimal? DepositAmount = null,
+    IReadOnlyList<CreatePackagingRequest>? Packagings = null);

@@ -4,6 +4,7 @@ using ConfiOS.BuildingBlocks.Application.Auditing;
 using ConfiOS.BuildingBlocks.Application.Authorization;
 using ConfiOS.BuildingBlocks.Application.Messaging;
 using ConfiOS.BuildingBlocks.Infrastructure.Auditing;
+using ConfiOS.Modules.Identity.Infrastructure.Auditing;
 using ConfiOS.BuildingBlocks.Infrastructure.Interceptors;
 using ConfiOS.BuildingBlocks.Infrastructure.Persistence;
 using ConfiOS.Modules.Identity.Api.Endpoints;
@@ -54,7 +55,7 @@ public sealed class IdentityModule : IModule
         });
 
         services.AddScoped<IIdentityUnitOfWork>(provider => provider.GetRequiredService<IdentityDbContext>());
-        services.AddScoped<IAuditLogger, AuditLogger<IdentityDbContext>>();
+        services.AddScoped<IIdentityAuditLogger, IdentityAuditLogger>();
 
         services.AddScoped<ITenantRepository, TenantRepository>();
         services.AddScoped<IUserRepository, UserRepository>();

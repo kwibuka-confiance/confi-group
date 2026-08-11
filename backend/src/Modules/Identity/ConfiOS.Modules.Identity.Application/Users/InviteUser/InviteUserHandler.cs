@@ -29,7 +29,7 @@ public sealed class InviteUserHandler(
     IRoleRepository roles,
     ITenantContext tenantContext,
     IPasswordHasher passwordHasher,
-    IAuditLogger auditLogger,
+    IIdentityAuditLogger auditLogger,
     IIdentityUnitOfWork unitOfWork) : ICommandHandler<InviteUserCommand, Guid>
 {
     public async Task<Result<Guid>> HandleAsync(InviteUserCommand command, CancellationToken cancellationToken)

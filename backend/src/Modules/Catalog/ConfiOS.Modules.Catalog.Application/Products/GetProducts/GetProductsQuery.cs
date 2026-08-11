@@ -1,4 +1,5 @@
 using ConfiOS.BuildingBlocks.Application.Messaging;
+using ConfiOS.Modules.Catalog.Domain.Products;
 
 namespace ConfiOS.Modules.Catalog.Application.Products.GetProducts;
 
@@ -32,7 +33,41 @@ public sealed record ProductSummary(
     bool IsReturnable,
     decimal? DepositAmount,
     IReadOnlyList<PackagingSummary> Packagings,
-    bool IsActive);
+    bool IsActive)
+{
+    /// <summary>
+    /// Projects a product for the wire. Shared by the list and the single-product
+    /// read so the two can never drift into describing a product differently.
+    /// </summary>
+    public static ProductSummary From(Product product)
+    {
+        ArgumentNullException.ThrowIfNull(product);
+
+        return new ProductSummary(
+            product.Id,
+            product.Name,
+            product.Sku,
+            product.Description,
+            product.Price.Amount,
+            product.CostPrice?.Amount,
+            product.Price.Currency.Code,
+            product.BaseUnitCode,
+            product.TaxClass.ToString(),
+            product.IsReturnable,
+            product.DepositPerBaseUnit?.Amount,
+            product.Packagings
+                .OrderBy(packaging => packaging.QuantityInBaseUnit)
+                .Select(packaging => new PackagingSummary(
+                    packaging.UnitCode,
+                    packaging.QuantityInBaseUnit,
+                    packaging.SellingPrice.Amount,
+                    packaging.CostPrice?.Amount,
+                    packaging.Barcode,
+                    packaging.AllowsQuarters))
+                .ToList(),
+            product.IsActive);
+    }
+}
 
 /// <summary>A packaging as shown alongside its product.</summary>
 /// <param name="UnitCode">Unit of measure code, for example <c>CRATE</c>.</param>
