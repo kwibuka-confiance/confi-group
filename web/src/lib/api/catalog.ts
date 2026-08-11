@@ -6,11 +6,31 @@ export function getProducts(token: string, locale?: string): Promise<Product[]> 
   return apiRequest<Product[]>('/api/v1/products', { token, locale });
 }
 
+/** A packaging supplied when a product is created. */
+export interface CreatePackagingInput {
+  unitCode: string;
+  quantityInBaseUnit: number;
+  sellingPriceAmount: number;
+  costAmount?: number | null;
+  barcode?: string | null;
+}
+
+/**
+ * Everything needed to add a product. Only the first four are required; a product
+ * sold as individual items needs nothing else. Every amount is in `currencyCode`.
+ */
 export interface CreateProductInput {
   name: string;
   sku: string;
   priceAmount: number;
   currencyCode: string;
+  baseUnitCode?: string | null;
+  description?: string | null;
+  costAmount?: number | null;
+  taxClass?: string | null;
+  /** Supplying a deposit marks the base unit returnable. */
+  depositAmount?: number | null;
+  packagings?: CreatePackagingInput[];
 }
 
 export function createProduct(

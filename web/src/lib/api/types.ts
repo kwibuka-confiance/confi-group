@@ -43,12 +43,37 @@ export class ApiError extends Error {
   }
 }
 
+/** A way of counting a product: a crate of 24, a box of 100. */
+export interface Packaging {
+  unitCode: string;
+  quantityInBaseUnit: number;
+  sellingPriceAmount: number;
+  costAmount: number | null;
+  barcode: string | null;
+  /**
+   * False when a quarter would not come to a whole base unit, so the client hides
+   * the quarter option rather than offering a sale the API will reject.
+   */
+  allowsQuarters: boolean;
+}
+
+export type TaxClass = 'Standard' | 'Zero' | 'Exempt';
+
 export interface Product {
   id: string;
   name: string;
   sku: string;
+  description: string | null;
   priceAmount: number;
+  costAmount: number | null;
   currencyCode: string;
+  /** Unit stock is counted in, for example BOTTLE. */
+  baseUnitCode: string;
+  taxClass: TaxClass;
+  /** Whether the base unit is exchanged with the customer rather than sold outright. */
+  isReturnable: boolean;
+  depositAmount: number | null;
+  packagings: Packaging[];
   isActive: boolean;
 }
 

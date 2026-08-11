@@ -123,6 +123,7 @@ export function ProductsTable({ products, dict, locale }: ProductsTableProps) {
                           <p className="truncate text-xs text-ink-muted md:hidden">
                             {product.sku}
                           </p>
+                          <PackList product={product} dict={dict} />
                         </div>
                       </div>
                     </td>
@@ -142,8 +143,31 @@ export function ProductsTable({ products, dict, locale }: ProductsTableProps) {
         </div>
       )}
 
-      <AddProductModal opened={adding} onClose={() => setAdding(false)} dict={dict} />
+      {adding && <AddProductModal onClose={() => setAdding(false)} dict={dict} />}
     </div>
+  );
+}
+
+/**
+ * The packs a product is sold in, shown under its name. The base unit is included
+ * because "CRATE of 24" only means something once you know 24 of what.
+ */
+function PackList({ product, dict }: { product: Product; dict: Dictionary }) {
+  if (product.packagings.length === 0) return null;
+
+  return (
+    <p className="mt-0.5 flex flex-wrap items-center gap-1.5">
+      {product.packagings.map((packaging) => (
+        <span
+          key={packaging.unitCode}
+          title={packaging.allowsQuarters ? dict.products.quartersOn : dict.products.quartersOff}
+          className="rounded-md bg-panel-muted px-1.5 py-0.5 text-[11px] font-medium text-ink-muted"
+        >
+          {packaging.unitCode} × {packaging.quantityInBaseUnit} {product.baseUnitCode}
+          {packaging.allowsQuarters && <span className="ml-1 text-brand">¼</span>}
+        </span>
+      ))}
+    </p>
   );
 }
 
