@@ -1,8 +1,6 @@
 using ConfiOS.BuildingBlocks.Application.Abstractions;
-using ConfiOS.BuildingBlocks.Application.Messaging;
 using ConfiOS.BuildingBlocks.Domain.Events;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace ConfiOS.BuildingBlocks.Infrastructure.Outbox;
 
@@ -13,14 +11,19 @@ namespace ConfiOS.BuildingBlocks.Infrastructure.Outbox;
 /// While ConfiOS is a modular monolith this is all the transport that is needed. When a
 /// module is extracted, this is the seam that starts writing to a broker instead, without
 /// any change to the modules that raised the events.
+/// <para>
+/// Each message is handled in its own dependency scope with the tenant it belongs to
+/// resolved, because a handler writes through a tenant-scoped context just as a request
+/// does. Without that the handler would read nothing and write rows belonging to no one.
+/// </para>
 /// </remarks>
 /// <typeparam name="TContext">Module context holding the outbox table.</typeparam>
 /// <param name="context">Module database context.</param>
-/// <param name="serviceProvider">Used to resolve handlers for each event type.</param>
+/// <param name="dispatcher">Runs each event's handlers in their own tenant-resolved scope.</param>
 /// <param name="clock">Source of the current time.</param>
 public sealed class OutboxProcessor<TContext>(
     TContext context,
-    IServiceProvider serviceProvider,
+    OutboxDispatcher dispatcher,
     IClock clock)
     where TContext : DbContext
 {
@@ -52,7 +55,10 @@ public sealed class OutboxProcessor<TContext>(
                     continue;
                 }
 
-                await InvokeHandlersAsync(domainEvent, cancellationToken).ConfigureAwait(false);
+                await dispatcher
+                    .DispatchAsync(domainEvent, message.TenantId, cancellationToken)
+                    .ConfigureAwait(false);
+
                 message.MarkProcessed(clock.UtcNow);
                 published++;
             }
@@ -66,22 +72,5 @@ public sealed class OutboxProcessor<TContext>(
 
         await context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         return published;
-    }
-
-    private async Task InvokeHandlersAsync(IDomainEvent domainEvent, CancellationToken cancellationToken)
-    {
-        var handlerType = typeof(IDomainEventHandler<>).MakeGenericType(domainEvent.GetType());
-        var handlers = serviceProvider.GetServices(handlerType);
-
-        foreach (var handler in handlers)
-        {
-            if (handler is null)
-            {
-                continue;
-            }
-
-            var method = handlerType.GetMethod(nameof(IDomainEventHandler<IDomainEvent>.HandleAsync))!;
-            await ((Task)method.Invoke(handler, [domainEvent, cancellationToken])!).ConfigureAwait(false);
-        }
     }
 }

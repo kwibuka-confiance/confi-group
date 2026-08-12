@@ -13,35 +13,37 @@ public sealed record TenantCreated(
     string Name,
     string CountryCode,
     string CurrencyCode,
-    string DefaultLanguage) : DomainEvent("identity.tenant-created");
+    string DefaultLanguage) : DomainEvent("identity.tenant-created"), ITenantEvent;
 
 /// <summary>Raised when a tenant is suspended, for example for non-payment.</summary>
 /// <param name="TenantId">The suspended tenant.</param>
 /// <param name="Reason">Why it was suspended.</param>
-public sealed record TenantSuspended(Guid TenantId, string Reason) : DomainEvent("identity.tenant-suspended");
+public sealed record TenantSuspended(Guid TenantId, string Reason)
+    : DomainEvent("identity.tenant-suspended"), ITenantEvent;
 
 /// <summary>Raised when a branch is opened. Inventory creates a default warehouse in response.</summary>
 /// <param name="TenantId">Owning tenant.</param>
 /// <param name="BranchId">The new branch.</param>
 /// <param name="Name">Branch name.</param>
 public sealed record BranchCreated(Guid TenantId, Guid BranchId, string Name)
-    : DomainEvent("identity.branch-created");
+    : DomainEvent("identity.branch-created"), ITenantEvent;
 
 /// <summary>Raised when a user is added to a tenant.</summary>
 /// <param name="TenantId">Owning tenant.</param>
 /// <param name="UserId">The new user.</param>
 /// <param name="Email">Email the invitation was sent to.</param>
 public sealed record UserInvited(Guid TenantId, Guid UserId, string Email)
-    : DomainEvent("identity.user-invited");
+    : DomainEvent("identity.user-invited"), ITenantEvent;
 
 /// <summary>Raised when a user is deactivated. Sessions are revoked in response.</summary>
 /// <param name="TenantId">Owning tenant.</param>
 /// <param name="UserId">The deactivated user.</param>
-public sealed record UserDeactivated(Guid TenantId, Guid UserId) : DomainEvent("identity.user-deactivated");
+public sealed record UserDeactivated(Guid TenantId, Guid UserId)
+    : DomainEvent("identity.user-deactivated"), ITenantEvent;
 
 /// <summary>Raised when a user changes their language. Notifications switch template language.</summary>
 /// <param name="TenantId">Owning tenant.</param>
 /// <param name="UserId">The user.</param>
 /// <param name="Language">New BCP 47 language tag.</param>
 public sealed record LanguageChanged(Guid TenantId, Guid UserId, string Language)
-    : DomainEvent("identity.language-changed");
+    : DomainEvent("identity.language-changed"), ITenantEvent;

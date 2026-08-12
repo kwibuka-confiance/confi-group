@@ -1,6 +1,7 @@
 using ConfiOS.BuildingBlocks.Api.Modules;
 using ConfiOS.BuildingBlocks.Application.Abstractions;
 using ConfiOS.BuildingBlocks.Infrastructure.Interceptors;
+using ConfiOS.BuildingBlocks.Infrastructure.Outbox;
 using ConfiOS.BuildingBlocks.Infrastructure.Persistence;
 using ConfiOS.Modules.Inventory.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Routing;
@@ -37,6 +38,13 @@ public sealed class InventoryModule : IModule
 
             options.AddInterceptors(provider.GetRequiredService<AuditingInterceptor>());
         });
+
+        // This module's outbox, drained by the host publisher.
+        services.AddScoped<IOutboxDrain>(provider => new OutboxDrain<InventoryDbContext>(
+            InventoryDbContext.SchemaName,
+            provider.GetRequiredService<InventoryDbContext>(),
+            provider.GetRequiredService<OutboxDispatcher>(),
+            provider.GetRequiredService<IClock>()));
     }
 
     public void MapEndpoints(IEndpointRouteBuilder endpoints)

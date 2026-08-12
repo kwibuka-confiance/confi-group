@@ -46,6 +46,13 @@ builder.Services.AddModules(
     typeof(ConfiOS.Modules.Inventory.Api.InventoryModule).Assembly,
     typeof(ConfiOS.Modules.Sales.Api.SalesModule).Assembly);
 
+// Events are written to each module's outbox inside the transaction that raised them; this
+// is what actually delivers them. Without it every event is recorded and never heard.
+builder.Services.AddScoped<ConfiOS.BuildingBlocks.Infrastructure.Outbox.OutboxDispatcher>();
+builder.Services.Configure<ConfiOS.BuildingBlocks.Infrastructure.Outbox.OutboxOptions>(
+    builder.Configuration.GetSection("Outbox"));
+builder.Services.AddHostedService<ConfiOS.BuildingBlocks.Infrastructure.Outbox.OutboxPublisher>();
+
 var app = builder.Build();
 
 // Order matters. Exceptions are caught outermost so nothing escapes unformatted; language

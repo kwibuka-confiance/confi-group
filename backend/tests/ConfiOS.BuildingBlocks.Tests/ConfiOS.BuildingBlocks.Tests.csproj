@@ -7,6 +7,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\BuildingBlocks\ConfiOS.BuildingBlocks.Domain\ConfiOS.BuildingBlocks.Domain.csproj" />
     <ProjectReference Include="..\..\src\BuildingBlocks\ConfiOS.BuildingBlocks.Application\ConfiOS.BuildingBlocks.Application.csproj" />
+    <ProjectReference Include="..\..\src\BuildingBlocks\ConfiOS.BuildingBlocks.Infrastructure\ConfiOS.BuildingBlocks.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

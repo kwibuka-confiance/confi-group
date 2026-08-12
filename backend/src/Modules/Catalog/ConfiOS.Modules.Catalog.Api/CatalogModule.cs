@@ -1,4 +1,5 @@
 using ConfiOS.BuildingBlocks.Api.Modules;
+using ConfiOS.BuildingBlocks.Application.Abstractions;
 using ConfiOS.BuildingBlocks.Application.Auditing;
 using ConfiOS.BuildingBlocks.Application.Authorization;
 using ConfiOS.BuildingBlocks.Application.Messaging;
@@ -6,6 +7,7 @@ using ConfiOS.BuildingBlocks.Application.Validation;
 using ConfiOS.BuildingBlocks.Infrastructure.Auditing;
 using ConfiOS.Modules.Catalog.Infrastructure.Auditing;
 using ConfiOS.BuildingBlocks.Infrastructure.Interceptors;
+using ConfiOS.BuildingBlocks.Infrastructure.Outbox;
 using ConfiOS.BuildingBlocks.Infrastructure.Persistence;
 using ConfiOS.Modules.Catalog.Api.Endpoints;
 using ConfiOS.Modules.Catalog.Application.Abstractions;
@@ -46,6 +48,13 @@ public sealed class CatalogModule : IModule
 
             options.AddInterceptors(provider.GetRequiredService<AuditingInterceptor>());
         });
+
+        // This module's outbox, drained by the host publisher.
+        services.AddScoped<IOutboxDrain>(provider => new OutboxDrain<CatalogDbContext>(
+            CatalogDbContext.SchemaName,
+            provider.GetRequiredService<CatalogDbContext>(),
+            provider.GetRequiredService<OutboxDispatcher>(),
+            provider.GetRequiredService<IClock>()));
 
         services.AddScoped<ICatalogUnitOfWork>(provider => provider.GetRequiredService<CatalogDbContext>());
         services.AddScoped<ICatalogAuditLogger, CatalogAuditLogger>();

@@ -6,6 +6,7 @@ using ConfiOS.BuildingBlocks.Application.Messaging;
 using ConfiOS.BuildingBlocks.Infrastructure.Auditing;
 using ConfiOS.Modules.Identity.Infrastructure.Auditing;
 using ConfiOS.BuildingBlocks.Infrastructure.Interceptors;
+using ConfiOS.BuildingBlocks.Infrastructure.Outbox;
 using ConfiOS.BuildingBlocks.Infrastructure.Persistence;
 using ConfiOS.Modules.Identity.Api.Endpoints;
 using ConfiOS.Modules.Identity.Application.Abstractions;
@@ -53,6 +54,13 @@ public sealed class IdentityModule : IModule
 
             options.AddInterceptors(provider.GetRequiredService<AuditingInterceptor>());
         });
+
+        // This module's outbox, drained by the host publisher.
+        services.AddScoped<IOutboxDrain>(provider => new OutboxDrain<IdentityDbContext>(
+            IdentityDbContext.SchemaName,
+            provider.GetRequiredService<IdentityDbContext>(),
+            provider.GetRequiredService<OutboxDispatcher>(),
+            provider.GetRequiredService<IClock>()));
 
         services.AddScoped<IIdentityUnitOfWork>(provider => provider.GetRequiredService<IdentityDbContext>());
         services.AddScoped<IIdentityAuditLogger, IdentityAuditLogger>();

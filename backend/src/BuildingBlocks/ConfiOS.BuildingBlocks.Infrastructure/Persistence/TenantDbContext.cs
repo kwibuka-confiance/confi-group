@@ -2,6 +2,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using ConfiOS.BuildingBlocks.Application.Abstractions;
 using ConfiOS.BuildingBlocks.Application.Context;
+using ConfiOS.BuildingBlocks.Domain.Events;
 using ConfiOS.BuildingBlocks.Domain.Primitives;
 using ConfiOS.BuildingBlocks.Infrastructure.Auditing;
 using ConfiOS.BuildingBlocks.Infrastructure.Outbox;
@@ -183,13 +184,24 @@ public abstract class TenantDbContext(
             return;
         }
 
-        var tenantId = TenantContext.IsResolved ? TenantContext.TenantId.Value : (Guid?)null;
+        var ambient = TenantContext.IsResolved ? TenantContext.TenantId.Value : (Guid?)null;
         var messages = new List<OutboxMessage>();
 
         foreach (var root in roots)
         {
+            // An event that names its own tenant is believed over the ambient one, because
+            // provisioning raises events before any tenant has been resolved. Falling back
+            // to the aggregate covers the rest; only truly platform-level events end up
+            // with no tenant at all.
+            var owner = root is ITenantScoped scoped && scoped.TenantId != Guid.Empty
+                ? scoped.TenantId
+                : ambient;
+
             messages.AddRange(root.DomainEvents.Select(domainEvent =>
-                OutboxMessage.From(domainEvent, tenantId, _clock.UtcNow)));
+                OutboxMessage.From(
+                    domainEvent,
+                    domainEvent is ITenantEvent owned ? owned.TenantId : owner,
+                    _clock.UtcNow)));
 
             root.ClearDomainEvents();
         }
